@@ -8,8 +8,8 @@
     <ProjectGuid>{8BE5E3D0-C6C4-435F-A06D-85041B8D1509}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Klarna.Kco.Tests</RootNamespace>
-    <AssemblyName>Klarna.Kco.Tests</AssemblyName>
+    <RootNamespace>Klarna.Checkout.Tests</RootNamespace>
+    <AssemblyName>Klarna.Checkout.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

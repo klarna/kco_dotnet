@@ -8,8 +8,8 @@
     <ProjectGuid>{803F5E1D-3C2C-4E99-B485-F84397BC25AA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Klarna.Kco</RootNamespace>
-    <AssemblyName>Klarna.Kco</AssemblyName>
+    <RootNamespace>Klarna.Checkout</RootNamespace>
+    <AssemblyName>Klarna.Checkout</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -39,8 +39,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HttpMethod.cs" />
+    <Compile Include="IConnector.cs" />
+    <Compile Include="IResource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
