@@ -42,6 +42,7 @@
     <Compile Include="HttpMethod.cs" />
     <Compile Include="IConnector.cs" />
     <Compile Include="IResource.cs" />
+    <Compile Include="Order.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
