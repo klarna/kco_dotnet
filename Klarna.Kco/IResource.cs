@@ -19,6 +19,7 @@
 namespace Klarna.Checkout
 {
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// The Resource interface.
@@ -41,7 +42,7 @@ namespace Klarna.Checkout
         /// <param name="data">
         /// The data.
         /// </param>
-        void Parse(object data);
+        void Parse(Dictionary<string, object> data);
 
         /// <summary>
         /// Basic representation of the resource.
@@ -49,6 +50,6 @@ namespace Klarna.Checkout
         /// <returns>
         /// The <see cref="object"/>.
         /// </returns>
-        object Marshal();
+        Dictionary<string, object> Marshal();
     }
 }

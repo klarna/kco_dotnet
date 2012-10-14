@@ -19,6 +19,7 @@
 namespace Klarna.Checkout
 {
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// The order resource.
@@ -31,6 +32,11 @@ namespace Klarna.Checkout
         /// The connector.
         /// </summary>
         private IConnector connector;
+
+        /// <summary>
+        /// The data.
+        /// </summary>
+        private Dictionary<string, object> resourceData;
 
         #endregion
 
@@ -45,6 +51,7 @@ namespace Klarna.Checkout
         public Order(IConnector connector)
         {
             this.connector = connector;
+            resourceData = new Dictionary<string, object>();
         }
 
         #endregion
@@ -65,14 +72,14 @@ namespace Klarna.Checkout
         }
 
         /// <summary>
-        /// Update resource with the new data.
+        /// Replace resource with the new data.
         /// </summary>
         /// <param name="data">
         /// The data.
         /// </param>
-        public void Parse(object data)
+        public void Parse(Dictionary<string, object> data)
         {
-            throw new NotImplementedException();
+            resourceData = data;
         }
 
         /// <summary>
@@ -81,11 +88,56 @@ namespace Klarna.Checkout
         /// <returns>
         /// The <see cref="object"/>.
         /// </returns>
-        public object Marshal()
+        public Dictionary<string, object> Marshal()
         {
-            throw new NotImplementedException();
+            return resourceData;
         }
 
         #endregion
+
+        /// <summary>
+        /// Sets the value of a key.
+        /// The key is added if it doesn't exist.
+        /// </summary>
+        /// <param name="key">
+        /// The key.
+        /// </param>
+        /// <param name="value">
+        /// The value.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// key is null
+        /// </exception>
+        public void SetValue(string key, object value)
+        {
+            if (resourceData.ContainsKey(key))
+            {
+                resourceData[key] = value;
+            }
+            else
+            {
+                resourceData.Add(key, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets the value of a key.
+        /// </summary>
+        /// <param name="key">
+        /// The key.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// key is null.
+        /// </exception>
+        /// <exception cref="KeyNotFoundException">
+        /// key does not exist.
+        /// </exception>
+        /// <returns>
+        /// The <see cref="object"/>.
+        /// </returns>
+        public object GetValue(string key)
+        {
+            return resourceData[key];
+        }
     }
 }

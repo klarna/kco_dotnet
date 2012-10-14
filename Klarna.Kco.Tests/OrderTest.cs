@@ -18,6 +18,9 @@
 #endregion
 namespace Klarna.Checkout.Tests
 {
+    using System;
+    using System.Collections.Generic;
+
     using Moq;
 
     using NUnit.Framework;
@@ -28,16 +31,155 @@ namespace Klarna.Checkout.Tests
     [TestFixture]
     public class OrderTest
     {
+        #region Private Fields
+
+        /// <summary>
+        /// Data used in tests
+        /// </summary>
+        private const int TheInt = 89;
+
+        /// <summary>
+        /// The the string.
+        /// </summary>
+        private const string TheString = "A string";
+
+        /// <summary>
+        /// The the date time.
+        /// </summary>
+        private readonly DateTime theDateTime = new DateTime(2012, 10, 14, 22, 53, 12);
+
+        /// <summary>
+        /// The connector mock.
+        /// </summary>
+        private Mock<IConnector> connectorMock;
+
+        /// <summary>
+        /// The order.
+        /// </summary>
+        private Order order;
+
+        #endregion
+
+        /// <summary>
+        /// The setup.
+        /// </summary>
+        [SetUp]
+        public void Setup()
+        {
+            connectorMock = new Mock<IConnector>();
+            order = new Order(connectorMock.Object);
+        }
+
         /// <summary>
         /// Tests that the content type is correct.
         /// </summary>
         [Test]
         public void ContentType()
         {
-            var connectorMock = new Mock<IConnector>();
-            var connector = connectorMock.Object;
-            var order = new Order(connector);
             Assert.That(order.ContentType, Is.EqualTo("application/vnd.klarna.checkout.aggregated-order-v1+json"));
+        }
+
+        /// <summary>
+        /// Tests that the location not is initialized.
+        /// </summary>
+        [Test]
+        public void LocationNull()
+        {
+            Assert.That(order.Location, Is.Null);
+        }
+
+        /// <summary>
+        /// Tests set/get location.
+        /// </summary>
+        [Test]
+        public void LocationSetGet()
+        {
+            const string Url = "http://klarna.com";
+            order.Location = new Uri(Url);
+            Assert.That(order.Location, Is.EqualTo(new Uri(Url)));
+        }
+
+        /// <summary>
+        /// Tests that parse works correctly.
+        /// </summary>
+        public void Parse()
+        {
+            var newData = new Dictionary<string, object>
+                {
+                   { "Int", TheInt }, { "String", TheString }, { "DateTime", theDateTime } 
+                };
+
+            order.Parse(newData);
+            var data = order.Marshal();
+            Assert.That(data, Is.TypeOf<Dictionary<string, object>>());
+            Assert.That(data["Int"], Is.TypeOf<int>());
+            Assert.That((int)data["Int"], Is.EqualTo(TheInt));
+            Assert.That(data["String"], Is.TypeOf<string>());
+            Assert.That((string)data["String"], Is.EqualTo(TheString));
+            Assert.That(data["DateTime"], Is.TypeOf<DateTime>());
+            Assert.That((DateTime)data["DateTime"], Is.EqualTo(theDateTime));
+        }
+
+        /// <summary>
+        /// Tests that marshal works correctly.
+        /// </summary>
+        [Test]
+        public void Marshal()
+        {
+            order.SetValue("Int", TheInt);
+            order.SetValue("String", TheString);
+            order.SetValue("DateTime", theDateTime);
+
+            var data = order.Marshal();
+            Assert.That(data, Is.TypeOf<Dictionary<string, object>>());
+            Assert.That(data["Int"], Is.TypeOf<int>());
+            Assert.That((int)data["Int"], Is.EqualTo(TheInt));
+            Assert.That(data["String"], Is.TypeOf<string>());
+            Assert.That((string)data["String"], Is.EqualTo(TheString));
+            Assert.That(data["DateTime"], Is.TypeOf<DateTime>());
+            Assert.That((DateTime)data["DateTime"], Is.EqualTo(theDateTime));
+        }
+
+        /// <summary>
+        /// Tests set/get values.
+        /// </summary>
+        [Test]
+        public void ValuesSetGet()
+        {
+            order.SetValue("Int", TheInt);
+            order.SetValue("String", TheString);
+            order.SetValue("DateTime", theDateTime);
+
+            var intData = order.GetValue("Int");
+            Assert.That(intData, Is.TypeOf<int>());
+            Assert.That((int)intData, Is.EqualTo(TheInt));
+
+            var stringData = order.GetValue("String");
+            Assert.That(stringData, Is.TypeOf<string>());
+            Assert.That((string)stringData, Is.EqualTo(TheString));
+
+            var dateTimeData = order.GetValue("DateTime");
+            Assert.That(dateTimeData, Is.TypeOf<DateTime>());
+            Assert.That((DateTime)dateTimeData, Is.EqualTo(theDateTime));
+        }
+
+        /// <summary>
+        /// Tests that set value with null key throws an exeption.
+        /// </summary>
+        [Test]
+        public void ValuesSetException()
+        {
+            Assert.Throws<ArgumentNullException>(() => order.SetValue(null, TheString));
+        }
+
+        /// <summary>
+        /// Tests that get value with null key or a non-existing key throws an exeption.
+        /// </summary>
+        [Test]
+        public void ValuesGetExeption()
+        {
+            Assert.Throws<ArgumentNullException>(() => { var x = this.order.GetValue(null); });
+            Assert.Throws<KeyNotFoundException>(() => { var x = this.order.GetValue("NonExistingKey"); });
         }
     }
 }
