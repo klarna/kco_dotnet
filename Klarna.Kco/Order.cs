@@ -29,11 +29,6 @@ namespace Klarna.Checkout
         #region Private Fields
 
         /// <summary>
-        /// The connector.
-        /// </summary>
-        private IConnector connector;
-
-        /// <summary>
         /// The data.
         /// </summary>
         private Dictionary<string, object> resourceData;
@@ -45,12 +40,8 @@ namespace Klarna.Checkout
         /// <summary>
         /// Initializes a new instance of the <see cref="Order"/> class.
         /// </summary>
-        /// <param name="connector">
-        /// The connector.
-        /// </param>
-        public Order(IConnector connector)
+        public Order()
         {
-            this.connector = connector;
             resourceData = new Dictionary<string, object>();
         }
 

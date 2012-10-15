@@ -20,9 +20,6 @@ namespace Klarna.Checkout.Tests
 {
     using System;
     using System.Collections.Generic;
-
-    using Moq;
-
     using NUnit.Framework;
 
     /// <summary>
@@ -49,11 +46,6 @@ namespace Klarna.Checkout.Tests
         private readonly DateTime theDateTime = new DateTime(2012, 10, 14, 22, 53, 12);
 
         /// <summary>
-        /// The connector mock.
-        /// </summary>
-        private Mock<IConnector> connectorMock;
-
-        /// <summary>
         /// The order.
         /// </summary>
         private Order order;
@@ -66,8 +58,7 @@ namespace Klarna.Checkout.Tests
         [SetUp]
         public void Setup()
         {
-            connectorMock = new Mock<IConnector>();
-            order = new Order(connectorMock.Object);
+            order = new Order();
         }
 
         /// <summary>
@@ -164,7 +155,7 @@ namespace Klarna.Checkout.Tests
         }
 
         /// <summary>
-        /// Tests that set value with null key throws an exeption.
+        /// Tests that set value with null key throws an exception.
         /// </summary>
         [Test]
         public void ValuesSetException()
@@ -173,7 +164,7 @@ namespace Klarna.Checkout.Tests
         }
 
         /// <summary>
-        /// Tests that get value with null key or a non-existing key throws an exeption.
+        /// Tests that get value with null key or a non-existing key throws an exception.
         /// </summary>
         [Test]
         public void ValuesGetExeption()
