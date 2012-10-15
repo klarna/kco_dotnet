@@ -62,6 +62,23 @@ namespace Klarna.Checkout.Tests
         }
 
         /// <summary>
+        /// The construction with data.
+        /// </summary>
+        [Test]
+        public void ConstructionWithData()
+        {
+            var newData = new Dictionary<string, object>
+                {
+                   { "Int", TheInt }, { "String", TheString }, { "DateTime", theDateTime } 
+                };
+
+            var newOrder = new Order(newData);
+            var data = newOrder.Marshal();
+
+            Assert.That(data, Is.EqualTo(newData));
+        }
+
+        /// <summary>
         /// Tests that the content type is correct.
         /// </summary>
         [Test]
@@ -102,13 +119,8 @@ namespace Klarna.Checkout.Tests
 
             order.Parse(newData);
             var data = order.Marshal();
-            Assert.That(data, Is.TypeOf<Dictionary<string, object>>());
-            Assert.That(data["Int"], Is.TypeOf<int>());
-            Assert.That((int)data["Int"], Is.EqualTo(TheInt));
-            Assert.That(data["String"], Is.TypeOf<string>());
-            Assert.That((string)data["String"], Is.EqualTo(TheString));
-            Assert.That(data["DateTime"], Is.TypeOf<DateTime>());
-            Assert.That((DateTime)data["DateTime"], Is.EqualTo(theDateTime));
+
+            Assert.That(data, Is.EqualTo(newData));
         }
 
         /// <summary>

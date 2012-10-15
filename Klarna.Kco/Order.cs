@@ -45,6 +45,17 @@ namespace Klarna.Checkout
             resourceData = new Dictionary<string, object>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Order"/> class.
+        /// </summary>
+        /// <param name="data">
+        /// Initial data.
+        /// </param>
+        public Order(Dictionary<string, object> data)
+        {
+            resourceData = data;
+        }
+
         #endregion
 
         #region Implementation of IResource
@@ -85,6 +96,8 @@ namespace Klarna.Checkout
         }
 
         #endregion
+
+        #region Methods
 
         /// <summary>
         /// Sets the value of a key.
@@ -130,5 +143,7 @@ namespace Klarna.Checkout
         {
             return resourceData[key];
         }
+
+        #endregion
     }
 }
