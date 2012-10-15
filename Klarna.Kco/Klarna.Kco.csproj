@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Digest.cs" />
     <Compile Include="HttpMethod.cs" />
     <Compile Include="IConnector.cs" />
     <Compile Include="IResource.cs" />
