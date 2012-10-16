@@ -29,6 +29,11 @@ namespace Klarna.Checkout
         #region Private Fields
 
         /// <summary>
+        /// The default base url.
+        /// </summary>
+        private static readonly Uri DefaultUrl = new Uri("https://checkout.klarna.com/checkout/orders");
+
+        /// <summary>
         /// The data.
         /// </summary>
         private Dictionary<string, object> resourceData;
@@ -43,6 +48,7 @@ namespace Klarna.Checkout
         public Order()
         {
             resourceData = new Dictionary<string, object>();
+            BaseUrl = DefaultUrl;
         }
 
         /// <summary>
@@ -54,7 +60,17 @@ namespace Klarna.Checkout
         public Order(Dictionary<string, object> data)
         {
             resourceData = data;
+            BaseUrl = DefaultUrl;
         }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets the base url that is used to create order resources.
+        /// </summary>
+        public Uri BaseUrl { get; set; }
 
         #endregion
 
@@ -97,7 +113,7 @@ namespace Klarna.Checkout
 
         #endregion
 
-        #region Methods
+        #region Resource Data Accessors
 
         /// <summary>
         /// Sets the value of a key.
@@ -142,6 +158,61 @@ namespace Klarna.Checkout
         public object GetValue(string key)
         {
             return resourceData[key];
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Creates a new order.
+        /// </summary>
+        /// <param name="connector">
+        /// The connector to be used.
+        /// </param>
+        public void Create(IConnector connector)
+        {
+            var options = new Dictionary<string, object>() { { "url", BaseUrl } };
+            connector.Apply(HttpMethod.Post, this, options);
+        }
+
+        /// <summary>
+        /// Fetches order data.
+        /// </summary>
+        /// <param name="connector">
+        /// The connector to be used.
+        /// </param>
+        public void Fetch(IConnector connector)
+        {
+            var options = new Dictionary<string, object>() { { "url", Location } };
+            connector.Apply(HttpMethod.Get, this, options);
+        }
+
+        /// <summary>
+        /// Fetches order data.
+        /// </summary>
+        /// <param name="connector">
+        /// The connector to be used.
+        /// </param>
+        /// <param name="url">
+        /// The url to be used.
+        /// </param>
+        public void Fetch(IConnector connector, Uri url)
+        {
+            Location = url;
+            Fetch(connector);
+        }
+
+        /// <summary>
+        /// Updates order data.
+        /// </summary>
+        /// <param name="connector">
+        /// The connector to be used.
+        /// </param>
+        public void Update(IConnector connector)
+        {
+            var options = new Dictionary<string, object>() { { "url", Location } };
+            connector.Apply(HttpMethod.Post, this, options);
         }
 
         #endregion

@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="DigestTest.cs" />
     <Compile Include="OrderTest.cs" />
+    <Compile Include="OrderWithConnetorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

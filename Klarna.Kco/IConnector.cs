@@ -18,6 +18,8 @@
 #endregion
 namespace Klarna.Checkout
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// The Connector interface.
     /// </summary>
@@ -32,6 +34,9 @@ namespace Klarna.Checkout
         /// <param name="resource">
         /// The resource.
         /// </param>
-        void Apply(HttpMethod method, IResource resource);
+        /// <param name="options">
+        /// The options.
+        /// </param>
+        void Apply(HttpMethod method, IResource resource, Dictionary<string, object> options);
     }
 }

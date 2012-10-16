@@ -23,7 +23,7 @@ namespace Klarna.Checkout.Tests
     using NUnit.Framework;
 
     /// <summary>
-    /// The order test.
+    /// Tests the Order class.
     /// </summary>
     [TestFixture]
     public class OrderTest
@@ -31,17 +31,17 @@ namespace Klarna.Checkout.Tests
         #region Private Fields
 
         /// <summary>
-        /// Data used in tests
+        /// Data used in tests.
         /// </summary>
         private const int TheInt = 89;
 
         /// <summary>
-        /// The the string.
+        /// Data used in tests.
         /// </summary>
         private const string TheString = "A string";
 
         /// <summary>
-        /// The the date time.
+        /// Data used in tests.
         /// </summary>
         private readonly DateTime theDateTime = new DateTime(2012, 10, 14, 22, 53, 12);
 
@@ -52,14 +52,20 @@ namespace Klarna.Checkout.Tests
 
         #endregion
 
+        #region Set Up
+
         /// <summary>
-        /// The setup.
+        /// The set up before each test.
         /// </summary>
         [SetUp]
-        public void Setup()
+        public void SetUp()
         {
             order = new Order();
         }
+
+        #endregion
+
+        #region Tests
 
         /// <summary>
         /// The construction with data.
@@ -67,10 +73,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ConstructionWithData()
         {
-            var newData = new Dictionary<string, object>
-                {
-                   { "Int", TheInt }, { "String", TheString }, { "DateTime", theDateTime } 
-                };
+            var newData = new Dictionary<string, object> { { "Int", TheInt }, { "String", TheString }, { "DateTime", theDateTime } };
 
             var newOrder = new Order(newData);
             var data = newOrder.Marshal();
@@ -112,10 +115,7 @@ namespace Klarna.Checkout.Tests
         /// </summary>
         public void Parse()
         {
-            var newData = new Dictionary<string, object>
-                {
-                   { "Int", TheInt }, { "String", TheString }, { "DateTime", theDateTime } 
-                };
+            var newData = new Dictionary<string, object> { { "Int", TheInt }, { "String", TheString }, { "DateTime", theDateTime } };
 
             order.Parse(newData);
             var data = order.Marshal();
@@ -138,7 +138,7 @@ namespace Klarna.Checkout.Tests
             Assert.That(data["Int"], Is.TypeOf<int>());
             Assert.That((int)data["Int"], Is.EqualTo(TheInt));
             Assert.That(data["String"], Is.TypeOf<string>());
-            Assert.That((string)data["String"], Is.EqualTo(TheString));
+            Assert.That(data["String"], Is.EqualTo(TheString));
             Assert.That(data["DateTime"], Is.TypeOf<DateTime>());
             Assert.That((DateTime)data["DateTime"], Is.EqualTo(theDateTime));
         }
@@ -159,7 +159,7 @@ namespace Klarna.Checkout.Tests
 
             var stringData = order.GetValue("String");
             Assert.That(stringData, Is.TypeOf<string>());
-            Assert.That((string)stringData, Is.EqualTo(TheString));
+            Assert.That(stringData, Is.EqualTo(TheString));
 
             var dateTimeData = order.GetValue("DateTime");
             Assert.That(dateTimeData, Is.TypeOf<DateTime>());
@@ -181,8 +181,10 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ValuesGetExeption()
         {
-            Assert.Throws<ArgumentNullException>(() => { var x = this.order.GetValue(null); });
-            Assert.Throws<KeyNotFoundException>(() => { var x = this.order.GetValue("NonExistingKey"); });
+            Assert.Throws<ArgumentNullException>(() => order.GetValue(null));
+            Assert.Throws<KeyNotFoundException>(() => order.GetValue("NonExistingKey"));
         }
+
+        #endregion
     }
 }
