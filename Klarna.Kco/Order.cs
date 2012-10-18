@@ -86,7 +86,7 @@ namespace Klarna.Checkout
         /// </summary>
         public string ContentType
         {
-            get { return "application/vnd.klarna.checkout.aggregated-order-v1+json"; }
+            get { return "application/vnd.klarna.checkout.aggregated-order-v2+json"; }
         }
 
         /// <summary>
