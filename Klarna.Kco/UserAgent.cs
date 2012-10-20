@@ -21,6 +21,7 @@ namespace Klarna.Checkout
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using Microsoft.Win32;
 
     /// <summary>
     /// The user agent string creation class.
@@ -45,10 +46,11 @@ namespace Klarna.Checkout
         {
             fields = new List<KeyValuePair<string, Dictionary<string, string>>>();
 
-            this.AddField("Library", "Klarna.ApiWrapper", "1.0");
+            AddField("Library", "Klarna.ApiWrapper", "1.0");
             var os = Environment.OSVersion;
-            this.AddField("OS", os.Platform.ToString(), os.Version.ToString());
-            this.AddField("Language", ".Net", Environment.Version.ToString());
+            AddField("OS", os.Platform.ToString(), os.Version.ToString());
+            AddField("Language", ".Net", Environment.Version.ToString());
+            AddField("Webserver", "IIS", this.IisVersion());
         }
 
         #endregion
@@ -93,6 +95,34 @@ namespace Klarna.Checkout
             fields.Add(
                 new KeyValuePair<string, Dictionary<string, string>>(
                     field, new Dictionary<string, string>() { { "Name", name }, { "Version", version } }));
+        }
+
+        /// <summary>
+        /// Gets IIS version.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        private string IisVersion()
+        {
+            var iisVersion = "Unknown_0.0";
+            using (var iisKey = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\InetStp\"))
+            {
+                if (iisKey != null)
+                {
+                    var versionString = iisKey.GetValue("VersionString") as string;
+                    if (versionString != null)
+                    {
+                        var splitVersionString = versionString.Split(' ');
+                        if (splitVersionString.Length > 1)
+                        {
+                            iisVersion = splitVersionString[1];
+                        }
+                    }
+                }
+            }
+
+            return iisVersion;
         }
 
         #endregion

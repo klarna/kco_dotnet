@@ -57,10 +57,11 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void Default()
         {
-            string userAgentString = userAgent.ToString();
+            var userAgentString = userAgent.ToString();
             Assert.That(Regex.IsMatch(userAgentString, @"^.*Library\/[^\ ]+_[^\ ]+.*"), Is.True);
             Assert.That(Regex.IsMatch(userAgentString, @"^.*OS\/[^\ ]+_[^\ ]+.*"), Is.True);
             Assert.That(Regex.IsMatch(userAgentString, @"^.*Language\/[^\ ]+_[^\ ]+.*"), Is.True);
+            Assert.That(Regex.IsMatch(userAgentString, @"^.*Webserver\/[^\ ]+_[^\ ]+.*"), Is.True);
         }
 
         #endregion
