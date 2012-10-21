@@ -33,7 +33,7 @@ namespace Klarna.Checkout
         /// <summary>
         /// The fields.
         /// </summary>
-        private readonly List<KeyValuePair<string, Dictionary<string, string>>> fields;
+        private readonly List<KeyValuePair<string, Dictionary<string, object>>> fields;
 
         #endregion
 
@@ -41,10 +41,12 @@ namespace Klarna.Checkout
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserAgent"/> class.
+        /// Following fields are predefined:
+        /// Library, OS, Language and Webserver.
         /// </summary>
         public UserAgent()
         {
-            fields = new List<KeyValuePair<string, Dictionary<string, string>>>();
+            fields = new List<KeyValuePair<string, Dictionary<string, object>>>();
 
             AddField("Library", "Klarna.ApiWrapper", "1.0");
             var os = Environment.OSVersion;
@@ -58,25 +60,24 @@ namespace Klarna.Checkout
         #region Methods
 
         /// <summary>
-        /// Returns the user agent string.
+        /// Adds a field to the field collection.
         /// </summary>
-        /// <returns>
-        /// The <see cref="string"/>.
-        /// </returns>
-        public override string ToString()
+        /// <param name="field">
+        /// The field name.
+        /// </param>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        /// <param name="version">
+        /// The version.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown if field already exists.
+        /// </exception>
+        public void AddField(string field, string name, string version)
         {
-            var builder = new StringBuilder();
-            foreach (var field in fields)
-            {
-                builder.AppendFormat("{0}/{1}_{2} ", field.Key, field.Value["Name"], field.Value["Version"]);
-            }
-
-            return builder.ToString().TrimEnd(' ');
+            AddField(field, name, version, new string[0]);
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         /// Adds a field to the field collection.
@@ -90,12 +91,68 @@ namespace Klarna.Checkout
         /// <param name="version">
         /// The version.
         /// </param>
-        private void AddField(string field, string name, string version)
+        /// <param name="options">
+        /// The options.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown if field already exists.
+        /// </exception>
+        public void AddField(string field, string name, string version, string[] options)
         {
-            fields.Add(
-                new KeyValuePair<string, Dictionary<string, string>>(
-                    field, new Dictionary<string, string>() { { "Name", name }, { "Version", version } }));
+            if (fields.Exists(f => f.Key == field))
+            {
+                throw new ArgumentException("Field already exists.", field);
+            }
+
+            var entries = new Dictionary<string, object> { { "Name", name }, { "Version", version } };
+            if (options.Length > 0)
+            {
+                entries.Add("Options", options);
+            }
+
+            fields.Add(new KeyValuePair<string, Dictionary<string, object>>(field, entries));
         }
+
+        /// <summary>
+        /// Returns the user agent string.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+            foreach (var field in fields)
+            {
+                var optionsString = new StringBuilder();
+                if (field.Value.ContainsKey("Options"))
+                {
+                    optionsString.Append("(");
+                    var options = (string[])field.Value["Options"];
+                    var firstOption = true;
+                    foreach (var option in options)
+                    {
+                        if (!firstOption)
+                        {
+                            optionsString.Append(" ; ");
+                        }
+
+                        optionsString.Append(option);
+                        firstOption = false;
+                    }
+
+                    optionsString.Append(")");
+                }
+
+                builder.AppendFormat("{0}/{1}_{2} {3}", field.Key, field.Value["Name"], field.Value["Version"], optionsString);
+            }
+
+            return builder.ToString().TrimEnd(' ');
+        }
+
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
         /// Gets IIS version.
