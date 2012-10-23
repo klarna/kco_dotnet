@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="ConnectorTest.cs" />
     <Compile Include="DigestTest.cs" />
+    <Compile Include="HTTP\HttpTransportTest.cs" />
     <Compile Include="OrderTest.cs" />
     <Compile Include="OrderWithConnetorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -64,9 +65,7 @@
       <Name>Klarna.Kco</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="HTTP\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

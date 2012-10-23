@@ -1,6 +1,6 @@
-#region Copyright Header
+﻿#region Copyright Header
 // ----------------------------------------------------------------------------
-// <copyright file="HttpTransport.cs" company="Klarna AB">
+// <copyright file="HttpTransportTest.cs" company="Klarna AB">
 //     Copyright 2012 Klarna AB
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
@@ -16,23 +16,24 @@
 // <link>http://integration.klarna.com/</link>
 // ----------------------------------------------------------------------------
 #endregion
-namespace Klarna.Checkout.HTTP
+namespace Klarna.Checkout.Tests.HTTP
 {
+    using Klarna.Checkout.HTTP;
+    using NUnit.Framework;
+
     /// <summary>
-    /// The http transport factory.
+    /// Tests the HttpTransport factory class.
     /// </summary>
-    public class HttpTransport
+    public class HttpTransportTest
     {
         /// <summary>
-        /// Creates a http transport.
+        /// Tests the factory method.
         /// </summary>
-        /// <returns>
-        /// The <see cref="IHttpTransport"/>.
-        /// </returns>
-        public static IHttpTransport Create()
+        [Test]
+        public void Factory()
         {
-            var httptransport = new BasicHttpTransport();
-            return httptransport;
+            var httptransport = HttpTransport.Create();
+            Assert.That(httptransport, Is.InstanceOf<IHttpTransport>());
         }
     }
 }

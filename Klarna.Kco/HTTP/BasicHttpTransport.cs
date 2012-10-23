@@ -1,6 +1,6 @@
 #region Copyright Header
 // ----------------------------------------------------------------------------
-// <copyright file="HttpTransport.cs" company="Klarna AB">
+// <copyright file="BasicHttpTransport.cs" company="Klarna AB">
 //     Copyright 2012 Klarna AB
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
@@ -18,21 +18,50 @@
 #endregion
 namespace Klarna.Checkout.HTTP
 {
+    using System;
+    using System.Net;
+
     /// <summary>
-    /// The http transport factory.
+    /// The basic http transport.
     /// </summary>
-    public class HttpTransport
+    public class BasicHttpTransport : IHttpTransport
     {
+        #region Implementation of IHttpTransport
+
         /// <summary>
-        /// Creates a http transport.
+        /// Gets or sets the number of seconds before the connection times out.
         /// </summary>
+        public int Timeout { get; set; }
+
+        /// <summary>
+        /// Creates a HttpWebRequest object.
+        /// </summary>
+        /// <param name="url">
+        /// The request URL.
+        /// </param>
         /// <returns>
-        /// The <see cref="IHttpTransport"/>.
+        /// The <see cref="HttpWebRequest"/>.
         /// </returns>
-        public static IHttpTransport Create()
+        public HttpWebRequest CreateRequest(Uri url)
         {
-            var httptransport = new BasicHttpTransport();
-            return httptransport;
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            return request;
         }
+
+        /// <summary>
+        /// Performs a HTTP request.
+        /// </summary>
+        /// <param name="request">
+        /// The HTTP request to send.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IHttpResponse"/>.
+        /// </returns>
+        public IHttpResponse Send(HttpWebRequest request)
+        {
+            return null;
+        }
+
+        #endregion
     }
 }
