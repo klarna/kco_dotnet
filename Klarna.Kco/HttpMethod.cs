@@ -31,6 +31,16 @@ namespace Klarna.Checkout
         /// <summary>
         /// The POST method.
         /// </summary>
-        Post
+        Post,
+
+        /// <summary>
+        /// The PUT method.
+        /// </summary>
+        Put,
+
+        /// <summary>
+        /// The DELETE method.
+        /// </summary>
+        Delete
     }
 }
