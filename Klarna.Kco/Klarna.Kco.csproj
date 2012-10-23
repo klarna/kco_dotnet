@@ -42,8 +42,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicConnector.cs" />
+    <Compile Include="Connector.cs" />
     <Compile Include="Digest.cs" />
     <Compile Include="HttpMethod.cs" />
+    <Compile Include="HTTP\HttpTransport.cs" />
+    <Compile Include="HTTP\IHttpResponse.cs" />
+    <Compile Include="HTTP\IHttpTransport.cs" />
     <Compile Include="IConnector.cs" />
     <Compile Include="IResource.cs" />
     <Compile Include="Order.cs" />

@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConnectorTest.cs" />
     <Compile Include="DigestTest.cs" />
     <Compile Include="OrderTest.cs" />
     <Compile Include="OrderWithConnetorTest.cs" />
@@ -62,6 +63,9 @@
       <Project>{803F5E1D-3C2C-4E99-B485-F84397BC25AA}</Project>
       <Name>Klarna.Kco</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="HTTP\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
