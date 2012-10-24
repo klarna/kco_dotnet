@@ -18,14 +18,41 @@
 #endregion
 namespace Klarna.Checkout
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+
     using Klarna.Checkout.HTTP;
+
+    using Newtonsoft.Json;
 
     /// <summary>
     /// The basic connector.
     /// </summary>
     public class BasicConnector : IConnector
     {
+        #region Private Fields
+
+        /// <summary>
+        /// The IHttpTransport interface implementation.
+        /// </summary>
+        private readonly IHttpTransport httpTransport;
+
+        /// <summary>
+        /// The digest.
+        /// </summary>
+        private readonly Digest digest;
+
+        /// <summary>
+        /// The secret used to sign requests.
+        /// </summary>
+        private readonly string secret;
+
+        #endregion
+
+        #region Construction
+
         /// <summary>
         /// Initializes a new instance of the <see cref="BasicConnector"/> class.
         /// </summary>
@@ -40,7 +67,23 @@ namespace Klarna.Checkout
         /// </param>
         public BasicConnector(IHttpTransport httpTransport, Digest digest, string secret)
         {
+            this.httpTransport = httpTransport;
+            this.digest = digest;
+            this.secret = secret;
+
+            UserAgent = new UserAgent();
         }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets the user agent used for User-Agent header.
+        /// </summary>
+        public UserAgent UserAgent { get; set; }
+
+        #endregion
 
         #region Implementation of IConnector
 
@@ -58,6 +101,119 @@ namespace Klarna.Checkout
         /// </param>
         public void Apply(HttpMethod method, IResource resource, Dictionary<string, object> options)
         {
+            Handle(method, resource, options, new List<Uri>());
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Handles a HTTP request.
+        /// </summary>
+        /// <param name="method">
+        /// The HTTP method to use.
+        /// </param>
+        /// <param name="resource">
+        /// The resource to use.
+        /// </param>
+        /// <param name="options">
+        /// The options to use.
+        /// </param>
+        /// <param name="visitedUrl">
+        /// List of visited url.
+        /// </param>
+        private void Handle(HttpMethod method, IResource resource,
+            Dictionary<string, object> options, List<Uri> visitedUrl)
+        {
+            var url = ResolveUrl(resource, options);
+
+            var payLoad = string.Empty;
+            if (method == HttpMethod.Post)
+            {
+                var resorceData = resource.Marshal();
+                payLoad = JsonConvert.SerializeObject(resorceData);
+            }
+
+            var request = CreateRequest(resource, method, payLoad, url);
+
+            var response = httpTransport.Send(request, payLoad);
+
+            //// Check if we got an Error status code back
+            // $this->verifyResponse($result);
+
+            //// Handle statuses appropriately.
+            // return $this->handleResponse($result, $resource, $visited);
+        }
+
+        /// <summary>
+        /// Resolve the url to use, from options or resource.
+        /// </summary>
+        /// <param name="resource">
+        /// The resource.
+        /// </param>
+        /// <param name="options">
+        /// The options.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Uri"/>.
+        /// </returns>
+        private Uri ResolveUrl(IResource resource, Dictionary<string, object> options)
+        {
+            const string UrlKey = "url";
+            Uri url;
+            if (options != null && options.ContainsKey(UrlKey))
+            {
+                url = options[UrlKey] as Uri;
+            }
+            else
+            {
+                url = resource.Location;
+            }
+
+            return url;
+        }
+
+        /// <summary>
+        /// Creates a request.
+        /// </summary>
+        /// <param name="resource">
+        /// The resource.
+        /// </param>
+        /// <param name="method">
+        /// The HTTP method to use.
+        /// </param>
+        /// <param name="payLoad">
+        /// The pay load.
+        /// </param>
+        /// <param name="url">
+        /// The url.
+        /// </param>
+        /// <returns>
+        /// The <see cref="HttpWebRequest"/>.
+        /// </returns>
+        private HttpWebRequest CreateRequest(IResource resource,
+            HttpMethod method, string payLoad, Uri url)
+        {
+            // Create the request with correct method to use
+            var request = httpTransport.CreateRequest(url);
+            request.Method = method.ToString().ToUpper();
+
+            // Set HTTP Headers
+            request.UserAgent = UserAgent.ToString();
+
+            var digestString = digest.Create(string.Concat(payLoad, secret));
+            var authorization = string.Format("Klarna {0}", digestString);
+            request.Headers.Add("Authorization", authorization);
+
+            request.Accept = resource.ContentType;
+
+            if (payLoad.Length > 0)
+            {
+                request.ContentType = resource.ContentType;
+            }
+
+            return request;
         }
 
         #endregion

@@ -54,11 +54,19 @@ namespace Klarna.Checkout.HTTP
         /// <param name="request">
         /// The HTTP request to send.
         /// </param>
+        /// <param name="payload">
+        /// The payload to send if this is a POST.
+        /// </param>
         /// <returns>
         /// The <see cref="IHttpResponse"/>.
         /// </returns>
-        public IHttpResponse Send(HttpWebRequest request)
+        public IHttpResponse Send(HttpWebRequest request, string payload)
         {
+            if (request.Method == "POST")
+            {
+                // payLoad
+            }
+
             return null;
         }
 

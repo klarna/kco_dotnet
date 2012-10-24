@@ -42,6 +42,7 @@ namespace Klarna.Checkout.Tests
                     { "vat", 25 }, 
                     { "qty", 1 }
                 };
+
             var goodsList = new List<Dictionary<string, object>>() { article };
 
             var data = new Dictionary<string, object>()
@@ -53,10 +54,10 @@ namespace Klarna.Checkout.Tests
                     { "language", "SV" }
                 };
 
-            string json = JsonConvert.SerializeObject(data);
+            var json = JsonConvert.SerializeObject(data);
 
             var digest = new Digest();
-            string actual = digest.Create(json + "mySecret");
+            var actual = digest.Create(string.Concat(json, "mySecret"));
             const string Expected = "MO/6KvzsY2y+F+/SexH7Hyg16gFpsPDx5A2PtLZd0Zs=";
 
             Assert.That(actual, Is.EqualTo(Expected));
