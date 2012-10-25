@@ -44,9 +44,11 @@
   <ItemGroup>
     <Compile Include="BasicConnector.cs" />
     <Compile Include="Connector.cs" />
+    <Compile Include="ConnectorException.cs" />
     <Compile Include="Digest.cs" />
     <Compile Include="HttpMethod.cs" />
     <Compile Include="HTTP\BasicHttpTransport.cs" />
+    <Compile Include="HTTP\HttpResponse.cs" />
     <Compile Include="HTTP\HttpTransport.cs" />
     <Compile Include="HTTP\IHttpResponse.cs" />
     <Compile Include="HTTP\IHttpTransport.cs" />

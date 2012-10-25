@@ -1,6 +1,6 @@
 #region Copyright Header
 // ----------------------------------------------------------------------------
-// <copyright file="IHttpResponse.cs" company="Klarna AB">
+// <copyright file="HttpResponse.cs" company="Klarna AB">
 //     Copyright 2012 Klarna AB
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
@@ -21,18 +21,33 @@ namespace Klarna.Checkout.HTTP
     using System.Net;
 
     /// <summary>
-    /// The HttpResponse interface.
+    /// The http response.
     /// </summary>
-    public interface IHttpResponse
+    public class HttpResponse : IHttpResponse
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HttpResponse"/> class.
+        /// </summary>
+        /// <param name="response">
+        /// The response.
+        /// </param>
+        internal HttpResponse(HttpWebResponse response)
+        {
+            StatusCode = response.StatusCode;
+        }
+
+        #region Implementation of IHttpResponse
+
         /// <summary>
         /// Gets the HTTP status code.
         /// </summary>
-        HttpStatusCode StatusCode { get; }
+        public HttpStatusCode StatusCode { get; private set; }
 
         /// <summary>
         /// Gets the response data.
         /// </summary>
-        string Data { get; }
+        public string Data { get; private set; }
+
+        #endregion
     }
 }

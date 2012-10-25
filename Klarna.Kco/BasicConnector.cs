@@ -22,9 +22,7 @@ namespace Klarna.Checkout
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
-
     using Klarna.Checkout.HTTP;
-
     using Newtonsoft.Json;
 
     /// <summary>
@@ -139,8 +137,7 @@ namespace Klarna.Checkout
 
             var response = httpTransport.Send(request, payLoad);
 
-            //// Check if we got an Error status code back
-            // $this->verifyResponse($result);
+            VerifyResponse(response);
 
             //// Handle statuses appropriately.
             // return $this->handleResponse($result, $resource, $visited);
@@ -214,6 +211,27 @@ namespace Klarna.Checkout
             }
 
             return request;
+        }
+
+        /// <summary>
+        /// Method to verify the response.
+        /// </summary>
+        /// <param name="response">
+        /// The response.
+        /// </param>
+        /// <exception cref="ConnectorException">
+        /// Thrown if response HTTP status code is error codes 4xx or 5xx.
+        /// </exception>
+        private void VerifyResponse(IHttpResponse response)
+        {
+            var statusCode = (int)response.StatusCode;
+            if (statusCode >= 400 && statusCode <= 599)
+            {
+                var exception = new ConnectorException();
+                exception.Data["HttpStatusCode"] = response.StatusCode;
+
+                throw exception;
+            }
         }
 
         #endregion
