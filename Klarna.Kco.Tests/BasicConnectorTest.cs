@@ -45,6 +45,28 @@ namespace Klarna.Checkout.Tests
             "application/vnd.klarna.checkout.aggregated-order-v2+json";
 
         /// <summary>
+        /// The HTTP error codes.
+        /// </summary>
+        private static readonly object[] ErrorCodes =
+            {
+                new object[] { HttpStatusCode.BadRequest, 400 },
+                new object[] { HttpStatusCode.Unauthorized, 401 },
+                new object[] { HttpStatusCode.PaymentRequired, 402 },
+                new object[] { HttpStatusCode.Forbidden, 403 },
+                new object[] { HttpStatusCode.NotFound, 404 },
+                new object[] { HttpStatusCode.NotAcceptable, 406 },
+                new object[] { HttpStatusCode.Conflict, 409 },
+                new object[] { HttpStatusCode.PreconditionFailed, 412 },
+                new object[] { HttpStatusCode.UnsupportedMediaType, 415 },
+                // 422 (Unprocessable Entity) 
+                // 428 (Precondition Required)
+                // 429 (Too Many Requests)
+                new object[] { HttpStatusCode.InternalServerError, 500 },
+                new object[] { HttpStatusCode.BadGateway, 502 },
+                new object[] { HttpStatusCode.ServiceUnavailable, 503 }
+            };
+
+        /// <summary>
         /// The url.
         /// </summary>
         private readonly Uri url = new Uri("http://klarna.com");
@@ -178,6 +200,104 @@ namespace Klarna.Checkout.Tests
             Assert.That(request.Headers["Authorization"], Is.EqualTo(authorization));
             Assert.That(request.Accept, Is.EqualTo(ContentType));
             Assert.That(request.ContentType, Is.Null);
+        }
+
+        /// <summary>
+        /// Tests Apply with GET method, with status code that is expected to throw an
+        /// exception.
+        /// </summary>
+        /// <param name="statusCode">
+        /// The HTTP status code.
+        /// </param>
+        /// <param name="expectedCode">
+        /// The expected code.
+        /// </param>
+        [Test, TestCaseSource("ErrorCodes")]
+        public void ApplyGetError(HttpStatusCode statusCode, int expectedCode)
+        {
+            var connector = new BasicConnector(httpTransportMock.Object, digest, Secret);
+
+            resourceMock.SetupProperty(r => r.Location, url);
+            resourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
+
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            httpTransportMock.Setup(t => t.CreateRequest(url)).Returns(request);
+            var payLoad = string.Empty;
+            responseMock.SetupGet(r => r.StatusCode).Returns(statusCode);
+            httpTransportMock.Setup(t => t.Send(request, payLoad)).Returns(responseMock.Object);
+
+            var ex = Assert.Throws<ConnectorException>(
+                () => connector.Apply(HttpMethod.Get, this.resourceMock.Object, null));
+
+            var code = (HttpStatusCode)ex.Data["HttpStatusCode"];
+            Assert.That(code, Is.Not.Null);
+            Assert.That((int)code, Is.EqualTo(expectedCode));
+        }
+
+        /// <summary>
+        /// Tests Apply with POST method.
+        /// </summary>
+        [Test]
+        public void ApplyPost()
+        {
+            var connector = new BasicConnector(httpTransportMock.Object, digest, Secret);
+
+            resourceMock.SetupProperty(r => r.Location, url);
+            resourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
+            var resourceData = new Dictionary<string, object>() { { "Year", 2012 } };
+            resourceMock.Setup(r => r.Marshal()).Returns(resourceData);
+
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            httpTransportMock.Setup(t => t.CreateRequest(url)).Returns(request);
+            const string PayLoad = "{\"Year\":2012}";
+            httpTransportMock.Setup(t => t.Send(request, PayLoad)).Returns(responseMock.Object);
+
+            connector.Apply(HttpMethod.Post, resourceMock.Object, null);
+
+            httpTransportMock.Verify(t => t.CreateRequest(url), Times.Once());
+            httpTransportMock.Verify(t => t.Send(request, PayLoad), Times.Once());
+
+            Assert.That(request.Method, Is.EqualTo(HttpMethod.Post.ToString().ToUpper()));
+            Assert.That(request.UserAgent, Is.EqualTo(connector.UserAgent.ToString()));
+            var authorization =
+                string.Format("Klarna {0}", digest.Create(string.Concat(PayLoad, Secret)));
+            Assert.That(request.Headers["Authorization"], Is.EqualTo(authorization));
+            Assert.That(request.Accept, Is.EqualTo(ContentType));
+            Assert.That(request.ContentType, Is.EqualTo(ContentType));
+        }
+
+        /// <summary>
+        /// Tests Apply with POST method, with status code that is expected to throw an
+        /// exception.
+        /// </summary>
+        /// <param name="statusCode">
+        /// The HTTP status code.
+        /// </param>
+        /// <param name="expectedCode">
+        /// The expected code.
+        /// </param>
+        [Test, TestCaseSource("ErrorCodes")]
+        public void ApplyPostError(HttpStatusCode statusCode, int expectedCode)
+        {
+            var connector = new BasicConnector(httpTransportMock.Object, digest, Secret);
+
+            resourceMock.SetupProperty(r => r.Location, url);
+            resourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
+            var resourceData = new Dictionary<string, object>() { { "Year", 2012 } };
+            resourceMock.Setup(r => r.Marshal()).Returns(resourceData);
+
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            httpTransportMock.Setup(t => t.CreateRequest(url)).Returns(request);
+            const string PayLoad = "{\"Year\":2012}";
+            responseMock.SetupGet(r => r.StatusCode).Returns(statusCode);
+            httpTransportMock.Setup(t => t.Send(request, PayLoad)).Returns(responseMock.Object);
+
+            var ex = Assert.Throws<ConnectorException>(
+                () => connector.Apply(HttpMethod.Post, this.resourceMock.Object, null));
+
+            var code = (HttpStatusCode)ex.Data["HttpStatusCode"];
+            Assert.That(code, Is.Not.Null);
+            Assert.That((int)code, Is.EqualTo(expectedCode));
         }
 
         #endregion
