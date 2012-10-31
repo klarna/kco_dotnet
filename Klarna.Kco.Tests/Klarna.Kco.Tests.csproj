@@ -48,7 +48,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicConnectorGetTest.cs" />
     <Compile Include="BasicConnectorTest.cs" />
+    <Compile Include="BasicConnectorTestBase.cs" />
+    <Compile Include="BasicConnectorPostTest.cs" />
     <Compile Include="ConnectorTest.cs" />
     <Compile Include="DigestTest.cs" />
     <Compile Include="HTTP\HttpTransportTest.cs" />

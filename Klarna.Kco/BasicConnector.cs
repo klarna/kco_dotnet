@@ -120,7 +120,10 @@ namespace Klarna.Checkout
         /// <param name="visitedUrl">
         /// List of visited url.
         /// </param>
-        private void Handle(HttpMethod method, IResource resource,
+        /// <returns>
+        /// The <see cref="IHttpResponse"/>.
+        /// </returns>
+        private IHttpResponse Handle(HttpMethod method, IResource resource,
             Dictionary<string, object> options, List<Uri> visitedUrl)
         {
             var url = ResolveUrl(resource, options);
@@ -138,8 +141,7 @@ namespace Klarna.Checkout
 
             VerifyResponse(response);
 
-            //// Handle statuses appropriately.
-            // return $this->handleResponse($result, $resource, $visited);
+            return HandleResponse(response, method, resource);
         }
 
         /// <summary>
@@ -231,6 +233,64 @@ namespace Klarna.Checkout
 
                 throw exception;
             }
+        }
+
+        private IHttpResponse HandleResponse(IHttpResponse response,
+            HttpMethod method, IResource resource)
+        {
+            var location = response.Header("Location");
+            var url = new Uri(location);
+
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK: // 200
+                    // Update Data on resource
+                    var json = response.Data;
+                    var data =
+                        JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+
+                    //if ($json === null) {
+                    //    throw new Klarna_Checkout_ConnectorException(
+                    //        'Bad format on response content.',
+                    //        -2
+                    //    );
+                    //}
+
+                    resource.Parse(data);
+                    break;
+                case HttpStatusCode.Created: // 201
+                    // Update location
+                    resource.Location = url;
+                    break;
+                //case HttpStatusCode.MovedPermanently: // 301
+                //    // Update location and fallthrough
+                //    resource.Location = url;
+                //case HttpStatusCode.Found: // 302
+                //    // Don't fallthrough for other than GET
+                //    if (method != HttpMethod.Get)
+                //    {
+                //        break;
+                //    }
+                //case HttpStatusCode.SeeOther: // 303
+                //    // Detect eternal loops
+                //    //if (in_array($url, $visited)) {
+                //    //    throw new Klarna_Checkout_ConnectorException(
+                //    //        'Infinite redirect loop detected.',
+                //    //        -1
+                //    //    );
+                //    //}
+                //    //$visited[] = $url;
+                //    // Follow redirect
+                //    // return Handle(method, response, opt
+                //    //    'GET',
+                //    //    $resource,
+                //    //    array('url' => $url),
+                //    //    $visited
+                //    //);
+                //    break;
+            }
+
+            return response;
         }
 
         #endregion
