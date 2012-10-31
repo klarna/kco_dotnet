@@ -56,5 +56,28 @@ namespace Klarna.Checkout.Tests
             Assert.That(request.Accept, Is.EqualTo(ContentType));
             Assert.That(request.ContentType, Is.Null);
         }
+
+        /// <summary>
+        /// Tests Apply with GET method and status 200 return.
+        /// But that invalid JSON in response throws an exception.
+        /// </summary>
+        [Test]
+        public void ApplyGet200InvalidJson()
+        {
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+
+            ResourceMock.SetupProperty(r => r.Location, Url);
+            ResourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
+
+            var request = (HttpWebRequest)WebRequest.Create(Url);
+            HttpTransportMock.Setup(t => t.CreateRequest(Url)).Returns(request);
+            ResponseMock.SetupGet(r => r.Data).Returns("{{{{");
+            HttpTransportMock.Setup(t => t.Send(request, PayLoad)).Returns(ResponseMock.Object);
+
+            var ex = Assert.Throws<ConnectorException>(
+                () => connector.Apply(HttpMethod.Get, ResourceMock.Object, null));
+
+            Assert.That(ex.Message, Is.EqualTo("Bad format on response content."));
+        }
     }
 }

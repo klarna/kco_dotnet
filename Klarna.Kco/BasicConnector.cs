@@ -21,7 +21,9 @@ namespace Klarna.Checkout
     using System;
     using System.Collections.Generic;
     using System.Net;
+
     using Klarna.Checkout.HTTP;
+
     using Newtonsoft.Json;
 
     /// <summary>
@@ -235,6 +237,21 @@ namespace Klarna.Checkout
             }
         }
 
+        /// <summary>
+        /// Handle response based on status.
+        /// </summary>
+        /// <param name="response">
+        /// The response.
+        /// </param>
+        /// <param name="method">
+        /// The HTTP method.
+        /// </param>
+        /// <param name="resource">
+        /// The resource.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IHttpResponse"/>.
+        /// </returns>
         private IHttpResponse HandleResponse(IHttpResponse response,
             HttpMethod method, IResource resource)
         {
@@ -245,49 +262,49 @@ namespace Klarna.Checkout
             {
                 case HttpStatusCode.OK: // 200
                     // Update Data on resource
-                    var json = response.Data;
-                    var data =
-                        JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+                    try
+                    {
+                        var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Data);
+                        resource.Parse(data);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ConnectorException("Bad format on response content.", ex);
+                    }
 
-                    //if ($json === null) {
-                    //    throw new Klarna_Checkout_ConnectorException(
-                    //        'Bad format on response content.',
-                    //        -2
-                    //    );
-                    //}
-
-                    resource.Parse(data);
                     break;
                 case HttpStatusCode.Created: // 201
+
                     // Update location
                     resource.Location = url;
                     break;
-                //case HttpStatusCode.MovedPermanently: // 301
-                //    // Update location and fallthrough
-                //    resource.Location = url;
-                //case HttpStatusCode.Found: // 302
-                //    // Don't fallthrough for other than GET
-                //    if (method != HttpMethod.Get)
-                //    {
-                //        break;
-                //    }
-                //case HttpStatusCode.SeeOther: // 303
-                //    // Detect eternal loops
-                //    //if (in_array($url, $visited)) {
-                //    //    throw new Klarna_Checkout_ConnectorException(
-                //    //        'Infinite redirect loop detected.',
-                //    //        -1
-                //    //    );
-                //    //}
-                //    //$visited[] = $url;
-                //    // Follow redirect
-                //    // return Handle(method, response, opt
-                //    //    'GET',
-                //    //    $resource,
-                //    //    array('url' => $url),
-                //    //    $visited
-                //    //);
-                //    break;
+
+                // case HttpStatusCode.MovedPermanently: // 301
+                // // Update location and fallthrough
+                // resource.Location = url;
+                // case HttpStatusCode.Found: // 302
+                // // Don't fallthrough for other than GET
+                // if (method != HttpMethod.Get)
+                // {
+                // break;
+                // }
+                // case HttpStatusCode.SeeOther: // 303
+                // // Detect eternal loops
+                // //if (in_array($url, $visited)) {
+                // //    throw new Klarna_Checkout_ConnectorException(
+                // //        'Infinite redirect loop detected.',
+                // //        -1
+                // //    );
+                // //}
+                // //$visited[] = $url;
+                // // Follow redirect
+                // // return Handle(method, response, opt
+                // //    'GET',
+                // //    $resource,
+                // //    array('url' => $url),
+                // //    $visited
+                // //);
+                // break;
             }
 
             return response;

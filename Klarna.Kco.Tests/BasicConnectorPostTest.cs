@@ -1,6 +1,6 @@
 ﻿#region Copyright Header
 // ----------------------------------------------------------------------------
-// <copyright file="BasiConnectorPostTest.cs" company="Klarna AB">
+// <copyright file="BasicConnectorPostTest.cs" company="Klarna AB">
 //     Copyright 2012 Klarna AB
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
@@ -60,5 +60,32 @@ namespace Klarna.Checkout.Tests
             Assert.That(request.Accept, Is.EqualTo(ContentType));
             Assert.That(request.ContentType, Is.EqualTo(ContentType));
         }
+
+        /// <summary>
+        /// Tests Apply with POST method and status 200 return.
+        /// But that invalid JSON in response throws an exception.
+        /// </summary>
+        [Test]
+        public void ApplyPost200InvalidJson()
+        {
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+
+            ResourceMock.SetupProperty(r => r.Location, Url);
+            ResourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
+            var resourceData = new Dictionary<string, object>() { { "Year", 2012 } };
+            ResourceMock.Setup(r => r.Marshal()).Returns(resourceData);
+
+            var request = (HttpWebRequest)WebRequest.Create(Url);
+            HttpTransportMock.Setup(t => t.CreateRequest(Url)).Returns(request);
+            ResponseMock.SetupGet(r => r.Data).Returns("{{{{");
+            PayLoad = "{\"Year\":2012}";
+            HttpTransportMock.Setup(t => t.Send(request, PayLoad)).Returns(ResponseMock.Object);
+
+            var ex = Assert.Throws<ConnectorException>(
+                () => connector.Apply(HttpMethod.Post, ResourceMock.Object, null));
+
+            Assert.That(ex.Message, Is.EqualTo("Bad format on response content."));
+        }
+
     }
 }
