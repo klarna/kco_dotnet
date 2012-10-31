@@ -97,10 +97,10 @@ namespace Klarna.Checkout.Tests
         {
             const string Name = "None";
             const string Version = "0.0";
-            Assert.Throws<ArgumentException>(() => this.userAgent.AddField("Library", Name, Version));
-            Assert.Throws<ArgumentException>(() => this.userAgent.AddField("OS", Name, Version));
-            Assert.Throws<ArgumentException>(() => this.userAgent.AddField("Language", Name, Version));
-            Assert.Throws<ArgumentException>(() => this.userAgent.AddField("Webserver", Name, Version));
+            Assert.Throws<ArgumentException>(() => userAgent.AddField("Library", Name, Version));
+            Assert.Throws<ArgumentException>(() => userAgent.AddField("OS", Name, Version));
+            Assert.Throws<ArgumentException>(() => userAgent.AddField("Language", Name, Version));
+            Assert.Throws<ArgumentException>(() => userAgent.AddField("Webserver", Name, Version));
         }
 
         #endregion

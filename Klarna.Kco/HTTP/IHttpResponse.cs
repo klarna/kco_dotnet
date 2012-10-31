@@ -34,5 +34,16 @@ namespace Klarna.Checkout.HTTP
         /// Gets the response data.
         /// </summary>
         string Data { get; }
+
+        /// <summary>
+        /// Gets the specified HTTP header.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the header.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        string Header(string name);
     }
 }

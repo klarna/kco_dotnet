@@ -52,7 +52,7 @@ namespace Klarna.Checkout
             var os = Environment.OSVersion;
             AddField("OS", os.Platform.ToString(), os.Version.ToString());
             AddField("Language", ".Net", Environment.Version.ToString());
-            AddField("Webserver", "IIS", this.IisVersion());
+            AddField("Webserver", "IIS", IisVersion());
         }
 
         #endregion

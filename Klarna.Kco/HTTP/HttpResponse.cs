@@ -25,6 +25,17 @@ namespace Klarna.Checkout.HTTP
     /// </summary>
     public class HttpResponse : IHttpResponse
     {
+        #region Private Fields
+
+        /// <summary>
+        /// The associated response.
+        /// </summary>
+        private readonly HttpWebResponse response;
+
+        #endregion
+
+        #region Construction
+
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpResponse"/> class.
         /// </summary>
@@ -33,8 +44,11 @@ namespace Klarna.Checkout.HTTP
         /// </param>
         internal HttpResponse(HttpWebResponse response)
         {
+            this.response = response;
             StatusCode = response.StatusCode;
         }
+
+        #endregion
 
         #region Implementation of IHttpResponse
 
@@ -47,6 +61,20 @@ namespace Klarna.Checkout.HTTP
         /// Gets the response data.
         /// </summary>
         public string Data { get; private set; }
+
+        /// <summary>
+        /// Gets the specified HTTP header.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the header.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        public string Header(string name)
+        {
+            return response.Headers[name];
+        }
 
         #endregion
     }
