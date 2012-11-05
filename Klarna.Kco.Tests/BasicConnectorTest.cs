@@ -45,9 +45,9 @@ namespace Klarna.Checkout.Tests
                 new object[] { HttpStatusCode.Conflict, 409 },
                 new object[] { HttpStatusCode.PreconditionFailed, 412 },
                 new object[] { HttpStatusCode.UnsupportedMediaType, 415 },
-                // 422 (Unprocessable Entity) 
-                // 428 (Precondition Required)
-                // 429 (Too Many Requests)
+                /// 422 (Unprocessable Entity) 
+                /// 428 (Precondition Required)
+                /// 429 (Too Many Requests)
                 new object[] { HttpStatusCode.InternalServerError, 500 },
                 new object[] { HttpStatusCode.BadGateway, 502 },
                 new object[] { HttpStatusCode.ServiceUnavailable, 503 }
@@ -147,7 +147,6 @@ namespace Klarna.Checkout.Tests
             Assert.That(code, Is.Not.Null);
             Assert.That((int)code, Is.EqualTo(expectedCode));
         }
-
 
         /// <summary>
         /// Tests Apply with POST method, with status code that is expected to throw an

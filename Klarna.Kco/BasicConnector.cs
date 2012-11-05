@@ -274,7 +274,6 @@ namespace Klarna.Checkout
 
                     break;
                 case HttpStatusCode.Created: // 201
-
                     // Update location
                     resource.Location = url;
                     break;

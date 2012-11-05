@@ -20,7 +20,9 @@ namespace Klarna.Checkout.Tests
 {
     using System.Collections.Generic;
     using System.Net;
+
     using Moq;
+
     using NUnit.Framework;
 
     /// <summary>
@@ -87,5 +89,44 @@ namespace Klarna.Checkout.Tests
             Assert.That(ex.Message, Is.EqualTo("Bad format on response content."));
         }
 
+        /// <summary>
+        /// Tests Apply with POST method and status 201 return.
+        /// Verifies that location is updated.
+        /// </summary>
+        [Test]
+        public void ApplyPost201UpdatedLocation()
+        {
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+
+            ResourceMock.SetupProperty(r => r.Location, Url);
+            ResourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
+            var resourceData = new Dictionary<string, object>() { { "Year", 2012 } };
+            ResourceMock.Setup(r => r.Marshal()).Returns(resourceData);
+
+            var request = (HttpWebRequest)WebRequest.Create(Url);
+            HttpTransportMock.Setup(t => t.CreateRequest(Url)).Returns(request);
+
+            PayLoad = "{\"Year\":2012}";
+            ResponseMock.SetupGet(r => r.Data).Returns(PayLoad);
+            ResponseMock.SetupGet(r => r.StatusCode).Returns(HttpStatusCode.Created);
+            const string UpdatedLocation = "http://NewLocation.com";
+            ResponseMock.Setup(r => r.Header("Location")).Returns(UpdatedLocation);
+
+            HttpTransportMock.Setup(t => t.Send(request, PayLoad)).Returns(ResponseMock.Object);
+
+            connector.Apply(HttpMethod.Post, ResourceMock.Object, null);
+
+            HttpTransportMock.Verify(t => t.CreateRequest(Url), Times.Once());
+            HttpTransportMock.Verify(t => t.Send(request, PayLoad), Times.Once());
+
+            Assert.That(request.Method, Is.EqualTo(HttpMethod.Post.ToString().ToUpper()));
+            Assert.That(request.UserAgent, Is.EqualTo(connector.UserAgent.ToString()));
+            var authorization =
+                string.Format("Klarna {0}", Digest.Create(string.Concat(PayLoad, Secret)));
+            Assert.That(request.Headers["Authorization"], Is.EqualTo(authorization));
+            Assert.That(request.Accept, Is.EqualTo(ContentType));
+            Assert.That(request.ContentType, Is.EqualTo(ContentType));
+            Assert.That(ResourceMock.Object.Location.OriginalString, Is.EqualTo(UpdatedLocation));
+        }
     }
 }
