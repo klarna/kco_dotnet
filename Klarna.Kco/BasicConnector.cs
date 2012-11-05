@@ -143,7 +143,7 @@ namespace Klarna.Checkout
 
             VerifyResponse(response);
 
-            return HandleResponse(response, method, resource);
+            return HandleResponse(response, method, resource, visitedUrl);
         }
 
         /// <summary>
@@ -249,11 +249,14 @@ namespace Klarna.Checkout
         /// <param name="resource">
         /// The resource.
         /// </param>
+        /// <param name="visitedUrl">
+        /// List of visited locations.
+        /// </param>
         /// <returns>
         /// The <see cref="IHttpResponse"/>.
         /// </returns>
-        private IHttpResponse HandleResponse(IHttpResponse response,
-            HttpMethod method, IResource resource)
+        private IHttpResponse HandleResponse(IHttpResponse response, HttpMethod method,
+            IResource resource, List<Uri> visitedUrl)
         {
             var location = response.Header("Location");
             var url = new Uri(location);
@@ -261,6 +264,7 @@ namespace Klarna.Checkout
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK: // 200
+
                     // Update Data on resource
                     try
                     {
@@ -274,20 +278,40 @@ namespace Klarna.Checkout
 
                     break;
                 case HttpStatusCode.Created: // 201
+
                     // Update location
                     resource.Location = url;
                     break;
+                case HttpStatusCode.MovedPermanently: // 301
 
-                // case HttpStatusCode.MovedPermanently: // 301
-                // // Update location and fallthrough
-                // resource.Location = url;
-                // case HttpStatusCode.Found: // 302
-                // // Don't fallthrough for other than GET
-                // if (method != HttpMethod.Get)
-                // {
-                // break;
-                // }
-                // case HttpStatusCode.SeeOther: // 303
+                    // Update location
+                    resource.Location = url;
+                    if (method != HttpMethod.Get)
+                    {
+                        break;
+                    }
+
+                    // Detect infinite loops
+                    if (visitedUrl.Contains(url))
+                    {
+                        throw new ConnectorException("Infinite redirect loop detected.");
+                    }
+
+                    visitedUrl.Add(url);
+
+                    // Make redirect
+                    var options = new Dictionary<string, object> { { "url", url } };
+                    return this.Handle(HttpMethod.Get, resource, options, visitedUrl);
+
+                ////case HttpStatusCode.Found: // 302
+                ////    // Don't fallthrough for other than GET
+                ////    if (method != HttpMethod.Get)
+                ////    {
+                ////        break;
+                ////    }
+                ////    break;
+                ////case HttpStatusCode.SeeOther: // 303
+                ////    break;
                 // // Detect eternal loops
                 // //if (in_array($url, $visited)) {
                 // //    throw new Klarna_Checkout_ConnectorException(

@@ -45,13 +45,15 @@ namespace Klarna.Checkout.Tests
                 new object[] { HttpStatusCode.Conflict, 409 },
                 new object[] { HttpStatusCode.PreconditionFailed, 412 },
                 new object[] { HttpStatusCode.UnsupportedMediaType, 415 },
-                /// 422 (Unprocessable Entity) 
-                /// 428 (Precondition Required)
-                /// 429 (Too Many Requests)
                 new object[] { HttpStatusCode.InternalServerError, 500 },
                 new object[] { HttpStatusCode.BadGateway, 502 },
                 new object[] { HttpStatusCode.ServiceUnavailable, 503 }
             };
+
+        // TODO: Howto handle error codes 422, 428 and 429?
+        //// 422 (Unprocessable Entity) 
+        //// 428 (Precondition Required)
+        //// 429 (Too Many Requests)
 
         #endregion
 
