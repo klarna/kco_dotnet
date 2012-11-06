@@ -263,9 +263,7 @@ namespace Klarna.Checkout
 
             switch (response.StatusCode)
             {
-                case HttpStatusCode.OK: // 200
-
-                    // Update Data on resource
+                case HttpStatusCode.OK: // 200 - Update Data on resource
                     try
                     {
                         var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Data);
@@ -277,14 +275,10 @@ namespace Klarna.Checkout
                     }
 
                     break;
-                case HttpStatusCode.Created: // 201
-
-                    // Update location
+                case HttpStatusCode.Created: // 201 - Update location
                     resource.Location = url;
                     break;
-                case HttpStatusCode.MovedPermanently: // 301
-
-                    // Update location
+                case HttpStatusCode.MovedPermanently: // 301 - Update location
                     resource.Location = url;
                     if (method != HttpMethod.Get)
                     {
@@ -301,7 +295,7 @@ namespace Klarna.Checkout
 
                     // Make redirect
                     var options = new Dictionary<string, object> { { "url", url } };
-                    return this.Handle(HttpMethod.Get, resource, options, visitedUrl);
+                    return Handle(HttpMethod.Get, resource, options, visitedUrl);
 
                 ////case HttpStatusCode.Found: // 302
                 ////    // Don't fallthrough for other than GET
