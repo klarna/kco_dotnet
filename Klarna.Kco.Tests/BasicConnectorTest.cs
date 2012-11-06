@@ -21,7 +21,9 @@ namespace Klarna.Checkout.Tests
     using System.Collections.Generic;
     using System.Net;
     using System.Text.RegularExpressions;
+
     using Moq;
+
     using NUnit.Framework;
 
     /// <summary>
@@ -36,17 +38,17 @@ namespace Klarna.Checkout.Tests
         /// </summary>
         private static readonly object[] ErrorCodes =
             {
-                new object[] { HttpStatusCode.BadRequest, 400 },
-                new object[] { HttpStatusCode.Unauthorized, 401 },
-                new object[] { HttpStatusCode.PaymentRequired, 402 },
-                new object[] { HttpStatusCode.Forbidden, 403 },
-                new object[] { HttpStatusCode.NotFound, 404 },
-                new object[] { HttpStatusCode.NotAcceptable, 406 },
-                new object[] { HttpStatusCode.Conflict, 409 },
-                new object[] { HttpStatusCode.PreconditionFailed, 412 },
-                new object[] { HttpStatusCode.UnsupportedMediaType, 415 },
-                new object[] { HttpStatusCode.InternalServerError, 500 },
-                new object[] { HttpStatusCode.BadGateway, 502 },
+                new object[] { HttpStatusCode.BadRequest, 400 }, 
+                new object[] { HttpStatusCode.Unauthorized, 401 }, 
+                new object[] { HttpStatusCode.PaymentRequired, 402 }, 
+                new object[] { HttpStatusCode.Forbidden, 403 }, 
+                new object[] { HttpStatusCode.NotFound, 404 }, 
+                new object[] { HttpStatusCode.NotAcceptable, 406 }, 
+                new object[] { HttpStatusCode.Conflict, 409 }, 
+                new object[] { HttpStatusCode.PreconditionFailed, 412 }, 
+                new object[] { HttpStatusCode.UnsupportedMediaType, 415 }, 
+                new object[] { HttpStatusCode.InternalServerError, 500 }, 
+                new object[] { HttpStatusCode.BadGateway, 502 }, 
                 new object[] { HttpStatusCode.ServiceUnavailable, 503 }
             };
 
@@ -54,7 +56,6 @@ namespace Klarna.Checkout.Tests
         //// 422 (Unprocessable Entity) 
         //// 428 (Precondition Required)
         //// 429 (Too Many Requests)
-
         #endregion
 
         #region Tests
@@ -148,6 +149,9 @@ namespace Klarna.Checkout.Tests
             var code = (HttpStatusCode)ex.Data["HttpStatusCode"];
             Assert.That(code, Is.Not.Null);
             Assert.That((int)code, Is.EqualTo(expectedCode));
+
+            HttpTransportMock.Verify(t => t.CreateRequest(Url), Times.Once());
+            HttpTransportMock.Verify(t => t.Send(request, PayLoad), Times.Once());
         }
 
         /// <summary>
@@ -182,6 +186,9 @@ namespace Klarna.Checkout.Tests
             var code = (HttpStatusCode)ex.Data["HttpStatusCode"];
             Assert.That(code, Is.Not.Null);
             Assert.That((int)code, Is.EqualTo(expectedCode));
+
+            HttpTransportMock.Verify(t => t.CreateRequest(Url), Times.Once());
+            HttpTransportMock.Verify(t => t.Send(request, PayLoad), Times.Once());
         }
 
         #endregion
