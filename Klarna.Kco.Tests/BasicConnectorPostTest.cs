@@ -129,6 +129,7 @@ namespace Klarna.Checkout.Tests
             Assert.That(request.Headers["Authorization"], Is.EqualTo(authorization));
             Assert.That(request.Accept, Is.EqualTo(ContentType));
             Assert.That(request.ContentType, Is.EqualTo(ContentType));
+
             Assert.That(ResourceMock.Object.Location.OriginalString, Is.EqualTo(UpdatedLocation));
         }
 

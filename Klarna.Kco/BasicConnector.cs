@@ -263,7 +263,7 @@ namespace Klarna.Checkout
 
             switch (response.StatusCode)
             {
-                case HttpStatusCode.OK: // 200 - Update Data on resource
+                case HttpStatusCode.OK: // 200 - Update Data on resource.
                     try
                     {
                         var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Data);
@@ -275,56 +275,64 @@ namespace Klarna.Checkout
                     }
 
                     break;
-                case HttpStatusCode.Created: // 201 - Update location
+
+                case HttpStatusCode.Created: // 201 - Update location.
                     resource.Location = url;
                     break;
-                case HttpStatusCode.MovedPermanently: // 301 - Update location
+
+                case HttpStatusCode.MovedPermanently: // 301 - Update location and redirect if method is GET.
                     resource.Location = url;
-                    if (method != HttpMethod.Get)
+                    if (method == HttpMethod.Get)
                     {
-                        break;
+                        return MakeRedirect(resource, visitedUrl, url);
                     }
 
-                    // Detect infinite loops
-                    if (visitedUrl.Contains(url))
+                    break;
+
+                case HttpStatusCode.Found: // 302 - Redirect if method is GET.
+                    if (method == HttpMethod.Get)
                     {
-                        throw new ConnectorException("Infinite redirect loop detected.");
+                        return MakeRedirect(resource, visitedUrl, url);
                     }
 
-                    visitedUrl.Add(url);
+                    break;
 
-                    // Make redirect
-                    var options = new Dictionary<string, object> { { "url", url } };
-                    return Handle(HttpMethod.Get, resource, options, visitedUrl);
-
-                ////case HttpStatusCode.Found: // 302
-                ////    // Don't fallthrough for other than GET
-                ////    if (method != HttpMethod.Get)
-                ////    {
-                ////        break;
-                ////    }
-                ////    break;
-                ////case HttpStatusCode.SeeOther: // 303
-                ////    break;
-                // // Detect eternal loops
-                // //if (in_array($url, $visited)) {
-                // //    throw new Klarna_Checkout_ConnectorException(
-                // //        'Infinite redirect loop detected.',
-                // //        -1
-                // //    );
-                // //}
-                // //$visited[] = $url;
-                // // Follow redirect
-                // // return Handle(method, response, opt
-                // //    'GET',
-                // //    $resource,
-                // //    array('url' => $url),
-                // //    $visited
-                // //);
-                // break;
+                case HttpStatusCode.SeeOther: // 303 - Redirect with GET, even if request is POST.
+                    return MakeRedirect(resource, visitedUrl, url);
             }
 
             return response;
+        }
+
+        /// <summary>
+        /// Makes a redirect.
+        /// </summary>
+        /// <param name="resource">
+        /// The resource.
+        /// </param>
+        /// <param name="visitedUrl">
+        /// List of visited locations.
+        /// </param>
+        /// <param name="url">
+        /// The url.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IHttpResponse"/>.
+        /// </returns>
+        /// <exception cref="ConnectorException">
+        /// Thrown if infinite redirect loop is detected.
+        /// </exception>
+        private IHttpResponse MakeRedirect(IResource resource, List<Uri> visitedUrl, Uri url)
+        {
+            if (visitedUrl.Contains(url))
+            {
+                throw new ConnectorException("Infinite redirect loop detected.");
+            }
+
+            visitedUrl.Add(url);
+
+            var options = new Dictionary<string, object> { { "url", url } };
+            return Handle(HttpMethod.Get, resource, options, visitedUrl);
         }
 
         #endregion
