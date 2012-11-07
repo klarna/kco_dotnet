@@ -115,20 +115,20 @@ namespace Klarna.Checkout.Tests
         }
 
         /// <summary>
-        /// Tests that Fetch with url parameter works correctly.
+        /// Tests that Fetch with uri parameter works correctly.
         /// </summary>
         [Test]
         public void FetchSetLocation()
         {
-            var url = new Uri("http://klarna.com/foo/bar/16");
+            var uri = new Uri("http://klarna.com/foo/bar/16");
 
-            var options = new Dictionary<string, object> { { "url", url } };
+            var options = new Dictionary<string, object> { { "url", uri } };
             mockConnector.Setup(c => c.Apply(HttpMethod.Get, order, options)).Verifiable();
-            order.Fetch(mockConnector.Object, url);
+            order.Fetch(mockConnector.Object, uri);
 
             mockConnector.Verify();
 
-            Assert.That(order.Location, Is.EqualTo(url));
+            Assert.That(order.Location, Is.EqualTo(uri));
         }
 
         /// <summary>
@@ -144,6 +144,24 @@ namespace Klarna.Checkout.Tests
             order.Update(mockConnector.Object);
 
             mockConnector.Verify();
+        }
+
+        /// <summary>
+        /// Tests that Update with uri parameter works correctly.
+        /// </summary>
+        [Test]
+        public void UpdateSetLocation()
+        {
+            var uri = new Uri("http://klarna.com/foo/bar/16");
+
+            var options = new Dictionary<string, object> { { "url", uri } };
+            mockConnector.Setup(c => c.Apply(HttpMethod.Post, order, options)).Verifiable();
+            order.Update(mockConnector.Object, uri);
+
+            mockConnector.Verify();
+
+            Assert.That(order.Location, Is.EqualTo(uri));
+
         }
 
         #endregion

@@ -72,7 +72,7 @@ namespace Klarna.Checkout
         #region Implementation of IResource
 
         /// <summary>
-        /// Gets or sets the URL of the resource.
+        /// Gets or sets the uri of the resource.
         /// </summary>
         public Uri Location { get; set; }
 
@@ -208,6 +208,21 @@ namespace Klarna.Checkout
         {
             var options = new Dictionary<string, object>() { { "url", Location } };
             connector.Apply(HttpMethod.Post, this, options);
+        }
+
+        /// <summary>
+        /// Updates order data.
+        /// </summary>
+        /// <param name="connector">
+        /// The connector to be used.
+        /// </param>
+        /// <param name="uri">
+        /// The uri to be used.
+        /// </param>
+        public void Update(IConnector connector, Uri uri)
+        {
+            Location = uri;
+            Update(connector);
         }
 
         #endregion
