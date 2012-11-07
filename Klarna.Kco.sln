@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D6F6E0
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Klarna.Kco.Examples", "Klarna.Kco.Examples\Klarna.Kco.Examples.csproj", "{07BF83E7-366D-4CB6-8EE3-0EC989261A96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,10 @@ Global
 		{8BE5E3D0-C6C4-435F-A06D-85041B8D1509}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BE5E3D0-C6C4-435F-A06D-85041B8D1509}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BE5E3D0-C6C4-435F-A06D-85041B8D1509}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07BF83E7-366D-4CB6-8EE3-0EC989261A96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07BF83E7-366D-4CB6-8EE3-0EC989261A96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07BF83E7-366D-4CB6-8EE3-0EC989261A96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07BF83E7-366D-4CB6-8EE3-0EC989261A96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
