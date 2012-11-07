@@ -19,17 +19,32 @@
 namespace Klarna.Checkout.HTTP
 {
     using System;
+    using System.IO;
     using System.Net;
+    using System.Net.Security;
+    using System.Security.Cryptography.X509Certificates;
 
     /// <summary>
     /// The basic http transport.
     /// </summary>
     public class BasicHttpTransport : IHttpTransport
     {
+        #region Construction
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicHttpTransport"/> class.
+        /// </summary>
+        public BasicHttpTransport()
+        {
+            Timeout = 5000;
+        }
+
+        #endregion
+
         #region Implementation of IHttpTransport
 
         /// <summary>
-        /// Gets or sets the number of seconds before the connection times out.
+        /// Gets or sets the number of milliseconds before the connection times out.
         /// </summary>
         public int Timeout { get; set; }
 
@@ -45,6 +60,8 @@ namespace Klarna.Checkout.HTTP
         public HttpWebRequest CreateRequest(Uri url)
         {
             var request = (HttpWebRequest)WebRequest.Create(url);
+            request.AllowAutoRedirect = false;
+            request.Timeout = Timeout;
             return request;
         }
 
@@ -62,12 +79,66 @@ namespace Klarna.Checkout.HTTP
         /// </returns>
         public IHttpResponse Send(HttpWebRequest request, string payload)
         {
-            if (request.Method == "POST")
-            {
-                // payLoad
-            }
+            ServicePointManager.ServerCertificateValidationCallback =
+                ValidateServerCertificate;
 
-            return null;
+            try
+            {
+                request.Timeout = Timeout;
+
+                if (request.Method == "POST")
+                {
+                    using (var writer = new StreamWriter(request.GetRequestStream()))
+                    {
+                        writer.Write(payload);
+                    }
+                }
+
+                using (var response = (HttpWebResponse)request.GetResponse())
+                {
+                    return new HttpResponse(response);
+                }
+            }
+            catch (WebException ex)
+            {
+                if (ex.Status == WebExceptionStatus.ProtocolError && ex.Response != null)
+                {
+                    return new HttpResponse((HttpWebResponse)ex.Response);
+                }
+
+                throw;
+            }
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Verifies the remote Secure Sockets Layer (SSL) certificate used
+        /// for authentication.
+        /// </summary>
+        /// <param name="sender">
+        /// An object that contains state information for this validation.
+        /// </param>
+        /// <param name="certificate">
+        /// The certificate used to authenticate the remote party.
+        /// </param>
+        /// <param name="chain">
+        /// The chain of certificate authorities associated with the remote
+        /// certificate.
+        /// </param>
+        /// <param name="sslPolicyErrors">
+        /// One or more errors associated with the remote certificate.
+        /// </param>
+        /// <returns>
+        /// A Boolean value that determines whether the specified certificate
+        /// is accepted for authentication.
+        /// </returns>
+        private static bool ValidateServerCertificate(
+            object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
         }
 
         #endregion

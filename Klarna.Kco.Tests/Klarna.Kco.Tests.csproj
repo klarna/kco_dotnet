@@ -54,6 +54,7 @@
     <Compile Include="BasicConnectorPostTest.cs" />
     <Compile Include="ConnectorTest.cs" />
     <Compile Include="DigestTest.cs" />
+    <Compile Include="HTTP\BasicHttpTransportTest.cs" />
     <Compile Include="HTTP\HttpTransportTest.cs" />
     <Compile Include="OrderTest.cs" />
     <Compile Include="OrderWithConnetorTest.cs" />

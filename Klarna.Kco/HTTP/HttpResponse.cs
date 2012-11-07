@@ -18,6 +18,7 @@
 #endregion
 namespace Klarna.Checkout.HTTP
 {
+    using System.IO;
     using System.Net;
 
     /// <summary>
@@ -28,9 +29,9 @@ namespace Klarna.Checkout.HTTP
         #region Private Fields
 
         /// <summary>
-        /// The associated response.
+        /// The response headers.
         /// </summary>
-        private readonly HttpWebResponse response;
+        private WebHeaderCollection headers;
 
         #endregion
 
@@ -44,8 +45,14 @@ namespace Klarna.Checkout.HTTP
         /// </param>
         internal HttpResponse(HttpWebResponse response)
         {
-            this.response = response;
             StatusCode = response.StatusCode;
+
+            using (var reader = new StreamReader(response.GetResponseStream()))
+            {
+                Data = reader.ReadToEnd();
+            }
+
+            headers = response.Headers;
         }
 
         #endregion
@@ -73,7 +80,7 @@ namespace Klarna.Checkout.HTTP
         /// </returns>
         public string Header(string name)
         {
-            return response.Headers[name];
+            return headers[name];
         }
 
         #endregion
