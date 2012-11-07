@@ -141,8 +141,6 @@ namespace Klarna.Checkout
 
             var response = httpTransport.Send(request, payLoad);
 
-            VerifyResponse(response);
-
             return HandleResponse(response, method, resource, visitedUrl);
         }
 
@@ -217,27 +215,6 @@ namespace Klarna.Checkout
         }
 
         /// <summary>
-        /// Method to verify the response.
-        /// </summary>
-        /// <param name="response">
-        /// The response.
-        /// </param>
-        /// <exception cref="ConnectorException">
-        /// Thrown if response HTTP status code is error codes 4xx or 5xx.
-        /// </exception>
-        private void VerifyResponse(IHttpResponse response)
-        {
-            var statusCode = (int)response.StatusCode;
-            if (statusCode >= 400 && statusCode <= 599)
-            {
-                var exception = new ConnectorException();
-                exception.Data["HttpStatusCode"] = response.StatusCode;
-
-                throw exception;
-            }
-        }
-
-        /// <summary>
         /// Handle response based on status.
         /// </summary>
         /// <param name="response">
@@ -258,6 +235,8 @@ namespace Klarna.Checkout
         private IHttpResponse HandleResponse(IHttpResponse response, HttpMethod method,
             IResource resource, List<Uri> visitedUrl)
         {
+            VerifyResponse(response);
+
             var location = response.Header("Location");
             var url = new Uri(location);
 
@@ -302,6 +281,27 @@ namespace Klarna.Checkout
             }
 
             return response;
+        }
+
+        /// <summary>
+        /// Method to verify the response.
+        /// </summary>
+        /// <param name="response">
+        /// The response.
+        /// </param>
+        /// <exception cref="ConnectorException">
+        /// Thrown if response HTTP status code is error codes 4xx or 5xx.
+        /// </exception>
+        private void VerifyResponse(IHttpResponse response)
+        {
+            var statusCode = (int)response.StatusCode;
+            if (statusCode >= 400 && statusCode <= 599)
+            {
+                var exception = new ConnectorException();
+                exception.Data["HttpStatusCode"] = response.StatusCode;
+
+                throw exception;
+            }
         }
 
         /// <summary>
