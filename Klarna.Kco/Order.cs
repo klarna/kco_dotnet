@@ -29,11 +29,6 @@ namespace Klarna.Checkout
         #region Private Fields
 
         /// <summary>
-        /// The default base url.
-        /// </summary>
-        private static readonly Uri DefaultUrl = new Uri("https://checkout.klarna.com/checkout/orders");
-
-        /// <summary>
         /// The data.
         /// </summary>
         private Dictionary<string, object> resourceData;
@@ -48,7 +43,7 @@ namespace Klarna.Checkout
         public Order()
         {
             resourceData = new Dictionary<string, object>();
-            BaseUrl = DefaultUrl;
+            this.BaseUri = null;
         }
 
         /// <summary>
@@ -60,7 +55,7 @@ namespace Klarna.Checkout
         public Order(Dictionary<string, object> data)
         {
             resourceData = data;
-            BaseUrl = DefaultUrl;
+            this.BaseUri = null;
         }
 
         #endregion
@@ -68,9 +63,9 @@ namespace Klarna.Checkout
         #region Properties
 
         /// <summary>
-        /// Gets or sets the base url that is used to create order resources.
+        /// Gets or sets the base uri that is used to create order resources.
         /// </summary>
-        public Uri BaseUrl { get; set; }
+        public Uri BaseUri { get; set; }
 
         #endregion
 
@@ -172,7 +167,7 @@ namespace Klarna.Checkout
         /// </param>
         public void Create(IConnector connector)
         {
-            var options = new Dictionary<string, object>() { { "url", BaseUrl } };
+            var options = new Dictionary<string, object>() { { "url", BaseUri } };
             connector.Apply(HttpMethod.Post, this, options);
         }
 
@@ -194,12 +189,12 @@ namespace Klarna.Checkout
         /// <param name="connector">
         /// The connector to be used.
         /// </param>
-        /// <param name="url">
-        /// The url to be used.
+        /// <param name="uri">
+        /// The uri to be used.
         /// </param>
-        public void Fetch(IConnector connector, Uri url)
+        public void Fetch(IConnector connector, Uri uri)
         {
-            Location = url;
+            Location = uri;
             Fetch(connector);
         }
 

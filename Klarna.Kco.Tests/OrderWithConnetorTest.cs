@@ -70,7 +70,7 @@ namespace Klarna.Checkout.Tests
             var data = new Dictionary<string, object> { { Key, Value } };
             order = new Order(data);
 
-            var options = new Dictionary<string, object> { { "url", order.BaseUrl } };
+            var options = new Dictionary<string, object> { { "url", order.BaseUri } };
             mockConnector.Setup(c => c.Apply(HttpMethod.Post, order, options)).Verifiable();
             order.Create(mockConnector.Object);
 
@@ -88,9 +88,9 @@ namespace Klarna.Checkout.Tests
             const string Key = "foo";
             const string Value = "boo";
             var data = new Dictionary<string, object> { { Key, Value } };
-            order = new Order(data) { BaseUrl = new Uri("https://checkout.klarna.com/beta/checkout/orders") };
+            order = new Order(data) { BaseUri = new Uri("https://checkout.klarna.com/beta/checkout/orders") };
 
-            var options = new Dictionary<string, object> { { "url", order.BaseUrl } };
+            var options = new Dictionary<string, object> { { "url", order.BaseUri } };
             mockConnector.Setup(c => c.Apply(HttpMethod.Post, order, options)).Verifiable();
             order.Create(mockConnector.Object);
 
