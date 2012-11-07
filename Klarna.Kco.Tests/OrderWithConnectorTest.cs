@@ -20,14 +20,16 @@ namespace Klarna.Checkout.Tests
 {
     using System;
     using System.Collections.Generic;
+
     using Moq;
+
     using NUnit.Framework;
 
     /// <summary>
     /// Tests the Order class with Connector.
     /// </summary>
     [TestFixture]
-    public class OrderWithConnetorTest
+    public class OrderWithConnectorTest
     {
         #region Private Fields
 
@@ -161,7 +163,6 @@ namespace Klarna.Checkout.Tests
             mockConnector.Verify();
 
             Assert.That(order.Location, Is.EqualTo(uri));
-
         }
 
         #endregion
