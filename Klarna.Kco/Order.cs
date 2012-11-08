@@ -77,12 +77,9 @@ namespace Klarna.Checkout
         public Uri Location { get; set; }
 
         /// <summary>
-        /// Gets the content type of the resource.
+        /// Gets or sets the content type of the resource.
         /// </summary>
-        public string ContentType
-        {
-            get { return "application/vnd.klarna.checkout.aggregated-order-v2+json"; }
-        }
+        public string ContentType { get; set; }
 
         /// <summary>
         /// Replace resource with the new data.

@@ -87,7 +87,11 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ContentType()
         {
-            Assert.That(order.ContentType, Is.EqualTo("application/vnd.klarna.checkout.aggregated-order-v2+json"));
+            const string ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json";
+
+            Assert.That(order.ContentType, Is.Null);
+            order.ContentType = ContentType;
+            Assert.That(order.ContentType, Is.EqualTo(ContentType));
         }
 
         /// <summary>

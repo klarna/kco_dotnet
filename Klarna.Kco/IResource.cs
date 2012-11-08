@@ -32,9 +32,9 @@ namespace Klarna.Checkout
         Uri Location { get; set; }
 
         /// <summary>
-        /// Gets the content type of the resource.
+        /// Gets or sets the content type of the resource.
         /// </summary>
-        string ContentType { get; }
+        string ContentType { get; set; }
 
         /// <summary>
         /// Update resource with the new data.
