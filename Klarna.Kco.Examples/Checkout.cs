@@ -66,10 +66,10 @@ namespace Klarna.Kco.Examples
                         {
                             { "id", Eid }, 
                             { "terms_uri", "http://localhost/terms.html" }, 
-                            { "checkout_uri", "http://localhost/checkout.php" }, 
-                            { "confirmation_uri", "http://localhost/thank-you.php" }, 
+                            { "checkout_uri", "http://localhost/checkout.aspx" }, 
+                            { "confirmation_uri", "http://localhost/thank-you.aspx" }, 
                             //// You cannot recieve push notification on a non publicly available uri.
-                            { "push_uri", "http://localhost/push.php" } 
+                            { "push_uri", "http://localhost/push.aspx" } 
                         };
                     order.SetValue("merchant", merchant);
 

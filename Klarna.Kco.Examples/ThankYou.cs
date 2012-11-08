@@ -18,6 +18,11 @@
 #endregion
 namespace Klarna.Kco.Examples
 {
+    using System;
+    using System.Collections.Generic;
+
+    using Klarna.Checkout;
+
     /// <summary>
     /// The thank you example.
     /// </summary>
@@ -28,6 +33,43 @@ namespace Klarna.Kco.Examples
         /// </summary>
         public void Example()
         {
+            try
+            {
+                // Shared secret
+                const string SharedSecret = "sharedSecret";
+
+                var order = new Order();
+                var connector = Connector.Create(SharedSecret);
+
+                // Retrieve location from session object.
+                // Use following in ASP.NET.
+                // var checkoutId = Session["klarna_checkout"] as Uri;
+                // Just a placeholder in this example.
+                var checkoutId = "https://klarnacheckout.apiary.io/checkout/orders/12";
+
+                order.Fetch(connector, new Uri(checkoutId));
+
+                if ((string)order.GetValue("status") != "checkout_complete")
+                {
+                    // Report error
+
+                    // Use following in ASP.NET.
+                    // Response.Write("Checkout not completed, redirect to checkout.aspx");
+                }
+
+                // Display thank you snippet
+                var gui = (Dictionary<string, object>)order.GetValue("gui");
+                var snippet = gui["snippet"];
+
+                // Use following in ASP.NET.
+                // Response.Write(string.Format("<div>{0}</div>", snippet));
+
+                // Clear session object.
+                // Session["klarna_checkout"] = null;
+            }
+            catch (Exception ex)
+            {
+            }
         }
     }
 }
