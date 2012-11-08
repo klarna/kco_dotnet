@@ -42,6 +42,12 @@
     <Compile Include="Push.cs" />
     <Compile Include="ThankYou.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Klarna.Kco\Klarna.Kco.csproj">
+      <Project>{803F5E1D-3C2C-4E99-B485-F84397BC25AA}</Project>
+      <Name>Klarna.Kco</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
