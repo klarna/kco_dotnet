@@ -18,6 +18,11 @@
 #endregion
 namespace Klarna.Kco.Examples
 {
+    using System;
+    using System.Collections.Generic;
+
+    using Klarna.Checkout;
+
     /// <summary>
     /// The push example.
     /// </summary>
@@ -28,6 +33,33 @@ namespace Klarna.Kco.Examples
         /// </summary>
         public void Example()
         {
+            try
+            {
+                // Shared secret
+                const string SharedSecret = "sharedSecret";
+
+                var order = new Order();
+                var connector = Connector.Create(SharedSecret);
+
+                // Use following in ASP.NET.
+                // var checkoutId = Request.QueryString["checkout_uri"];
+                // Just a placeholder in this example.
+                var checkoutId = "https://klarnacheckout.apiary.io/checkout/orders/12";
+
+                order.Fetch(connector, new Uri(checkoutId));
+
+                if ((string)order.GetValue("status") == "checkout_complete")
+                {
+                    order.SetValue("status", "created");
+                    var uniqueId = Guid.NewGuid().ToString("N");
+                    order.SetValue("merchant_reference",
+                        new Dictionary<string, object> { { "orderid1", uniqueId } });
+                    order.Update(connector);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
         }
     }
 }
