@@ -77,7 +77,6 @@ namespace Klarna.Kco.Examples
                         {
                             new Dictionary<string, object>
                                 {
-                                    { "type", "physical" }, 
                                     { "reference", "BANAN01" }, 
                                     { "name", "Bananana" }, 
                                     { "unit_price", 450 }, 
