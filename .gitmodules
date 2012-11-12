@@ -1,0 +1,3 @@
+[submodule "ant"]
+	path = ant
+	url = gitolite@msgit.internal.machines:ant-base
