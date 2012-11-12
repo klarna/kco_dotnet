@@ -1,0 +1,72 @@
+﻿<project name="CHECKOUT-DOTNET-API" default="tests">
+  <property name="props" location="build.properties" />
+  <property name="versionp" location="version.properties" />
+  <property name="git.tasks.macro" location="ant/git-tasks.xml"/>
+  <property name="tasks" location="ant/tasks.xml"/>
+  <property name="base" location="ant/base.xml"/>
+
+  <property file="${props}" />
+  <property file="${versionp}" />
+  <import file="${tasks}" />
+  <import file="${git.tasks.macro}" />
+  <import file="${base}" />
+
+  <patternset id="source">
+    <include name="Binaries/*.*"/>
+    <include name="Examples/*.*"/>
+    <include name="Source/ChangeLog.txt"/>
+    <include name="Source/*.cs"/>
+    <include name="Source/HTTP/*.cs"/>
+  </patternset>
+
+  <target name="dist" depends="clean, increment_build_number">
+
+    <echo message="Copy assemblies to Binaries folder"/>
+    <mkdir dir="Binaries"/>
+    <delete includeemptydirs="true">
+      <fileset dir="Binaries" includes="**/*"/>
+    </delete>
+    <copy todir="Binaries">
+      <fileset dir="Klarna.Kco/bin/Release" includes="*.dll"/>
+    </copy>
+
+    <echo message="Copy examples to Examples folder"/>
+    <mkdir dir="Examples"/>
+    <delete includeemptydirs="true">
+      <fileset dir="Examples" includes="**/*"/>
+    </delete>
+    <copy todir="Examples">
+      <fileset dir="Klarna.Kco.Examples" includes="*.cs"/>
+    </copy>
+
+    <echo message="Copy source to Source folder"/>
+    <mkdir dir="Source"/>
+    <delete includeemptydirs="true">
+      <fileset dir="Source" includes="**/*"/>
+    </delete>
+    <copy todir="Source">
+      <fileset dir="Klarna.Kco" includes="*.cs"/>
+    </copy>
+    <copy todir="Source/HTTP">
+      <fileset dir="Klarna.Kco/HTTP" includes="*.cs"/>
+    </copy>
+
+    <echo message="Create the build folder"/>
+    <copy todir="${build.dir}">
+      <fileset dir="." id="alldirs">
+        <patternset refid="source" />
+      </fileset>
+    </copy>
+
+    <echo message="Create the zip file"/>
+    <antcall target="package" />
+  </target>
+
+  <target name="unittests">
+    <exec executable="nunit-console">
+      <arg value="-xml=TestResult.xml" />
+      <arg value="Klarna.Kco.Tests/bin/Release/Klarna.Checkout.Tests.dll" />
+    </exec>
+  </target>
+
+</project>
