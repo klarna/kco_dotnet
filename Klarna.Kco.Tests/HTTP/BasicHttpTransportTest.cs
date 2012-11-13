@@ -81,6 +81,7 @@ namespace Klarna.Checkout.Tests.HTTP
         /// The error code.
         /// </param>
         [Test, TestCaseSource("ErrorCodes")]
+        [Ignore("Don't hit the network")]
         public void SendReturningErrorCode(int code)
         {
             var transport = new BasicHttpTransport();
@@ -96,6 +97,7 @@ namespace Klarna.Checkout.Tests.HTTP
         /// Test that header name is case insensitive when accessing a header.
         /// </summary>
         [Test]
+        [Ignore("Don't hit the network")]
         public void HeaderNameCaseInsensitive()
         {
             var transport = new BasicHttpTransport();
