@@ -1,0 +1,6 @@
+*.swp
+*.swo
+build.xml
+build.properties
+
+/.project

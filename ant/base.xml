@@ -1,0 +1,289 @@
+<project>
+    <property environment="env" />
+    <property name="product" value="${module}" /><!-- backwards compability !-->
+    <property name="version" value="${build.version.major}.${build.version.minor}.${build.version.bug}" />
+    <property name="zipfile" value="klarna_${product}_${version}.zip" />
+    <exec executable="hostname" outputproperty="sys.hostname" />
+
+    <tstamp>
+        <format property="build.date" pattern="yyyy-MM-dd" />
+    </tstamp>
+
+    <target name="pp">
+        <propertycopy name="out" from="${prop}" />
+        <echo>${out}</echo>
+    </target>
+
+    <target name="fetched">
+        <git command="fetch" />
+    </target>
+
+    <target name="gitup" depends="fetched">
+        <git command="pull">
+        </git>
+        <git-submodule-update />
+    </target>
+
+    <target name="zip">
+        <zip basedir="${build.dir}" destfile="${zipfile}" description="zip file" />
+        <checksum file="${zipfile}" forceOverwrite="yes" />
+    </target>
+
+    <target name="dist" depends="clean, increment_build_number">
+        <antcall target="install">
+            <param name="install.dir" value="${build.dir}" />
+        </antcall>
+
+        <!-- install CHANGELOG etc !-->
+        <antcall target="install-extra">
+            <param name="install.dir" value="${build.dir}" />
+        </antcall>
+
+        <antcall target="package" />
+    </target>
+
+    <target name="install-extra" depends="create-doc">
+        <copy todir="${install.dir}">
+            <fileset dir=".">
+                <include name="CHANGELOG" />
+                <include name="README" />
+                <include name="${doc.dir}" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="changelog">
+        <exec executable="rst2pdf" failonerror="true">
+            <arg value="CHANGELOG" />
+            <arg value="-o" />
+            <arg value="${build.changelog.file}" />
+        </exec>
+    </target>
+
+    <target name="increment_build_number">
+        <propertyfile file="${versionp}" comment="version properties">
+            <entry key="build.version.build" type="int" operation="+" default="1" />
+        </propertyfile>
+    </target>
+
+    <!-- for modules
+         !-->
+    <target name="install-api">
+        <condition property="api.destdir" value="${api.dir}">
+            <not>
+                <isset property="api.destdir" />
+            </not>
+        </condition>
+        <property name="api.path" location="${install.dir}/${api.destdir}" />
+        <ant antfile="build.xml" dir="${api.dir}" target="install" inheritAll="false">
+            <property name="install.dir" value="${api.path}" />
+        </ant>
+    </target>
+
+    <!-- copy to module specific build file if alternative locations for js/css
+         etc is needed.
+
+         possible properties to pass is
+         js.dir
+         img.dir
+         css.dir
+         !-->
+    <target name="install-checkout">
+        <condition property="checkout.destdir" value="${checkout.dir}">
+            <not>
+                <isset property="checkout.destdir" />
+            </not>
+        </condition>
+        <property name="checkout.path" location="${install.dir}/${checkout.destdir}" />
+        <ant antfile="build.xml" dir="${checkout.dir}/misc/ant" target="install" inheritAll="false">
+            <property name="work.dir" location="${checkout.dir}" />
+            <property name="install.dir" value="${checkout.path}" />
+            <property name="recursive" value="true" />
+        </ant>
+    </target>
+
+    <!-- aliases
+         should only have dependencies, override if needed
+         !-->
+    <target name="package" depends="zip" />
+    <target name="tests" depends="check, unittests" />
+
+    <!-- STUBS
+         override these in your build.xml
+        !-->
+    <target name="check">
+        <echo>STUB</echo>
+    </target>
+
+    <target name="check-fixme">
+        <check-fixme>
+            <files>
+                <fileset dir="${build.dir}">
+                    <patternset refid="source" />
+                </fileset>
+            </files>
+        </check-fixme>
+    </target>
+
+    <target name="strip-todo">
+        <strip-todo>
+            <files>
+                <fileset dir="${build.dir}">
+                    <patternset refid="source" />
+                </fileset>
+            </files>
+        </strip-todo>
+    </target>
+
+    <target name="clean">
+        <delete dir="${build.dir}" />
+    </target>
+
+    <target name="init" depends="clean">
+        <echo>STUB</echo>
+    </target>
+
+    <target name="unittests">
+        <echo>STUB</echo>
+    </target>
+
+    <target name="coverage">
+        <antcall target="unittests">
+            <param name="coverage" value="true" />
+        </antcall>
+    </target>
+
+    <target name="coverage-html">
+        <antcall target="unittests">
+            <param name="coverage" value="true" />
+            <param name="coverage.type" value="html" />
+        </antcall>
+    </target>
+
+    <target name="install" description="Creates the binary/run-time folder">
+        <echo>STUB</echo>
+    </target>
+
+    <target name="create-doc" description="Creates the phpDoc for this project">
+        <echo>STUB</echo>
+    </target>
+
+    <macrodef name="propertycopy">
+        <attribute name="name"/>
+        <attribute name="from"/>
+        <sequential>
+            <property name="@{name}" value="${@{from}}"/>
+        </sequential>
+    </macrodef>
+
+    <target name="verify-hostname">
+        <exec executable="host" failonerror="yes">
+            <arg value="${sys.hostname}" />
+        </exec>
+    </target>
+
+    <!--
+        php defaults
+    !-->
+    <property name="phpunit.conf" location="tests/phpunit.conf.xml" />
+
+    <target name="_php-unittests" unless="coverage">
+        <phpunit
+            conf="${phpunit.conf}"
+        />
+    </target>
+
+    <target name="_php-coverage" if="coverage">
+        <property name="coverage.type" value="clover" />
+        <property name="coverage.path" value="clover.xml" />
+        <php-coverage
+            conf="${phpunit.conf}"
+            dest="${coverage.path}"
+            type="${coverage.type}"
+        />
+    </target>
+
+    <target name="php-unittests" depends="_php-unittests, _php-coverage"/>
+
+    <!-- fitnesse stuff -->
+    <property name="fitnesse.repo" value="gitolite@msgit.internal.machines:fitnesse-test-data" />
+    <property name="fitnesse.dir" value="fitnesse" />
+    <property name="fitnesse.branch" value="dev" />
+    <property name="fitnesse.port" value="9235" />
+    <property name="fitnesse.output" value="/dev/null" />
+    <available file="${fitnesse.dir}" property="fitnesse.exists" />
+
+    <target name="checkout-fitnesse" unless="fitnesse.exists">
+        <git command="clone">
+            <args>
+                <arg value="-b${fitnesse.branch}" />
+                <arg value="--recursive" />
+                <arg value="${fitnesse.repo}" />
+                <arg value="${fitnesse.dir}" />
+            </args>
+        </git>
+    </target>
+
+    <target name="update-fitnesse" depends="checkout-fitnesse">
+        <git command="fetch" dir="${fitnesse.dir}"/>
+        <git command="reset" dir="${fitnesse.dir}">
+            <args>
+                <arg value="--hard" />
+                <arg value="origin/${fitnesse.branch}" />
+            </args>
+        </git>
+        <!-- patch search paths for execution from a subdirectory
+             !-->
+        <apply executable="sed" parallel="false">
+            <arg value="-i" />
+            <arg value="-e" />
+            <arg value="s:API[^/\\]*/*::" />
+            <fileset dir="${fitnesse.dir}/FitNesseRoot/FrontPage">
+                <include name="PhpWiki/content.txt" />
+                <include name="PythonWiki/content.txt" />
+                <include name="DotNetWiki/content.txt" />
+                <include name="MainWiki/content.txt" />
+                <include name="NewWiki/content.txt" />
+            </fileset>
+        </apply>
+    </target>
+
+    <target name="fitnesse-start" depends="checkout-fitnesse">
+        <echo>${sys.hostname}</echo>
+        <start-fitnesse
+            dir="${fitnesse.dir}"
+            port="${fitnesse.port}"
+            output="${fitnesse.output}"
+        />
+    </target>
+
+    <target name="fitnesse-stop">
+        <stop-fitnesse
+            dir="${fitnesse.dir}"
+            port="${fitnesse.port}"
+            output="${fitnesse.output}"
+        />
+    </target>
+
+    <target name="fitnesse-run">
+        <run-fitnesse
+            port="${fitnesse.port}"
+            report="fitnesse-results.xml"
+            suite="${fitnesse.suite}"
+        />
+    </target>
+
+    <target name="fitnesse-result">
+        <result-fitnesse
+            dir="${fitnesse.dir}"
+            report="fitnesse-results.xml"
+         />
+    </target>
+
+    <target name="fitnesse" depends="update-fitnesse, fitnesse-start">
+        <antcall target="fitnesse-run" />
+        <antcall target="fitnesse-stop" />
+        <antcall target="fitnesse-result" />
+    </target>
+    <!-- end fitnesse stuff -->
+</project>
