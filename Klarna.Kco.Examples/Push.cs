@@ -35,10 +35,10 @@ namespace Klarna.Kco.Examples
         {
             try
             {
-                // Shared secret
                 const string SharedSecret = "sharedSecret";
 
-                var order = new Order();
+                var order =
+                    new Order { ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json" };
                 var connector = Connector.Create(SharedSecret);
 
                 // Use following in ASP.NET.
@@ -50,6 +50,8 @@ namespace Klarna.Kco.Examples
 
                 if ((string)order.GetValue("status") == "checkout_complete")
                 {
+                    // At this point make sure the order is created in your
+                    // system and send a confirmation email to the customer.
                     //order.SetValue("status", "created");
                     var uniqueId = Guid.NewGuid().ToString("N");
                     //order.SetValue("merchant_reference",

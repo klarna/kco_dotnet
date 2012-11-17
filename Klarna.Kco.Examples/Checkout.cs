@@ -42,7 +42,6 @@ namespace Klarna.Kco.Examples
                 // Merchant ID
                 const int Eid = 2;
 
-                // Shared secret
                 const string SharedSecret = "sharedSecret";
 
                 var order = new Order
@@ -111,6 +110,9 @@ namespace Klarna.Kco.Examples
                 var gui = (Dictionary<string, object>)order.GetValue("gui");
                 var snippet = gui["snippet"];
 
+                // DESKTOP: Width of containing block shall be at least 750px
+                // MOBILE: Width of containing block shall be 100% of browser
+                // window (No padding or margin)
                 // Use following in ASP.NET.
                 // Response.Write(string.Format("<div>{0}</div>", snippet));
             }
