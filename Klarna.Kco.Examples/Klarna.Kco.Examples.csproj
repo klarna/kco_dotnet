@@ -40,7 +40,7 @@
     <Compile Include="Checkout.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Push.cs" />
-    <Compile Include="ThankYou.cs" />
+    <Compile Include="Confirmation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Klarna.Kco\Klarna.Kco.csproj">

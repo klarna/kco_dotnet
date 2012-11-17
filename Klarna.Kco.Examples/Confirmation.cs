@@ -1,11 +1,14 @@
 ﻿#region Copyright Header
 // ----------------------------------------------------------------------------
-// <copyright file="ThankYou.cs" company="Klarna AB">
+// <copyright file="Confirmation.cs" company="Klarna AB">
 //     Copyright 2012 Klarna AB
+//  
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
 //     You may obtain a copy of the License at
+//  
 //         http://www.apache.org/licenses/LICENSE-2.0
+//  
 //     Unless required by applicable law or agreed to in writing, software
 //     distributed under the License is distributed on an "AS IS" BASIS,
 //     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,21 +27,22 @@ namespace Klarna.Kco.Examples
     using Klarna.Checkout;
 
     /// <summary>
-    /// The thank you example.
+    /// The confirmation example.
     /// </summary>
-    public class ThankYou
+    public class Confirmation
     {
         /// <summary>
-        /// The example.
+        /// This example demonstrates the use of the Klarna library to complete
+        /// the purchase and display the confirmation page snippet.
         /// </summary>
         public void Example()
         {
             try
             {
-                // Shared secret
                 const string SharedSecret = "sharedSecret";
 
-                var order = new Order();
+                var order =
+                    new Order { ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json" };
                 var connector = Connector.Create(SharedSecret);
 
                 // Retrieve location from session object.
@@ -49,7 +53,7 @@ namespace Klarna.Kco.Examples
 
                 order.Fetch(connector, new Uri(checkoutId));
 
-                if ((string)order.GetValue("status") != "checkout_complete")
+                if ((string)order.GetValue("status") == "checkout_incomplete")
                 {
                     // Report error
 
@@ -61,6 +65,9 @@ namespace Klarna.Kco.Examples
                 var gui = (Dictionary<string, object>)order.GetValue("gui");
                 var snippet = gui["snippet"];
 
+                // DESKTOP: Width of containing block shall be at least 750px
+                // MOBILE: Width of containing block shall be 100% of browser
+                // window (No padding or margin)
                 // Use following in ASP.NET.
                 // Response.Write(string.Format("<div>{0}</div>", snippet));
 
