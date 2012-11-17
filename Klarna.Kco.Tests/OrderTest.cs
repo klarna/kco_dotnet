@@ -2,10 +2,13 @@
 // ----------------------------------------------------------------------------
 // <copyright file="OrderTest.cs" company="Klarna AB">
 //     Copyright 2012 Klarna AB
+//  
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
 //     You may obtain a copy of the License at
+//  
 //         http://www.apache.org/licenses/LICENSE-2.0
+//  
 //     Unless required by applicable law or agreed to in writing, software
 //     distributed under the License is distributed on an "AS IS" BASIS,
 //     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -73,8 +76,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ConstructionWithData()
         {
-            var newData = new Dictionary<string, object> { { "Int", TheInt }, { "String", TheString }, { "DateTime", theDateTime } };
-
+            var newData = this.TestData();
             var newOrder = new Order(newData);
             var data = newOrder.Marshal();
 
@@ -119,9 +121,9 @@ namespace Klarna.Checkout.Tests
         /// </summary>
         public void Parse()
         {
-            var newData = new Dictionary<string, object> { { "Int", TheInt }, { "String", TheString }, { "DateTime", theDateTime } };
-
+            var newData = TestData();
             order.Parse(newData);
+
             var data = order.Marshal();
 
             Assert.That(data, Is.EqualTo(newData));
@@ -133,9 +135,8 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void Marshal()
         {
-            order.SetValue("Int", TheInt);
-            order.SetValue("String", TheString);
-            order.SetValue("DateTime", theDateTime);
+            var newData = TestData();
+            order.Parse(newData);
 
             var data = order.Marshal();
             Assert.That(data, Is.TypeOf<Dictionary<string, object>>());
@@ -151,11 +152,10 @@ namespace Klarna.Checkout.Tests
         /// Tests set/get values.
         /// </summary>
         [Test]
-        public void ValuesSetGet()
+        public void ValuesGet()
         {
-            order.SetValue("Int", TheInt);
-            order.SetValue("String", TheString);
-            order.SetValue("DateTime", theDateTime);
+            var data = TestData();
+            order.Parse(data);
 
             var intData = order.GetValue("Int");
             Assert.That(intData, Is.TypeOf<int>());
@@ -171,15 +171,6 @@ namespace Klarna.Checkout.Tests
         }
 
         /// <summary>
-        /// Tests that set value with null key throws an exception.
-        /// </summary>
-        [Test]
-        public void ValuesSetException()
-        {
-            Assert.Throws<ArgumentNullException>(() => order.SetValue(null, TheString));
-        }
-
-        /// <summary>
         /// Tests that get value with null key or a non-existing key throws an exception.
         /// </summary>
         [Test]
@@ -187,6 +178,28 @@ namespace Klarna.Checkout.Tests
         {
             Assert.Throws<ArgumentNullException>(() => order.GetValue(null));
             Assert.Throws<KeyNotFoundException>(() => order.GetValue("NonExistingKey"));
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Creates test data.
+        /// </summary>
+        /// <returns>
+        /// The new test data.
+        /// </returns>
+        private Dictionary<string, object> TestData()
+        {
+            var data = new Dictionary<string, object>
+                           {
+                               { "Int", TheInt },
+                               { "String", TheString },
+                               { "DateTime", this.theDateTime }
+                           };
+
+            return data;
         }
 
         #endregion

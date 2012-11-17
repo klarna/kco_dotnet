@@ -108,31 +108,6 @@ namespace Klarna.Checkout
         #region Resource Data Accessors
 
         /// <summary>
-        /// Sets the value of a key.
-        /// The key is added if it doesn't exist.
-        /// </summary>
-        /// <param name="key">
-        /// The key.
-        /// </param>
-        /// <param name="value">
-        /// The value.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// key is null
-        /// </exception>
-        public void SetValue(string key, object value)
-        {
-            if (resourceData.ContainsKey(key))
-            {
-                resourceData[key] = value;
-            }
-            else
-            {
-                resourceData.Add(key, value);
-            }
-        }
-
-        /// <summary>
         /// Gets the value of a key.
         /// </summary>
         /// <param name="key">

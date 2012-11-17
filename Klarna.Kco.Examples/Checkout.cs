@@ -58,9 +58,9 @@ namespace Klarna.Kco.Examples
                 if (resourceUri == null)
                 {
                     // Start a new session
-                    order.SetValue("purchase_country", "SE");
-                    order.SetValue("purchase_currency", "SEK");
-                    order.SetValue("locale", "sv-se");
+                    //order.SetValue("purchase_country", "SE");
+                    //order.SetValue("purchase_currency", "SEK");
+                    //order.SetValue("locale", "sv-se");
 
                     var merchant = new Dictionary<string, object>
                         {
@@ -71,7 +71,7 @@ namespace Klarna.Kco.Examples
                             //// You cannot recieve push notification on a non publicly available uri.
                             { "push_uri", "http://localhost/push.aspx" } 
                         };
-                    order.SetValue("merchant", merchant);
+                    //order.SetValue("merchant", merchant);
 
                     var cartItems = new List<Dictionary<string, object>>
                         {
@@ -93,7 +93,7 @@ namespace Klarna.Kco.Examples
                                     { "tax_rate", 2500 }
                                 }
                         };
-                    order.SetValue("cart", new Dictionary<string, object> { { "items", cartItems } });
+                    //order.SetValue("cart", new Dictionary<string, object> { { "items", cartItems } });
 
                     order.Create(connector);
                     order.Fetch(connector);

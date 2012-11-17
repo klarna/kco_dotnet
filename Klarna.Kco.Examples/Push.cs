@@ -50,10 +50,10 @@ namespace Klarna.Kco.Examples
 
                 if ((string)order.GetValue("status") == "checkout_complete")
                 {
-                    order.SetValue("status", "created");
+                    //order.SetValue("status", "created");
                     var uniqueId = Guid.NewGuid().ToString("N");
-                    order.SetValue("merchant_reference",
-                        new Dictionary<string, object> { { "orderid1", uniqueId } });
+                    //order.SetValue("merchant_reference",
+                    //    new Dictionary<string, object> { { "orderid1", uniqueId } });
                     order.Update(connector);
                 }
             }
