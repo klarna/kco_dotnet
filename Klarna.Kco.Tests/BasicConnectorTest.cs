@@ -2,10 +2,13 @@
 // ----------------------------------------------------------------------------
 // <copyright file="BasicConnectorTest.cs" company="Klarna AB">
 //     Copyright 2012 Klarna AB
+//  
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
 //     You may obtain a copy of the License at
+//  
 //         http://www.apache.org/licenses/LICENSE-2.0
+//  
 //     Unless required by applicable law or agreed to in writing, software
 //     distributed under the License is distributed on an "AS IS" BASIS,
 //     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -117,6 +120,58 @@ namespace Klarna.Checkout.Tests
                 new Dictionary<string, object> { { "url", Url } });
 
             HttpTransportMock.Verify(t => t.CreateRequest(Url), Times.Once());
+        }
+
+        /// <summary>
+        /// Tests that Apply uses data in resource.
+        /// </summary>
+        [Test]
+        public void ApplyDataInResource()
+        {
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+
+            ResourceMock.SetupProperty(r => r.Location, Url);
+
+            var request = (HttpWebRequest)WebRequest.Create(Url);
+            HttpTransportMock.Setup(t => t.CreateRequest(Url)).Returns(request);
+            PayLoad = "{\"Year\":2012}";
+            ResponseMock.SetupGet(r => r.Data).Returns(PayLoad);
+            HttpTransportMock.Setup(t => t.Send(request, PayLoad)).Returns(ResponseMock.Object);
+
+            var resourceData = new Dictionary<string, object>() { { "Year", 2012 } };
+            ResourceMock.Setup(r => r.Marshal()).Returns(resourceData);
+
+            var options = new Dictionary<string, object>();
+            connector.Apply(HttpMethod.Post, ResourceMock.Object, options);
+
+            HttpTransportMock.Verify(t => t.CreateRequest(Url), Times.Once());
+            HttpTransportMock.Verify(t => t.Send(request, PayLoad), Times.Once());
+        }
+
+        /// <summary>
+        /// Tests that Apply uses data in options.
+        /// </summary>
+        [Test]
+        public void ApplyDataInOptions()
+        {
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+
+            ResourceMock.SetupProperty(r => r.Location, Url);
+
+            var request = (HttpWebRequest)WebRequest.Create(Url);
+            HttpTransportMock.Setup(t => t.CreateRequest(Url)).Returns(request);
+            PayLoad = "{\"Year\":2012}";
+            ResponseMock.SetupGet(r => r.Data).Returns(PayLoad);
+            HttpTransportMock.Setup(t => t.Send(request, PayLoad)).Returns(ResponseMock.Object);
+
+            ResourceMock.Setup(r => r.Marshal()).Returns(new Dictionary<string, object>());
+
+            var resourceData = new Dictionary<string, object>() { { "Year", 2012 } };
+            var options = new Dictionary<string, object>() { { "data", resourceData } };
+            connector.Apply(HttpMethod.Post, ResourceMock.Object, options);
+
+            HttpTransportMock.Verify(t => t.CreateRequest(Url), Times.Once());
+            HttpTransportMock.Verify(t => t.Send(request, PayLoad), Times.Once());
         }
 
         /// <summary>

@@ -2,10 +2,13 @@
 // ----------------------------------------------------------------------------
 // <copyright file="BasicConnector.cs" company="Klarna AB">
 //     Copyright 2012 Klarna AB
+//  
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
 //     You may obtain a copy of the License at
+//  
 //         http://www.apache.org/licenses/LICENSE-2.0
+//  
 //     Unless required by applicable law or agreed to in writing, software
 //     distributed under the License is distributed on an "AS IS" BASIS,
 //     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -128,12 +131,12 @@ namespace Klarna.Checkout
         private IHttpResponse Handle(HttpMethod method, IResource resource,
             Dictionary<string, object> options, List<Uri> visitedUrl)
         {
-            var url = ResolveUrl(resource, options);
+            var url = GetUrl(resource, options);
 
             var payLoad = string.Empty;
             if (method == HttpMethod.Post)
             {
-                var resorceData = resource.Marshal();
+                var resorceData = GetData(resource, options);
                 payLoad = JsonConvert.SerializeObject(resorceData);
             }
 
@@ -145,7 +148,7 @@ namespace Klarna.Checkout
         }
 
         /// <summary>
-        /// Resolve the url to use, from options or resource.
+        /// Gets the url to use, from options or resource.
         /// </summary>
         /// <param name="resource">
         /// The resource.
@@ -156,7 +159,7 @@ namespace Klarna.Checkout
         /// <returns>
         /// The <see cref="Uri"/>.
         /// </returns>
-        private Uri ResolveUrl(IResource resource, Dictionary<string, object> options)
+        private Uri GetUrl(IResource resource, Dictionary<string, object> options)
         {
             const string UrlKey = "url";
             Uri url;
@@ -170,6 +173,34 @@ namespace Klarna.Checkout
             }
 
             return url;
+        }
+
+        /// <summary>
+        /// Gets data to use, from options or resource.
+        /// </summary>
+        /// <param name="resource">
+        /// The resource.
+        /// </param>
+        /// <param name="options">
+        /// The options.
+        /// </param>
+        /// <returns>
+        /// The data.
+        /// </returns>
+        private object GetData(IResource resource, Dictionary<string, object> options)
+        {
+            const string DataKey = "data";
+            Dictionary<string, object> data;
+            if (options != null && options.ContainsKey(DataKey))
+            {
+                data = options[DataKey] as Dictionary<string, object>;
+            }
+            else
+            {
+                data = resource.Marshal();
+            }
+
+            return data;
         }
 
         /// <summary>
