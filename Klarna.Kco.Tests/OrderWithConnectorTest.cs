@@ -2,10 +2,13 @@
 // ----------------------------------------------------------------------------
 // <copyright file="OrderWithConnectorTest.cs" company="Klarna AB">
 //     Copyright 2012 Klarna AB
+//  
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
 //     You may obtain a copy of the License at
+//  
 //         http://www.apache.org/licenses/LICENSE-2.0
+//  
 //     Unless required by applicable law or agreed to in writing, software
 //     distributed under the License is distributed on an "AS IS" BASIS,
 //     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -67,18 +70,20 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void Create()
         {
-            //const string Key = "foo";
-            //const string Value = "boo";
-            //var data = new Dictionary<string, object> { { Key, Value } };
-            //order = new Order(data);
+            const string Key = "foo";
+            const string Value = "boo";
+            var data = new Dictionary<string, object> { { Key, Value } };
+            var options =
+                new Dictionary<string, object>
+                    {
+                        { "url", order.BaseUri },
+                        {"data", data}
+                    };
+            mockConnector.Setup(c => c.Apply(HttpMethod.Post, order, options)).Verifiable();
 
-            //var options = new Dictionary<string, object> { { "url", order.BaseUri } };
-            //mockConnector.Setup(c => c.Apply(HttpMethod.Post, order, options)).Verifiable();
-            //order.Create(mockConnector.Object);
+            order.Create(data);
 
-            //mockConnector.Verify();
-
-            //Assert.That(order.GetValue(Key), Is.EqualTo(Value));
+            mockConnector.Verify();
         }
 
         /// <summary>
@@ -87,18 +92,22 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void CreateAlternativeEntryPoint()
         {
-            //const string Key = "foo";
-            //const string Value = "boo";
-            //var data = new Dictionary<string, object> { { Key, Value } };
-            //order = new Order(data) { BaseUri = new Uri("https://checkout.klarna.com/beta/checkout/orders") };
+            order.BaseUri = new Uri("https://checkout.klarna.com/beta/checkout/orders");
 
-            //var options = new Dictionary<string, object> { { "url", order.BaseUri } };
-            //mockConnector.Setup(c => c.Apply(HttpMethod.Post, order, options)).Verifiable();
-            //order.Create(mockConnector.Object);
+            const string Key = "foo";
+            const string Value = "boo";
+            var data = new Dictionary<string, object> { { Key, Value } };
+            var options =
+                new Dictionary<string, object>
+                    {
+                        { "url", order.BaseUri },
+                        {"data", data}
+                    };
+            mockConnector.Setup(c => c.Apply(HttpMethod.Post, order, options)).Verifiable();
 
-            //mockConnector.Verify();
+            order.Create(data);
 
-            //Assert.That(order.GetValue(Key), Is.EqualTo(Value));
+            mockConnector.Verify();
         }
 
         /// <summary>
@@ -126,7 +135,7 @@ namespace Klarna.Checkout.Tests
 
             var options = new Dictionary<string, object> { { "url", order.Location } };
             mockConnector.Setup(c => c.Apply(HttpMethod.Post, order, options)).Verifiable();
-            order.Update();
+            //order.Update();
 
             mockConnector.Verify();
         }

@@ -149,10 +149,14 @@ namespace Klarna.Checkout
         /// <summary>
         /// Creates a new order, using the uri in BaseUri.
         /// </summary>
-        public void Create()
+        public void Create(Dictionary<string, object> data)
         {
             var options =
-                new Dictionary<string, object>() { { "url", BaseUri } };
+                new Dictionary<string, object>
+                    {
+                        { "url", BaseUri },
+                        {"data", data}
+                    };
             connector.Apply(HttpMethod.Post, this, options);
         }
 
@@ -162,17 +166,24 @@ namespace Klarna.Checkout
         public void Fetch()
         {
             var options =
-                new Dictionary<string, object>() { { "url", Location } };
+                new Dictionary<string, object>
+                    {
+                        { "url", Location }
+                    };
             connector.Apply(HttpMethod.Get, this, options);
         }
 
         /// <summary>
         /// Updates order data.
         /// </summary>
-        public void Update()
+        public void Update(Dictionary<string, object> data)
         {
             var options =
-                new Dictionary<string, object>() { { "url", Location } };
+                new Dictionary<string, object>
+                    {
+                        { "url", Location },
+                        {"data", data}
+                    };
             connector.Apply(HttpMethod.Post, this, options);
         }
 
