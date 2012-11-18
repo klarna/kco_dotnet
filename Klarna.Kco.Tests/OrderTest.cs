@@ -23,6 +23,9 @@ namespace Klarna.Checkout.Tests
 {
     using System;
     using System.Collections.Generic;
+
+    using Moq;
+
     using NUnit.Framework;
 
     /// <summary>
@@ -32,6 +35,11 @@ namespace Klarna.Checkout.Tests
     public class OrderTest
     {
         #region Private Fields
+
+        /// <summary>
+        /// Data used in tests.
+        /// </summary>
+        private const string Url = "http://klarna.com";
 
         /// <summary>
         /// Data used in tests.
@@ -53,6 +61,11 @@ namespace Klarna.Checkout.Tests
         /// </summary>
         private Order order;
 
+        /// <summary>
+        /// The mocked connector.
+        /// </summary>
+        private Mock<IConnector> mockConnector;
+
         #endregion
 
         #region Set Up
@@ -63,7 +76,8 @@ namespace Klarna.Checkout.Tests
         [SetUp]
         public void SetUp()
         {
-            order = new Order();
+            mockConnector = new Mock<IConnector>();
+            order = new Order(mockConnector.Object);
         }
 
         #endregion
@@ -71,16 +85,31 @@ namespace Klarna.Checkout.Tests
         #region Tests
 
         /// <summary>
-        /// The construction with data.
+        /// The construction with connector.
         /// </summary>
         [Test]
-        public void ConstructionWithData()
+        public void ConstructionWithConnector()
         {
-            var newData = this.TestData();
-            var newOrder = new Order(newData);
-            var data = newOrder.Marshal();
+            Assert.That(order.BaseUri, Is.Null);
+            Assert.That(order.Location, Is.Null);
+            Assert.That(order.ContentType, Is.Null);
+            var data = order.Marshal();
+            Assert.That(data, Is.Empty);
+        }
 
-            Assert.That(data, Is.EqualTo(newData));
+        /// <summary>
+        /// The construction with resource uri.
+        /// </summary>
+        [Test]
+        public void ConstructionWithResourceUri()
+        {
+            order = new Order(mockConnector.Object, new Uri(Url));
+
+            Assert.That(order.BaseUri, Is.Null);
+            Assert.That(order.Location, Is.EqualTo(new Uri(Url)));
+            Assert.That(order.ContentType, Is.Null);
+            var data = order.Marshal();
+            Assert.That(data, Is.Empty);
         }
 
         /// <summary>
@@ -111,7 +140,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void LocationSetGet()
         {
-            const string Url = "http://klarna.com";
+            Assert.That(order.Location, Is.Null);
             order.Location = new Uri(Url);
             Assert.That(order.Location, Is.EqualTo(new Uri(Url)));
         }

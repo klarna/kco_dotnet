@@ -2,10 +2,13 @@
 // ----------------------------------------------------------------------------
 // <copyright file="Order.cs" company="Klarna AB">
 //     Copyright 2012 Klarna AB
+//  
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
 //     You may obtain a copy of the License at
+//  
 //         http://www.apache.org/licenses/LICENSE-2.0
+//  
 //     Unless required by applicable law or agreed to in writing, software
 //     distributed under the License is distributed on an "AS IS" BASIS,
 //     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,29 +36,41 @@ namespace Klarna.Checkout
         /// </summary>
         private Dictionary<string, object> resourceData;
 
+        /// <summary>
+        /// The connector.
+        /// </summary>
+        private readonly IConnector connector;
+
         #endregion
 
         #region Construction
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Order"/> class.
+        /// Initializes a new instance of the <see cref="Order" /> class.
         /// </summary>
-        public Order()
+        /// <param name="connector">
+        /// The connector to use.
+        /// </param>
+        public Order(IConnector connector)
         {
             resourceData = new Dictionary<string, object>();
-            this.BaseUri = null;
+            this.connector = connector;
+            BaseUri = null;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Order"/> class.
+        /// Initializes a new instance of the <see cref="Order" /> class.
         /// </summary>
-        /// <param name="data">
-        /// Initial data.
+        /// <param name="connector">
+        /// The connector to use.
         /// </param>
-        public Order(Dictionary<string, object> data)
+        /// <param name="uri">
+        /// The uri of the resource.
+        /// </param>
+        public Order(IConnector connector, Uri uri)
+            : this(connector)
         {
-            resourceData = data;
-            this.BaseUri = null;
+            Location = uri;
         }
 
         #endregion
@@ -96,7 +111,7 @@ namespace Klarna.Checkout
         /// Basic representation of the resource.
         /// </summary>
         /// <returns>
-        /// The <see cref="object"/>.
+        /// The <see cref="object" />.
         /// </returns>
         public Dictionary<string, object> Marshal()
         {
@@ -120,7 +135,7 @@ namespace Klarna.Checkout
         /// key does not exist.
         /// </exception>
         /// <returns>
-        /// The <see cref="object"/>.
+        /// The <see cref="object" />.
         /// </returns>
         public object GetValue(string key)
         {
@@ -132,69 +147,33 @@ namespace Klarna.Checkout
         #region Methods
 
         /// <summary>
-        /// Creates a new order.
+        /// Creates a new order, using the uri in BaseUri.
         /// </summary>
-        /// <param name="connector">
-        /// The connector to be used.
-        /// </param>
-        public void Create(IConnector connector)
+        public void Create()
         {
-            var options = new Dictionary<string, object>() { { "url", BaseUri } };
+            var options =
+                new Dictionary<string, object>() { { "url", BaseUri } };
             connector.Apply(HttpMethod.Post, this, options);
         }
 
         /// <summary>
         /// Fetches order data.
         /// </summary>
-        /// <param name="connector">
-        /// The connector to be used.
-        /// </param>
-        public void Fetch(IConnector connector)
+        public void Fetch()
         {
-            var options = new Dictionary<string, object>() { { "url", Location } };
+            var options =
+                new Dictionary<string, object>() { { "url", Location } };
             connector.Apply(HttpMethod.Get, this, options);
         }
 
         /// <summary>
-        /// Fetches order data.
-        /// </summary>
-        /// <param name="connector">
-        /// The connector to be used.
-        /// </param>
-        /// <param name="uri">
-        /// The uri to be used.
-        /// </param>
-        public void Fetch(IConnector connector, Uri uri)
-        {
-            Location = uri;
-            Fetch(connector);
-        }
-
-        /// <summary>
         /// Updates order data.
         /// </summary>
-        /// <param name="connector">
-        /// The connector to be used.
-        /// </param>
-        public void Update(IConnector connector)
+        public void Update()
         {
-            var options = new Dictionary<string, object>() { { "url", Location } };
+            var options =
+                new Dictionary<string, object>() { { "url", Location } };
             connector.Apply(HttpMethod.Post, this, options);
-        }
-
-        /// <summary>
-        /// Updates order data.
-        /// </summary>
-        /// <param name="connector">
-        /// The connector to be used.
-        /// </param>
-        /// <param name="uri">
-        /// The uri to be used.
-        /// </param>
-        public void Update(IConnector connector, Uri uri)
-        {
-            Location = uri;
-            Update(connector);
         }
 
         #endregion

@@ -2,10 +2,13 @@
 // ----------------------------------------------------------------------------
 // <copyright file="Push.cs" company="Klarna AB">
 //     Copyright 2012 Klarna AB
+//  
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
 //     You may obtain a copy of the License at
+//  
 //         http://www.apache.org/licenses/LICENSE-2.0
+//  
 //     Unless required by applicable law or agreed to in writing, software
 //     distributed under the License is distributed on an "AS IS" BASIS,
 //     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +22,6 @@
 namespace Klarna.Kco.Examples
 {
     using System;
-    using System.Collections.Generic;
 
     using Klarna.Checkout;
 
@@ -37,16 +39,18 @@ namespace Klarna.Kco.Examples
             {
                 const string SharedSecret = "sharedSecret";
 
-                var order =
-                    new Order { ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json" };
                 var connector = Connector.Create(SharedSecret);
+                var order = new Order(connector)
+                    {
+                        ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json"
+                    };
 
                 // Use following in ASP.NET.
                 // var checkoutId = Request.QueryString["checkout_uri"];
                 // Just a placeholder in this example.
                 var checkoutId = "https://klarnacheckout.apiary.io/checkout/orders/12";
 
-                order.Fetch(connector, new Uri(checkoutId));
+                //order.Fetch(connector, new Uri(checkoutId));
 
                 if ((string)order.GetValue("status") == "checkout_complete")
                 {
@@ -56,7 +60,7 @@ namespace Klarna.Kco.Examples
                     var uniqueId = Guid.NewGuid().ToString("N");
                     //order.SetValue("merchant_reference",
                     //    new Dictionary<string, object> { { "orderid1", uniqueId } });
-                    order.Update(connector);
+                    //order.Update(connector);
                 }
             }
             catch (Exception ex)
