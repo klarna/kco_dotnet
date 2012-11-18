@@ -42,43 +42,15 @@ namespace Klarna.Kco.Examples
 
             try
             {
-                // Merchant ID
-                const int Eid = 2;
+                const string ContentType =
+                    "application/vnd.klarna.checkout.aggregated-order-v2+json";
 
-                const string SharedSecret = "sharedSecret";
-
-                var connector = Connector.Create(SharedSecret);
-                var order = new Order(connector)
-                    {
-                        BaseUri = new Uri("https://klarnacheckout.apiary.io/checkout/orders"),
-                        ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json"
-                    };
-
-
-                // Retrieve location from session object.
-                var resourceUri = Session["klarna_checkout"] as Uri;
-                if (resourceUri == null)
-                {
-                    // Start a new session
-                    //order.SetValue("purchase_country", "SE");
-                    //order.SetValue("purchase_currency", "SEK");
-                    //order.SetValue("locale", "sv-se");
-
-                    var merchant = new Dictionary<string, object>
-                        {
-                            { "id", Eid }, 
-                            { "terms_uri", "http://localhost/terms.html" }, 
-                            { "checkout_uri", "http://localhost/checkout.aspx" }, 
-                            { "confirmation_uri", "http://localhost/thank-you.aspx" }, 
-                            //// You cannot recieve push notification on a non publicly available uri.
-                            { "push_uri", "http://localhost/push.aspx" } 
-                        };
-                    //order.SetValue("merchant", merchant);
-
-                    var cartItems = new List<Dictionary<string, object>>
+                // Cart
+                var cartItems = new List<Dictionary<string, object>>
                         {
                             new Dictionary<string, object>
                                 {
+                                    { "quantity", 1 }, 
                                     { "reference", "BANAN01" }, 
                                     { "name", "Bananana" }, 
                                     { "unit_price", 450 }, 
@@ -87,6 +59,7 @@ namespace Klarna.Kco.Examples
                                 }, 
                             new Dictionary<string, object>
                                 {
+                                    { "quantity", 1 }, 
                                     { "type", "shipping_fee" }, 
                                     { "reference", "SHIPPING" }, 
                                     { "name", "Shipping Fee" }, 
@@ -95,15 +68,75 @@ namespace Klarna.Kco.Examples
                                     { "tax_rate", 2500 }
                                 }
                         };
-                    //order.SetValue("cart", new Dictionary<string, object> { { "items", cartItems } });
+                var cart = new Dictionary<string, object> { { "items", cartItems } };
 
-                    //order.Create(connector);
-                    //order.Fetch(connector);
-                }
-                else
+                // Merchant ID
+                const string Eid = "2";
+
+                const string SharedSecret = "sharedSecret";
+                var connector = Connector.Create(SharedSecret);
+
+                Order order = null;
+
+                // Retrieve location from session object.
+                var resourceUri = Session["klarna_checkout"] as Uri;
+                if (resourceUri != null)
                 {
-                    // Resume session
-                    //order.Fetch(connector, resourceUri);
+                    try
+                    {
+                        order = new Order(connector, resourceUri)
+                                    {
+                                        ContentType = ContentType
+                                    };
+
+                        order.Fetch();
+
+                        // Reset cart
+                        var data = new Dictionary<string, object> { { "cart", cart } };
+
+                        order.Update(data);
+                    }
+                    catch (Exception)
+                    {
+                        // Reset session
+                        order = null;
+                        Session["klarna_checkout"] = null;
+                    }
+                }
+
+                if (order == null)
+                {
+                    // Start a new session
+
+                    var merchant = new Dictionary<string, object>
+                        {
+                            { "id", Eid }, 
+                            { "terms_uri", "http://localhost/terms.html" }, 
+                            { "checkout_uri", "http://localhost/checkout.aspx" }, 
+                            { "confirmation_uri", "http://localhost/confirmation.aspx" }, 
+                            //// You cannot recieve push notification on a non publicly available uri.
+                            { "push_uri", "http://localhost/push.aspx" } 
+                        };
+
+                    var data =
+                        new Dictionary<string, object>
+                            {
+                                { "purchase_country", "SE" },
+                                { "purchase_currency", "SEK" },
+                                { "locale", "sv-se" },
+                                { "merchant", merchant},
+                                { "cart", cart }
+                            };
+
+                    order =
+                        new Order(connector)
+                            {
+                                BaseUri = new Uri("https://klarnacheckout.apiary.io/checkout/orders"),
+                                ContentType = ContentType
+                            };
+
+                    order.Create(data);
+                    order.Fetch();
                 }
 
                 // Store location of checkout session is session object.
