@@ -22,6 +22,7 @@
 namespace Klarna.Kco.Examples
 {
     using System;
+    using System.Collections.Generic;
 
     using Klarna.Checkout;
 
@@ -38,29 +39,38 @@ namespace Klarna.Kco.Examples
             try
             {
                 const string SharedSecret = "sharedSecret";
-
                 var connector = Connector.Create(SharedSecret);
-                var order = new Order(connector)
+
+                // Use following in ASP.NET.
+                // var checkoutId = Request.QueryString["checkout_uri"] as Uri;
+                // Just a placeholder in this example.
+                var checkoutId = new Uri("https://klarnacheckout.apiary.io/checkout/orders/12");
+                var order = new Order(connector, checkoutId)
                     {
                         ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json"
                     };
 
-                // Use following in ASP.NET.
-                // var checkoutId = Request.QueryString["checkout_uri"];
-                // Just a placeholder in this example.
-                var checkoutId = "https://klarnacheckout.apiary.io/checkout/orders/12";
-
-                //order.Fetch(connector, new Uri(checkoutId));
+                order.Fetch();
 
                 if ((string)order.GetValue("status") == "checkout_complete")
                 {
                     // At this point make sure the order is created in your
                     // system and send a confirmation email to the customer.
-                    //order.SetValue("status", "created");
+
                     var uniqueId = Guid.NewGuid().ToString("N");
-                    //order.SetValue("merchant_reference",
-                    //    new Dictionary<string, object> { { "orderid1", uniqueId } });
-                    //order.Update(connector);
+                    var reference =
+                        new Dictionary<string, object>
+                            {
+                                { "orderid1", uniqueId }
+                            };
+                    var data =
+                        new Dictionary<string, object>
+                            {
+                                { "status", "created" },
+                                { "merchant_reference", reference}
+                            };
+
+                    order.Update(data);
                 }
             }
             catch (Exception ex)
