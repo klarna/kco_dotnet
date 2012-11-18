@@ -133,9 +133,18 @@ namespace Klarna.Checkout.Tests
         {
             order.Location = new Uri("http://klarna.com/foo/bar/15");
 
-            var options = new Dictionary<string, object> { { "url", order.Location } };
+            const string Key = "foo";
+            const string Value = "boo";
+            var data = new Dictionary<string, object> { { Key, Value } };
+            var options =
+                new Dictionary<string, object>
+                    {
+                        { "url", order.Location },
+                        {"data", data}
+                    };
             mockConnector.Setup(c => c.Apply(HttpMethod.Post, order, options)).Verifiable();
-            //order.Update();
+
+            order.Update(data);
 
             mockConnector.Verify();
         }
