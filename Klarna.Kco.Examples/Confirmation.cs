@@ -40,20 +40,19 @@ namespace Klarna.Kco.Examples
             try
             {
                 const string SharedSecret = "sharedSecret";
-
                 var connector = Connector.Create(SharedSecret);
-                var order = new Order(connector)
-                    {
-                        ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json"
-                    };
 
                 // Retrieve location from session object.
                 // Use following in ASP.NET.
                 // var checkoutId = Session["klarna_checkout"] as Uri;
                 // Just a placeholder in this example.
-                var checkoutId = "https://klarnacheckout.apiary.io/checkout/orders/12";
+                var checkoutId = new Uri("https://klarnacheckout.apiary.io/checkout/orders/12");
+                var order = new Order(connector, checkoutId)
+                {
+                    ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json"
+                };
 
-                //order.Fetch(connector, new Uri(checkoutId));
+                order.Fetch();
 
                 if ((string)order.GetValue("status") == "checkout_incomplete")
                 {

@@ -41,6 +41,7 @@ namespace Klarna.Kco.Examples
                 const string SharedSecret = "sharedSecret";
                 var connector = Connector.Create(SharedSecret);
 
+                // Retrieve location from query string.
                 // Use following in ASP.NET.
                 // var checkoutId = Request.QueryString["checkout_uri"] as Uri;
                 // Just a placeholder in this example.
