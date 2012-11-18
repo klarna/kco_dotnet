@@ -92,6 +92,26 @@ namespace Klarna.Checkout.Tests.HTTP
             Assert.That((int)response.StatusCode, Is.EqualTo(code));
         }
 
+        /// <summary>
+        /// Test that header name is case insensitive when accessing a header.
+        /// </summary>
+        [Test]
+        public void HeaderNameCaseInsensitive()
+        {
+            var transport = new BasicHttpTransport();
+            var uri = new Uri("http://httpbin.org/status/200");
+            var request = transport.CreateRequest(uri);
+            request.Method = "GET";
+            var response = transport.Send(request, string.Empty);
+
+            var expected = response.Header("Content-Type");
+            var lowerCase = response.Header("content-type");
+            Assert.That(lowerCase, Is.EqualTo(expected));
+
+            var mixedCase = response.Header("cOnTeNt-TyPe");
+            Assert.That(mixedCase, Is.EqualTo(expected));
+        }
+
         #endregion
     }
 }
