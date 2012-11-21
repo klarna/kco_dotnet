@@ -269,8 +269,11 @@ namespace Klarna.Checkout
             VerifyResponse(response);
 
             var location = response.Header("Location");
-            var url = new Uri(location);
-
+            Uri url = null;
+            if (!String.IsNullOrEmpty(location))
+            {
+                url = new Uri(location);
+            }
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK: // 200 - Update Data on resource.
