@@ -50,28 +50,28 @@ namespace Klarna.Kco.Examples
                         {
                             new Dictionary<string, object>
                                 {
-                                    { "quantity", 1 }, 
-                                    { "reference", "BANAN01" }, 
-                                    { "name", "Bananana" }, 
-                                    { "unit_price", 450 }, 
-                                    { "discount_rate", 0 }, 
+                                    { "quantity", 2 },
+                                    { "reference", "123456789" },
+                                    { "name", "Klarna t-shirt" },
+                                    { "unit_price", 12300 },
+                                    { "discount_rate", 1000 },
                                     { "tax_rate", 2500 }
-                                }, 
+                                },
                             new Dictionary<string, object>
                                 {
-                                    { "quantity", 1 }, 
-                                    { "type", "shipping_fee" }, 
-                                    { "reference", "SHIPPING" }, 
-                                    { "name", "Shipping Fee" }, 
-                                    { "unit_price", 450 }, 
-                                    { "discount_rate", 0 }, 
+                                    { "quantity", 1 },
+                                    { "type", "shipping_fee" },
+                                    { "reference", "SHIPPING" },
+                                    { "name", "Shipping Fee" },
+                                    { "unit_price", 4900 },
+                                    { "discount_rate", 0 },
                                     { "tax_rate", 2500 }
                                 }
                         };
                 var cart = new Dictionary<string, object> { { "items", cartItems } };
 
                 // Merchant ID
-                const string Eid = "2";
+                const string Eid = "0";
 
                 const string SharedSecret = "sharedSecret";
                 var connector = Connector.Create(SharedSecret);
@@ -110,12 +110,20 @@ namespace Klarna.Kco.Examples
 
                     var merchant = new Dictionary<string, object>
                         {
-                            { "id", Eid }, 
-                            { "terms_uri", "http://localhost/terms.html" }, 
-                            { "checkout_uri", "http://localhost/checkout.aspx" }, 
-                            { "confirmation_uri", "http://localhost/confirmation.aspx" }, 
+                            { "id", Eid },
+                            { "terms_uri", "http://localhost/terms.html" },
+                            { "checkout_uri", "http://localhost/checkout.aspx" },
+                            {
+                                "confirmation_uri",
+                                "http://localhost/confirmation.aspx" +
+                                "?sid=123&klarna_order={checkout.order.uri}"
+                            },
                             //// You cannot recieve push notification on a non publicly available uri.
-                            { "push_uri", "http://localhost/push.aspx" } 
+                            {
+                                "push_uri",
+                                "http://localhost/push.aspx" + 
+                                "?sid=123&klarna_order={checkout.order.uri}"
+                            }
                         };
 
                     var data =
@@ -131,7 +139,10 @@ namespace Klarna.Kco.Examples
                     order =
                         new Order(connector)
                             {
-                                BaseUri = new Uri("https://klarnacheckout.apiary.io/checkout/orders"),
+                                BaseUri = new Uri(
+                                    "https://checkout.testdrive.klarna.com" +
+                                    "/checkout/orders"
+                                ),
                                 ContentType = ContentType
                             };
 

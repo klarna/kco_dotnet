@@ -43,9 +43,12 @@ namespace Klarna.Kco.Examples
 
                 // Retrieve location from query string.
                 // Use following in ASP.NET.
-                // var checkoutId = Request.QueryString["checkout_uri"] as Uri;
+                // var checkoutId = Request.QueryString["klarna_order"] as Uri;
                 // Just a placeholder in this example.
-                var checkoutId = new Uri("https://klarnacheckout.apiary.io/checkout/orders/12");
+                var checkoutId = new Uri(
+                    "https://checkout.testdrive.klarna.com" +
+                    "/checkout/orders/ABC123"
+                );
                 var order = new Order(connector, checkoutId)
                     {
                         ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json"
