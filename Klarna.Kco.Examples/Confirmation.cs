@@ -2,13 +2,13 @@
 // ----------------------------------------------------------------------------
 // <copyright file="Confirmation.cs" company="Klarna AB">
 //     Copyright 2012 Klarna AB
-//  
+//
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
 //     You may obtain a copy of the License at
-//  
+//
 //         http://www.apache.org/licenses/LICENSE-2.0
-//  
+//
 //     Unless required by applicable law or agreed to in writing, software
 //     distributed under the License is distributed on an "AS IS" BASIS,
 //     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +23,7 @@ namespace Klarna.Kco.Examples
 {
     using System;
     using System.Collections.Generic;
+    using Newtonsoft.Json.Linq;
 
     using Klarna.Checkout;
 
@@ -47,9 +48,9 @@ namespace Klarna.Kco.Examples
                 // var checkoutId = Session["klarna_checkout"] as Uri;
                 // Just a placeholder in this example.
                 var checkoutId = new Uri(
-                    "https://checkout.testdrive.klarna.com" +
-                    "/checkout/orders/ABC123"
+                    "https://checkout.testdrive.klarna.com/checkout/orders/12"
                 );
+
                 var order = new Order(connector, checkoutId)
                 {
                     ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json"
@@ -66,7 +67,7 @@ namespace Klarna.Kco.Examples
                 }
 
                 // Display thank you snippet
-                var gui = (Dictionary<string, object>)order.GetValue("gui");
+                var gui = order.GetValue("gui") as JObject;
                 var snippet = gui["snippet"];
 
                 // DESKTOP: Width of containing block shall be at least 750px

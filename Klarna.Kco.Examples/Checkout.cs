@@ -2,13 +2,13 @@
 // ----------------------------------------------------------------------------
 // <copyright file="Checkout.cs" company="Klarna AB">
 //     Copyright 2012 Klarna AB
-//  
+//
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
 //     You may obtain a copy of the License at
-//  
+//
 //         http://www.apache.org/licenses/LICENSE-2.0
-//  
+//
 //     Unless required by applicable law or agreed to in writing, software
 //     distributed under the License is distributed on an "AS IS" BASIS,
 //     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,10 +19,12 @@
 // <link>http://integration.klarna.com/</link>
 // ----------------------------------------------------------------------------
 #endregion
+
 namespace Klarna.Kco.Examples
 {
     using System;
     using System.Collections.Generic;
+    using Newtonsoft.Json.Linq;
 
     using Klarna.Checkout;
 
@@ -50,21 +52,20 @@ namespace Klarna.Kco.Examples
                         {
                             new Dictionary<string, object>
                                 {
-                                    { "quantity", 2 },
                                     { "reference", "123456789" },
                                     { "name", "Klarna t-shirt" },
+                                    { "quantity", 2 },
                                     { "unit_price", 12300 },
                                     { "discount_rate", 1000 },
                                     { "tax_rate", 2500 }
                                 },
                             new Dictionary<string, object>
                                 {
-                                    { "quantity", 1 },
                                     { "type", "shipping_fee" },
                                     { "reference", "SHIPPING" },
                                     { "name", "Shipping Fee" },
+                                    { "quantity", 1 },
                                     { "unit_price", 4900 },
-                                    { "discount_rate", 0 },
                                     { "tax_rate", 2500 }
                                 }
                         };
@@ -78,8 +79,11 @@ namespace Klarna.Kco.Examples
 
                 Order order = null;
 
+                Uri resourceUri = null;
                 // Retrieve location from session object.
-                var resourceUri = Session["klarna_checkout"] as Uri;
+                if (Session.ContainsKey("klarna_checkout")) {
+                    resourceUri = Session["klarna_checkout"] as Uri;
+                }
                 if (resourceUri != null)
                 {
                     try
@@ -111,17 +115,21 @@ namespace Klarna.Kco.Examples
                     var merchant = new Dictionary<string, object>
                         {
                             { "id", Eid },
-                            { "terms_uri", "http://localhost/terms.html" },
-                            { "checkout_uri", "http://localhost/checkout.aspx" },
+                            { "terms_uri", "http://example.com/terms.aspx" },
+                            {
+                                "checkout_uri",
+                                "https://example.com/checkout.aspx"
+                            },
                             {
                                 "confirmation_uri",
-                                "http://localhost/confirmation.aspx" +
+                                "https://example.com/thankyou.aspx" +
                                 "?sid=123&klarna_order={checkout.order.uri}"
                             },
-                            //// You cannot recieve push notification on a non publicly available uri.
+                            //// You cannot receive push notification on a
+                            //// non publicly available uri.
                             {
                                 "push_uri",
-                                "http://localhost/push.aspx" + 
+                                "https://example.com/push.aspx" +
                                 "?sid=123&klarna_order={checkout.order.uri}"
                             }
                         };
@@ -140,8 +148,7 @@ namespace Klarna.Kco.Examples
                         new Order(connector)
                             {
                                 BaseUri = new Uri(
-                                    "https://checkout.testdrive.klarna.com" +
-                                    "/checkout/orders"
+                                    "https://checkout.testdrive.klarna.com/checkout/orders"
                                 ),
                                 ContentType = ContentType
                             };
@@ -154,7 +161,7 @@ namespace Klarna.Kco.Examples
                 Session["klarna_checkout"] = order.Location;
 
                 // Display checkout
-                var gui = (Dictionary<string, object>)order.GetValue("gui");
+                var gui = order.GetValue("gui") as JObject;
                 var snippet = gui["snippet"];
 
                 // DESKTOP: Width of containing block shall be at least 750px
