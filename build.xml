@@ -17,6 +17,7 @@
     <include name="Source/ChangeLog.txt"/>
     <include name="Source/*.cs"/>
     <include name="Source/HTTP/*.cs"/>
+    <include name="CHANGELOG" />
   </patternset>
 
   <target name="dist" depends="clean, increment_build_number">
