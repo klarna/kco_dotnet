@@ -19,6 +19,7 @@
 // <link>http://integration.klarna.com/</link>
 // ----------------------------------------------------------------------------
 #endregion
+// [[examples-confirmation]]
 namespace Klarna.Kco.Examples
 {
     using System;
@@ -85,3 +86,4 @@ namespace Klarna.Kco.Examples
         }
     }
 }
+// [[examples-confirmation]]
