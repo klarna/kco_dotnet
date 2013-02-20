@@ -52,10 +52,10 @@ namespace Klarna.Checkout.Tests.HTTP
         public void Timeout()
         {
             var transport = new BasicHttpTransport();
-            Assert.That(transport.Timeout, Is.EqualTo(5000));
-
-            transport.Timeout = 10000;
             Assert.That(transport.Timeout, Is.EqualTo(10000));
+
+            transport.Timeout = 50000;
+            Assert.That(transport.Timeout, Is.EqualTo(50000));
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Klarna.Checkout.Tests.HTTP
             var request = transport.CreateRequest(new Uri("http://klarna.com"));
             Assert.That(request, Is.TypeOf<HttpWebRequest>());
             Assert.That(request.AllowAutoRedirect, Is.False);
-            Assert.That(request.Timeout, Is.EqualTo(5000));
+            Assert.That(request.Timeout, Is.EqualTo(10000));
         }
 
         /// <summary>

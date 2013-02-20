@@ -2,13 +2,13 @@
 // ----------------------------------------------------------------------------
 // <copyright file="BasicConnectorTest.cs" company="Klarna AB">
 //     Copyright 2012 Klarna AB
-//  
+//
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
 //     You may obtain a copy of the License at
-//  
+//
 //         http://www.apache.org/licenses/LICENSE-2.0
-//  
+//
 //     Unless required by applicable law or agreed to in writing, software
 //     distributed under the License is distributed on an "AS IS" BASIS,
 //     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,6 +28,7 @@ namespace Klarna.Checkout.Tests
     using Moq;
 
     using NUnit.Framework;
+    using Klarna.Checkout.HTTP;
 
     /// <summary>
     /// The basic connector test.
@@ -41,20 +42,20 @@ namespace Klarna.Checkout.Tests
         /// </summary>
         private static readonly object[] ErrorCodes =
             {
-                new object[] { HttpStatusCode.BadRequest, 400 }, 
-                new object[] { HttpStatusCode.Unauthorized, 401 }, 
-                new object[] { HttpStatusCode.PaymentRequired, 402 }, 
-                new object[] { HttpStatusCode.Forbidden, 403 }, 
-                new object[] { HttpStatusCode.NotFound, 404 }, 
-                new object[] { HttpStatusCode.NotAcceptable, 406 }, 
-                new object[] { HttpStatusCode.Conflict, 409 }, 
-                new object[] { HttpStatusCode.PreconditionFailed, 412 }, 
-                new object[] { HttpStatusCode.UnsupportedMediaType, 415 }, 
-                new object[] { 422, 422 }, 
-                new object[] { 428, 428 }, 
-                new object[] { 429, 429 }, 
-                new object[] { HttpStatusCode.InternalServerError, 500 }, 
-                new object[] { HttpStatusCode.BadGateway, 502 }, 
+                new object[] { HttpStatusCode.BadRequest, 400 },
+                new object[] { HttpStatusCode.Unauthorized, 401 },
+                new object[] { HttpStatusCode.PaymentRequired, 402 },
+                new object[] { HttpStatusCode.Forbidden, 403 },
+                new object[] { HttpStatusCode.NotFound, 404 },
+                new object[] { HttpStatusCode.NotAcceptable, 406 },
+                new object[] { HttpStatusCode.Conflict, 409 },
+                new object[] { HttpStatusCode.PreconditionFailed, 412 },
+                new object[] { HttpStatusCode.UnsupportedMediaType, 415 },
+                new object[] { 422, 422 },
+                new object[] { 428, 428 },
+                new object[] { 429, 429 },
+                new object[] { HttpStatusCode.InternalServerError, 500 },
+                new object[] { HttpStatusCode.BadGateway, 502 },
                 new object[] { HttpStatusCode.ServiceUnavailable, 503 }
             };
 
@@ -243,6 +244,16 @@ namespace Klarna.Checkout.Tests
 
             HttpTransportMock.Verify(t => t.CreateRequest(Url), Times.Once());
             HttpTransportMock.Verify(t => t.Send(request, PayLoad), Times.Once());
+        }
+
+        [Test]
+        public void SetTimeoutOnConnector()
+        {
+            IHttpTransport transport = new BasicHttpTransport();
+            IConnector conn = new BasicConnector(transport, Digest, Secret);
+            conn.Transport.Timeout = 120;
+
+            Assert.That(transport.Timeout, Is.EqualTo(120));
         }
 
         #endregion

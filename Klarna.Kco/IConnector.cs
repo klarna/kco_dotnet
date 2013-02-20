@@ -19,12 +19,23 @@
 namespace Klarna.Checkout
 {
     using System.Collections.Generic;
+    using Klarna.Checkout.HTTP;
 
     /// <summary>
     /// The Connector interface.
     /// </summary>
     public interface IConnector
     {
+        /// <summary>
+        /// Gets or sets the user agent used for User-Agent header.
+        /// </summary>
+        UserAgent UserAgent { get; set; }
+
+        /// <summary>
+        /// Gets the transport used for the HTTP communications.
+        /// </summary>
+        IHttpTransport Transport { get; }
+
         /// <summary>
         /// Applies a HTTP method on a specific resource.
         /// </summary>

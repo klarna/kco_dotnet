@@ -36,7 +36,8 @@ namespace Klarna.Checkout.HTTP
         /// </summary>
         public BasicHttpTransport()
         {
-            Timeout = 5000;
+            // Default timeout to 10 seconds
+            Timeout = 10000;
         }
 
         #endregion
