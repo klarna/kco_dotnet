@@ -85,6 +85,16 @@ namespace Klarna.Checkout
         /// </summary>
         public UserAgent UserAgent { get; set; }
 
+        /// <summary>
+        /// Gets the transport used for the HTTP communications.
+        /// </summary>
+        public IHttpTransport Transport {
+            get
+            {
+                return this.httpTransport;
+            }
+        }
+
         #endregion
 
         #region Implementation of IConnector
