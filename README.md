@@ -47,6 +47,7 @@ please contact [integration@klarna.com](mailto:integration@klarna.com).
 * Tommy Blomberg
 * David Keijser
 * Rickard Dybeck
+* Joakim Löfgren
 
 ## License
 The Klarna Checkout .NET library is released under
