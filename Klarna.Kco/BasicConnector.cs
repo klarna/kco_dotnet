@@ -88,7 +88,8 @@ namespace Klarna.Checkout
         /// <summary>
         /// Gets the transport used for the HTTP communications.
         /// </summary>
-        public IHttpTransport Transport {
+        public IHttpTransport Transport
+        {
             get
             {
                 return this.httpTransport;

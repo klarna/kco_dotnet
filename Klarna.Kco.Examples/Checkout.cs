@@ -24,9 +24,9 @@ namespace Klarna.Kco.Examples
 {
     using System;
     using System.Collections.Generic;
-    using Newtonsoft.Json.Linq;
-
+    using System.Net;
     using Klarna.Checkout;
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// The checkout example.
@@ -40,7 +40,7 @@ namespace Klarna.Kco.Examples
         {
             // Note! Please remove the code below when used in ASP.NET.
             // Just a placeholder in this example for, the HttpSessionState object, Session.
-            var Session = new Dictionary<string, object>();
+            var session = new Dictionary<string, object>();
 
             try
             {
@@ -80,10 +80,13 @@ namespace Klarna.Kco.Examples
                 Order order = null;
 
                 Uri resourceUri = null;
+
                 // Retrieve location from session object.
-                if (Session.ContainsKey("klarna_checkout")) {
-                    resourceUri = Session["klarna_checkout"] as Uri;
+                if (session.ContainsKey("klarna_checkout"))
+                {
+                    resourceUri = session["klarna_checkout"] as Uri;
                 }
+
                 if (resourceUri != null)
                 {
                     try
@@ -104,14 +107,13 @@ namespace Klarna.Kco.Examples
                     {
                         // Reset session
                         order = null;
-                        Session["klarna_checkout"] = null;
+                        session["klarna_checkout"] = null;
                     }
                 }
 
                 if (order == null)
                 {
                     // Start a new session
-
                     var merchant = new Dictionary<string, object>
                         {
                             { "id", Eid },
@@ -140,7 +142,7 @@ namespace Klarna.Kco.Examples
                                 { "purchase_country", "SE" },
                                 { "purchase_currency", "SEK" },
                                 { "locale", "sv-se" },
-                                { "merchant", merchant},
+                                { "merchant", merchant },
                                 { "cart", cart }
                             };
 
@@ -148,8 +150,7 @@ namespace Klarna.Kco.Examples
                         new Order(connector)
                             {
                                 BaseUri = new Uri(
-                                    "https://checkout.testdrive.klarna.com/checkout/orders"
-                                ),
+                                    "https://checkout.testdrive.klarna.com/checkout/orders"),
                                 ContentType = ContentType
                             };
 
@@ -158,7 +159,7 @@ namespace Klarna.Kco.Examples
                 }
 
                 // Store location of checkout session is session object.
-                Session["klarna_checkout"] = order.Location;
+                session["klarna_checkout"] = order.Location;
 
                 // Display checkout
                 var gui = order.GetValue("gui") as JObject;

@@ -24,9 +24,8 @@ namespace Klarna.Kco.Examples
 {
     using System;
     using System.Collections.Generic;
-    using Newtonsoft.Json.Linq;
-
     using Klarna.Checkout;
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// The confirmation example.
@@ -49,8 +48,7 @@ namespace Klarna.Kco.Examples
                 // var checkoutId = Session["klarna_checkout"] as Uri;
                 // Just a placeholder in this example.
                 var checkoutId = new Uri(
-                    "https://checkout.testdrive.klarna.com/checkout/orders/12"
-                );
+                    "https://checkout.testdrive.klarna.com/checkout/orders/12");
 
                 var order = new Order(connector, checkoutId)
                 {
@@ -82,8 +80,11 @@ namespace Klarna.Kco.Examples
             }
             catch (Exception ex)
             {
+                // Handle exception.
+                throw ex;
             }
         }
     }
 }
+
 // [[examples-confirmation]]

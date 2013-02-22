@@ -47,8 +47,8 @@ namespace Klarna.Kco.Examples
                 // var checkoutId = Request.QueryString["checkout_uri"] as Uri;
                 // Just a placeholder in this example.
                 var checkoutId = new Uri(
-                    "https://checkout.testdrive.klarna.com/checkout/orders/12"
-                );
+                    "https://checkout.testdrive.klarna.com/checkout/orders/12");
+
                 var order = new Order(connector, checkoutId)
                     {
                         ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json"
@@ -60,7 +60,6 @@ namespace Klarna.Kco.Examples
                 {
                     // At this point make sure the order is created in your
                     // system and send a confirmation email to the customer.
-
                     var uniqueId = Guid.NewGuid().ToString("N");
                     var reference =
                         new Dictionary<string, object>
@@ -71,7 +70,7 @@ namespace Klarna.Kco.Examples
                         new Dictionary<string, object>
                             {
                                 { "status", "created" },
-                                { "merchant_reference", reference}
+                                { "merchant_reference", reference }
                             };
 
                     order.Update(data);
@@ -79,8 +78,11 @@ namespace Klarna.Kco.Examples
             }
             catch (Exception ex)
             {
+                // Handle exception.
+                throw ex;
             }
         }
     }
 }
+
 // [[examples-push]]

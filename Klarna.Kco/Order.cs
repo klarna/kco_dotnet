@@ -32,14 +32,14 @@ namespace Klarna.Checkout
         #region Private Fields
 
         /// <summary>
-        /// The data.
-        /// </summary>
-        private Dictionary<string, object> resourceData;
-
-        /// <summary>
         /// The connector.
         /// </summary>
         private readonly IConnector connector;
+
+        /// <summary>
+        /// The data.
+        /// </summary>
+        private Dictionary<string, object> resourceData;
 
         #endregion
 
@@ -149,13 +149,16 @@ namespace Klarna.Checkout
         /// <summary>
         /// Creates a new order, using the uri in BaseUri.
         /// </summary>
+        /// <param name="data">
+        /// The order data.
+        /// </param>
         public void Create(Dictionary<string, object> data)
         {
             var options =
                 new Dictionary<string, object>
                     {
                         { "url", BaseUri },
-                        {"data", data}
+                        { "data", data }
                     };
             connector.Apply(HttpMethod.Post, this, options);
         }
@@ -176,13 +179,16 @@ namespace Klarna.Checkout
         /// <summary>
         /// Updates order data.
         /// </summary>
+        /// <param name="data">
+        /// The updated order data.
+        /// </param>
         public void Update(Dictionary<string, object> data)
         {
             var options =
                 new Dictionary<string, object>
                     {
                         { "url", Location },
-                        {"data", data}
+                        { "data", data }
                     };
             connector.Apply(HttpMethod.Post, this, options);
         }
