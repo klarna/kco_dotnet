@@ -24,11 +24,10 @@ namespace Klarna.Checkout.Tests
     using System.Collections.Generic;
     using System.Net;
     using System.Text.RegularExpressions;
-
-    using Moq;
-
-    using NUnit.Framework;
     using Klarna.Checkout.HTTP;
+    using Moq;
+    using Newtonsoft.Json;
+    using NUnit.Framework;
 
     /// <summary>
     /// The basic connector test.
@@ -204,6 +203,7 @@ namespace Klarna.Checkout.Tests
             var code = (HttpStatusCode)ex.Data["HttpStatusCode"];
             Assert.That(code, Is.Not.Null);
             Assert.That((int)code, Is.EqualTo(expectedCode));
+            Assert.That(ex.Message, Is.EqualTo(code.ToString()));
 
             HttpTransportMock.Verify(t => t.CreateRequest(Url), Times.Once());
             HttpTransportMock.Verify(t => t.Send(request, PayLoad), Times.Once());
@@ -241,11 +241,105 @@ namespace Klarna.Checkout.Tests
             var code = (HttpStatusCode)ex.Data["HttpStatusCode"];
             Assert.That(code, Is.Not.Null);
             Assert.That((int)code, Is.EqualTo(expectedCode));
+            Assert.That(ex.Message, Is.EqualTo(code.ToString()));
 
             HttpTransportMock.Verify(t => t.CreateRequest(Url), Times.Once());
             HttpTransportMock.Verify(t => t.Send(request, PayLoad), Times.Once());
         }
 
+        /// <summary>
+        /// Tests Apply with a response error type.
+        /// </summary>
+        [Test]
+        public void ApplyErrorType()
+        {
+            const HttpStatusCode StatusCode = HttpStatusCode.Unauthorized;
+            const string ErrorType = "application/vnd.klarna.error-v1+json";
+            const string InternalMessage = "Bad digest";
+
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+
+            ResourceMock.SetupProperty(r => r.Location, Url);
+            ResourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
+            var resourceData = new Dictionary<string, object>() { { "Year", 2012 } };
+            ResourceMock.Setup(r => r.Marshal()).Returns(resourceData);
+
+            var request = (HttpWebRequest)WebRequest.Create(Url);
+            HttpTransportMock.Setup(t => t.CreateRequest(Url)).Returns(request);
+
+            var errorObject = new Dictionary<string, object>()
+            {
+                { "http_status_code", (int)StatusCode },
+                { "http_status_message", StatusCode.ToString() },
+                { "internal_message", InternalMessage }
+            };
+
+            var error = JsonConvert.SerializeObject(errorObject);
+            ResponseMock.SetupGet(r => r.Data).Returns(error);
+            ResponseMock.Setup(r => r.Header("Content-Type")).Returns(ErrorType);
+            ResponseMock.SetupGet(r => r.StatusCode).Returns(StatusCode);
+
+            PayLoad = JsonConvert.SerializeObject(resourceData);
+            HttpTransportMock.Setup(t => t.Send(request, PayLoad)).Returns(ResponseMock.Object);
+
+            var ex = Assert.Throws<ConnectorException>(
+                () => connector.Apply(HttpMethod.Post, ResourceMock.Object, null));
+
+            var code = (HttpStatusCode)ex.Data["HttpStatusCode"];
+            Assert.That(code, Is.Not.Null);
+            Assert.That((int)code, Is.EqualTo((int)StatusCode));
+            Assert.That(ex.Message, Is.EqualTo(code.ToString()));
+            Assert.That(ex.Data["internal_message"], Is.EqualTo(InternalMessage));
+
+            var response = (Klarna.Checkout.HTTP.IHttpResponse)ex.Data["Response"];
+            Assert.That(response, Is.Not.Null);
+            Assert.That(response, Is.InstanceOf<Klarna.Checkout.HTTP.IHttpResponse>());
+            Assert.That(response.StatusCode, Is.EqualTo(StatusCode));
+            Assert.That(response.Data, Is.EqualTo(error));
+            Assert.That(response.Header("Content-Type"), Is.EqualTo(ErrorType));
+
+            HttpTransportMock.Verify(t => t.CreateRequest(Url), Times.Once());
+            HttpTransportMock.Verify(t => t.Send(request, PayLoad), Times.Once());
+        }
+
+        /// <summary>
+        /// Tests Apply that an exception wraps WebException.
+        /// </summary>
+        [Test]
+        public void ApplyWrappedWebException()
+        {
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+
+            ResourceMock.SetupProperty(r => r.Location, Url);
+            ResourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
+            var resourceData = new Dictionary<string, object>() { { "Year", 2012 } };
+            ResourceMock.Setup(r => r.Marshal()).Returns(resourceData);
+
+            var request = (HttpWebRequest)WebRequest.Create(Url);
+            HttpTransportMock.Setup(t => t.CreateRequest(Url)).Returns(request);
+
+            var webEx = new WebException("Error", null, WebExceptionStatus.Timeout, null);
+
+            PayLoad = JsonConvert.SerializeObject(resourceData);
+            HttpTransportMock.Setup(t => t.Send(request, PayLoad)).Throws(webEx);
+
+            var ex = Assert.Throws<ConnectorException>(
+                () => connector.Apply(HttpMethod.Post, ResourceMock.Object, null));
+
+            Assert.That(ex.InnerException, Is.Not.Null);
+            Assert.That(ex.InnerException, Is.InstanceOf<WebException>());
+            Assert.That(ex.InnerException, Is.SameAs(webEx));
+
+            Assert.That(ex.Data["HttpStatusCode"], Is.Null);
+            Assert.That(ex.Data["Response"], Is.Null);
+
+            HttpTransportMock.Verify(t => t.CreateRequest(Url), Times.Once());
+            HttpTransportMock.Verify(t => t.Send(request, PayLoad), Times.Once());
+        }
+
+        /// <summary>
+        /// Tests that a timeout can be set via the connector.
+        /// </summary>
         [Test]
         public void SetTimeoutOnConnector()
         {

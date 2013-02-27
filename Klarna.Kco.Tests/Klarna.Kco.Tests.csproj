@@ -30,6 +30,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Klarna.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.0.10827\lib\NET35\Moq.dll</HintPath>
@@ -55,6 +61,7 @@
     <Compile Include="ConnectorTest.cs" />
     <Compile Include="DigestTest.cs" />
     <Compile Include="HTTP\BasicHttpTransportTest.cs" />
+    <Compile Include="HTTP\HttpResponseTest.cs" />
     <Compile Include="HTTP\HttpTransportTest.cs" />
     <Compile Include="OrderTest.cs" />
     <Compile Include="OrderWithConnectorTest.cs" />
@@ -62,6 +69,7 @@
     <Compile Include="UserAgentTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Klarna.snk" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

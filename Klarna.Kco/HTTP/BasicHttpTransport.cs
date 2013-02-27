@@ -83,31 +83,19 @@ namespace Klarna.Checkout.HTTP
             ServicePointManager.ServerCertificateValidationCallback =
                 ValidateServerCertificate;
 
-            try
+            request.Timeout = Timeout;
+
+            if (request.Method == "POST")
             {
-                request.Timeout = Timeout;
-
-                if (request.Method == "POST")
+                using (var writer = new StreamWriter(request.GetRequestStream()))
                 {
-                    using (var writer = new StreamWriter(request.GetRequestStream()))
-                    {
-                        writer.Write(payload);
-                    }
-                }
-
-                using (var response = (HttpWebResponse)request.GetResponse())
-                {
-                    return new HttpResponse(response);
+                    writer.Write(payload);
                 }
             }
-            catch (WebException ex)
-            {
-                if (ex.Status == WebExceptionStatus.ProtocolError && ex.Response != null)
-                {
-                    return new HttpResponse((HttpWebResponse)ex.Response);
-                }
 
-                throw;
+            using (var response = (HttpWebResponse)request.GetResponse())
+            {
+                return new HttpResponse(response);
             }
         }
 

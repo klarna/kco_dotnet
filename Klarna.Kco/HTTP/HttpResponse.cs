@@ -21,12 +21,15 @@
 #endregion
 namespace Klarna.Checkout.HTTP
 {
+    using System;
     using System.IO;
     using System.Net;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// The http response.
     /// </summary>
+    [Serializable]
     public class HttpResponse : IHttpResponse
     {
         #region Private Fields
@@ -58,6 +61,35 @@ namespace Klarna.Checkout.HTTP
             headers = response.Headers;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HttpResponse"/> class.
+        /// </summary>
+        /// <param name="code">The status code of this response.</param>
+        /// <param name="headers">The headers associated with this response.</param>
+        /// <param name="data">The payload for this response.</param>
+        internal HttpResponse(HttpStatusCode code, WebHeaderCollection headers, string data)
+        {
+            StatusCode = code;
+            this.headers = headers;
+            Data = data;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HttpResponse"/> class.
+        /// </summary>
+        /// <param name="info">
+        /// The object which this HttpResponse will be deserialized from.
+        /// </param>
+        /// <param name="context">
+        /// The serialization context.
+        /// </param>
+        internal HttpResponse(SerializationInfo info, StreamingContext context)
+        {
+            headers = (WebHeaderCollection)info.GetValue("Headers", typeof(WebHeaderCollection));
+            Data = (string)info.GetValue("Data", typeof(string));
+            StatusCode = (HttpStatusCode)info.GetValue("StatusCode", typeof(HttpStatusCode));
+        }
+
         #endregion
 
         #region Implementation of IHttpResponse
@@ -87,5 +119,27 @@ namespace Klarna.Checkout.HTTP
         }
 
         #endregion
+
+        /// <summary>
+        /// Serializes this instance into the specified SerializationInfo object.
+        /// </summary>
+        /// <param name="info">
+        /// The object into which this HttpResponse will be serialized.
+        /// </param>
+        /// <param name="context">
+        /// The destination of the serialization.
+        /// </param>
+        void System.Runtime.Serialization.ISerializable.GetObjectData(
+            SerializationInfo info, StreamingContext context)
+        {
+            if (info == null)
+            {
+                throw new System.ArgumentNullException("info");
+            }
+
+            info.AddValue("Headers", headers);
+            info.AddValue("Data", Data);
+            info.AddValue("StatusCode", StatusCode);
+        }
     }
 }

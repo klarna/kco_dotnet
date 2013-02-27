@@ -29,9 +29,11 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Klarna AB")]
 [assembly: AssemblyProduct("Klarna.Checkout")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
+[assembly: AssemblyCopyright("Copyright © 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+
+[assembly: InternalsVisibleTo("Klarna.Checkout.Tests, PublicKey=0024000004800000940000000602000000240000525341310004000001000100cd3c4abf2e7e4b040329def5adc7abb07734aa28b294e713c63fc81412c36298df35bd6514c539afd298596150fe994837f12cf326d4cad746ece9c1cce2f433e03491e4c311aa6f9e481a13e51bad94b67f78fb50c9d5b143847c9edb6d3d51767d67e561eec1d8aeffcdbf06f52c42059809fc73f83a424307f55dc8f665cd")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -49,5 +51,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.1.0")]
+[assembly: AssemblyFileVersion("1.0.1.0")]

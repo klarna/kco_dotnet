@@ -88,7 +88,8 @@ namespace Klarna.Checkout
         /// <summary>
         /// Gets the transport used for the HTTP communications.
         /// </summary>
-        public IHttpTransport Transport {
+        public IHttpTransport Transport
+        {
             get
             {
                 return this.httpTransport;
@@ -150,11 +151,25 @@ namespace Klarna.Checkout
                 payLoad = JsonConvert.SerializeObject(resorceData);
             }
 
+            IHttpResponse response = null;
             var request = CreateRequest(resource, method, payLoad, url);
+            try
+            {
+                response = httpTransport.Send(request, payLoad);
 
-            var response = httpTransport.Send(request, payLoad);
+                return HandleResponse(response, method, resource, visitedUrl);
+            }
+            catch (WebException ex)
+            {
+                var message = ex.Message;
+                if (ex.Response != null)
+                {
+                    response = new HttpResponse((HttpWebResponse)ex.Response);
+                    message = response.StatusCode.ToString();
+                }
 
-            return HandleResponse(response, method, resource, visitedUrl);
+                throw CreateException(message, response, ex);
+            }
         }
 
         /// <summary>
@@ -280,10 +295,11 @@ namespace Klarna.Checkout
 
             var location = response.Header("Location");
             Uri url = null;
-            if (!String.IsNullOrEmpty(location))
+            if (!string.IsNullOrEmpty(location))
             {
                 url = new Uri(location);
             }
+
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK: // 200 - Update Data on resource.
@@ -339,13 +355,60 @@ namespace Klarna.Checkout
         private void VerifyResponse(IHttpResponse response)
         {
             var statusCode = (int)response.StatusCode;
-            if (statusCode >= 400 && statusCode <= 599)
+            if (statusCode < 400 || statusCode > 599)
             {
-                var exception = new ConnectorException();
-                exception.Data["HttpStatusCode"] = response.StatusCode;
-
-                throw exception;
+                return;
             }
+
+            throw CreateException(response.StatusCode.ToString(), response, null);
+        }
+
+        /// <summary>
+        /// Creates a connector exception and populates it.
+        /// </summary>
+        /// <param name="message">
+        /// The exception message.
+        /// </param>
+        /// <param name="response">
+        /// The response object that caused this exception.
+        /// </param>
+        /// <param name="ex">
+        /// The inner exception.
+        /// </param>
+        /// <returns>
+        /// A ConnectorException with the response data assigned.
+        /// </returns>
+        private ConnectorException CreateException(string message, IHttpResponse response, WebException ex)
+        {
+            var exception = new ConnectorException(message, ex);
+
+            if (response == null)
+            {
+                return exception;
+            }
+
+            var contentType = response.Header("Content-Type");
+            if (!string.IsNullOrEmpty(contentType)
+                && (contentType.EndsWith("+json") || contentType.Equals("application/json")))
+            {
+                try
+                {
+                    var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Data);
+                    foreach (KeyValuePair<string, object> kvp in data)
+                    {
+                        exception.Data[kvp.Key] = kvp.Value;
+                    }
+                }
+                catch (Exception)
+                {
+                    // Ignore the content if parsing it failed.
+                }
+            }
+
+            exception.Data["HttpStatusCode"] = response.StatusCode; // For backward compatibility.
+            exception.Data["Response"] = response;
+
+            return exception;
         }
 
         /// <summary>

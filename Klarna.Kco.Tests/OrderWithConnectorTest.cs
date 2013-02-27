@@ -77,7 +77,7 @@ namespace Klarna.Checkout.Tests
                 new Dictionary<string, object>
                     {
                         { "url", order.BaseUri },
-                        {"data", data}
+                        { "data", data }
                     };
             mockConnector.Setup(c => c.Apply(HttpMethod.Post, order, options)).Verifiable();
 
@@ -101,7 +101,7 @@ namespace Klarna.Checkout.Tests
                 new Dictionary<string, object>
                     {
                         { "url", order.BaseUri },
-                        {"data", data}
+                        { "data", data }
                     };
             mockConnector.Setup(c => c.Apply(HttpMethod.Post, order, options)).Verifiable();
 
@@ -140,7 +140,7 @@ namespace Klarna.Checkout.Tests
                 new Dictionary<string, object>
                     {
                         { "url", order.Location },
-                        {"data", data}
+                        { "data", data }
                     };
             mockConnector.Setup(c => c.Apply(HttpMethod.Post, order, options)).Verifiable();
 

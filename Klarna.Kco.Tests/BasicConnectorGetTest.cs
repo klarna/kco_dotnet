@@ -200,6 +200,7 @@ namespace Klarna.Checkout.Tests
             var code = (HttpStatusCode)ex.Data["HttpStatusCode"];
             Assert.That(code, Is.Not.Null);
             Assert.That((int)code, Is.EqualTo(503));
+            Assert.That(ex.Message, Is.EqualTo("ServiceUnavailable"));
 
             HttpTransportMock.Verify(t => t.CreateRequest(Url), Times.Once());
             HttpTransportMock.Verify(t => t.Send(request1, PayLoad), Times.Once());
@@ -258,6 +259,7 @@ namespace Klarna.Checkout.Tests
             var code = (HttpStatusCode)ex.Data["HttpStatusCode"];
             Assert.That(code, Is.Not.Null);
             Assert.That((int)code, Is.EqualTo(503));
+            Assert.That(ex.Message, Is.EqualTo("ServiceUnavailable"));
 
             HttpTransportMock.Verify(t => t.CreateRequest(Url), Times.Once());
             HttpTransportMock.Verify(t => t.Send(request1, PayLoad), Times.Once());

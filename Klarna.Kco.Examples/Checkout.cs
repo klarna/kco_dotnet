@@ -24,9 +24,10 @@ namespace Klarna.Kco.Examples
 {
     using System;
     using System.Collections.Generic;
-    using Newtonsoft.Json.Linq;
-
+    using System.Diagnostics;
+    using System.Net;
     using Klarna.Checkout;
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// The checkout example.
@@ -40,7 +41,7 @@ namespace Klarna.Kco.Examples
         {
             // Note! Please remove the code below when used in ASP.NET.
             // Just a placeholder in this example for, the HttpSessionState object, Session.
-            var Session = new Dictionary<string, object>();
+            var session = new Dictionary<string, object>();
 
             try
             {
@@ -80,10 +81,13 @@ namespace Klarna.Kco.Examples
                 Order order = null;
 
                 Uri resourceUri = null;
+
                 // Retrieve location from session object.
-                if (Session.ContainsKey("klarna_checkout")) {
-                    resourceUri = Session["klarna_checkout"] as Uri;
+                if (session.ContainsKey("klarna_checkout"))
+                {
+                    resourceUri = session["klarna_checkout"] as Uri;
                 }
+
                 if (resourceUri != null)
                 {
                     try
@@ -104,14 +108,13 @@ namespace Klarna.Kco.Examples
                     {
                         // Reset session
                         order = null;
-                        Session["klarna_checkout"] = null;
+                        session["klarna_checkout"] = null;
                     }
                 }
 
                 if (order == null)
                 {
                     // Start a new session
-
                     var merchant = new Dictionary<string, object>
                         {
                             { "id", Eid },
@@ -140,7 +143,7 @@ namespace Klarna.Kco.Examples
                                 { "purchase_country", "SE" },
                                 { "purchase_currency", "SEK" },
                                 { "locale", "sv-se" },
-                                { "merchant", merchant},
+                                { "merchant", merchant },
                                 { "cart", cart }
                             };
 
@@ -148,8 +151,7 @@ namespace Klarna.Kco.Examples
                         new Order(connector)
                             {
                                 BaseUri = new Uri(
-                                    "https://checkout.testdrive.klarna.com/checkout/orders"
-                                ),
+                                    "https://checkout.testdrive.klarna.com/checkout/orders"),
                                 ContentType = ContentType
                             };
 
@@ -158,7 +160,7 @@ namespace Klarna.Kco.Examples
                 }
 
                 // Store location of checkout session is session object.
-                Session["klarna_checkout"] = order.Location;
+                session["klarna_checkout"] = order.Location;
 
                 // Display checkout
                 var gui = order.GetValue("gui") as JObject;
@@ -170,11 +172,39 @@ namespace Klarna.Kco.Examples
                 // Use following in ASP.NET.
                 // Response.Write(string.Format("<div>{0}</div>", snippet));
             }
-            catch (Exception ex)
+            catch (ConnectorException ex)
             {
-                // Handle exception.
+                var webException = ex.InnerException as WebException;
+                if (webException != null)
+                {
+                    // Here you can check for timeouts, and other connection related errors.
+                    // webException.Response could contain the response object.
+                }
+                else
+                {
+                    // In case there wasn't a WebException where you could get the response
+                    // (e.g. a protocol error, bad digest, etc) you might still be able to
+                    // get a hold of the response object.
+                    // ex.Data["Response"] as IHttpResponse
+                }
+
+                // Additional data might be available in ex.Data.
+                if (ex.Data.Contains("internal_message"))
+                {
+                    // For instance, Content-Type application/vnd.klarna.error-v1+json has "internal_message".
+                    var internalMessage = (string)ex.Data["internal_message"];
+                    Debug.WriteLine(internalMessage);
+                }
+
+                throw;
+            }
+            catch (Exception)
+            {
+                // Something else went wrong, e.g. invalid arguments passed to the order object.
+                throw;
             }
         }
     }
 }
+
 // [[examples-checkout]]

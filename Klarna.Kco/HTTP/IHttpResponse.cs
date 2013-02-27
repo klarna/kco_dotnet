@@ -19,11 +19,12 @@
 namespace Klarna.Checkout.HTTP
 {
     using System.Net;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// The HttpResponse interface.
     /// </summary>
-    public interface IHttpResponse
+    public interface IHttpResponse : ISerializable
     {
         /// <summary>
         /// Gets the HTTP status code.
