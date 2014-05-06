@@ -19,6 +19,7 @@
 namespace Klarna.Checkout
 {
     using System;
+    using System.Reflection;
     using System.Collections.Generic;
     using System.Text;
     using Microsoft.Win32;
@@ -48,7 +49,7 @@ namespace Klarna.Checkout
         {
             fields = new List<KeyValuePair<string, Dictionary<string, object>>>();
 
-            AddField("Library", "Klarna.ApiWrapper", "1.0");
+            AddField("Library", "Klarna.ApiWrapper", Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
             var os = Environment.OSVersion;
             AddField("OS", os.Platform.ToString(), os.Version.ToString());
             AddField("Language", ".Net", Environment.Version.ToString());
