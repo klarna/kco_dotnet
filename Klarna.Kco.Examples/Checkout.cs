@@ -16,7 +16,7 @@
 //     limitations under the License.
 // </copyright>
 // <author>Klarna Support: support@klarna.com</author>
-// <link>http://integration.klarna.com/</link>
+// <link>http://developers.klarna.com/</link>
 // ----------------------------------------------------------------------------
 #endregion
 // [[examples-checkout]]
