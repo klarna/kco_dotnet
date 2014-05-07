@@ -8,10 +8,11 @@
     <owners>$author$</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
     <projectUrl>https://github.com/klarna/kco_dotnet.git</projectUrl>
+    <iconUrl>http://cdn.klarna.com/public/images/global/icons/v1/basic/global_basic_icon_std_blue.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>Releasing Klarna Checkout to NuGet</releaseNotes>
     <copyright>Copyright 2014</copyright>
-    <tags>Klarna Checkout</tags>
+    <tags>Klarna Checkout Payments SDK</tags>
   </metadata>
 </package>
