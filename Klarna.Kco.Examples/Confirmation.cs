@@ -49,7 +49,7 @@ namespace Klarna.Kco.Examples
                 // Use following in ASP.NET.
                 // var checkoutId = Session["klarna_checkout"] as Uri;
                 // Just a placeholder in this example.
-                var checkoutId = new Uri(
+                Uri checkoutId = new Uri(
                     "https://checkout.testdrive.klarna.com/checkout/orders/12");
 
                 var order = new Order(connector, checkoutId)
