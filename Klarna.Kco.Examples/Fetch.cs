@@ -40,7 +40,7 @@ namespace Klarna.Kco.Examples
             const string ContentType =
                 "application/vnd.klarna.checkout.aggregated-order-v2+json";
 
-            string resourceUri = "https://checkout.testdrive.klarna.com/checkout/orders/ABC123";
+            Uri resourceUri = new Uri("https://checkout.testdrive.klarna.com/checkout/orders/ABC123");
 
             const string SharedSecret = "sharedSecret";
             var connector = Connector.Create(SharedSecret);
