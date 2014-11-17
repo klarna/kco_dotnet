@@ -175,6 +175,32 @@ namespace Klarna.Checkout.Tests
         }
 
         /// <summary>
+        /// Tests that Apply uses accept in resource
+        /// </summary>
+        [Test]
+        public void ApplyAcceptInResource()
+        {
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+
+            ResourceMock.SetupProperty(r => r.Location, Url);
+            ResourceMock.SetupGet(r => r.Accept).Returns(Accept);
+
+            var request = (HttpWebRequest)WebRequest.Create(Url);
+            HttpTransportMock.Setup(t => t.CreateRequest(Url)).Returns(request);
+            ResponseMock.SetupGet(r => r.StatusCode).Returns(HttpStatusCode.OK);
+            ResponseMock.SetupGet(r => r.Data).Returns(PayLoad);
+            HttpTransportMock.Setup(t => t.Send(request, PayLoad)).Returns(ResponseMock.Object);
+
+            var options = new Dictionary<string, object>();
+            connector.Apply(HttpMethod.Get, ResourceMock.Object, options);
+
+            HttpTransportMock.Verify(t => t.CreateRequest(Url), Times.Once());
+            HttpTransportMock.Verify(t => t.Send(request, PayLoad), Times.Once());
+
+            Assert.That(request.Accept, Is.EqualTo(Accept));
+        }
+
+        /// <summary>
         /// Tests Apply with GET method, with status code that is expected to throw an
         /// exception.
         /// </summary>

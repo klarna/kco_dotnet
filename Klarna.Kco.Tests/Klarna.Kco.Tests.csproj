@@ -66,6 +66,7 @@
     <Compile Include="OrderTest.cs" />
     <Compile Include="OrderWithConnectorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RecurringOrderTest.cs" />
     <Compile Include="UserAgentTest.cs" />
   </ItemGroup>
   <ItemGroup>

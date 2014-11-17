@@ -42,6 +42,11 @@ namespace Klarna.Checkout.Tests
         protected const string ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json";
 
         /// <summary>
+        /// The accept type.
+        /// </summary>
+        protected const string Accept = "application/vnd.klarna.checkout.recurring­order­accepted­v1+json";
+
+        /// <summary>
         /// The url.
         /// </summary>
         protected readonly Uri Url = new Uri("http://klarna.com");
