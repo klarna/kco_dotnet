@@ -19,7 +19,6 @@
 // <link>http://integration.klarna.com/</link>
 // ----------------------------------------------------------------------------
 #endregion
-// [[examples-create]]
 namespace Klarna.Kco.Examples
 {
     using System;
@@ -91,7 +90,7 @@ namespace Klarna.Kco.Examples
                         { "purchase_country", "SE" },
                         { "purchase_currency", "SEK" },
                         { "locale", "sv-se" },
-                        { "merchant", merchant},
+                        { "merchant", merchant },
                         { "cart", cart }
                     };
 
@@ -106,4 +105,3 @@ namespace Klarna.Kco.Examples
         }
     }
 }
-// [[examples-create]]
