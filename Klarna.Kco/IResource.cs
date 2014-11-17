@@ -37,6 +37,11 @@ namespace Klarna.Checkout
         string ContentType { get; set; }
 
         /// <summary>
+        /// Gets or sets the accept of the resource.
+        /// </summary>
+        string Accept { get; set; }
+
+        /// <summary>
         /// Update resource with the new data.
         /// </summary>
         /// <param name="data">

@@ -260,7 +260,7 @@ namespace Klarna.Checkout
             var authorization = string.Format("Klarna {0}", digestString);
             request.Headers.Add("Authorization", authorization);
 
-            request.Accept = resource.ContentType;
+            request.Accept = (resource.Accept != null) ? resource.Accept : resource.ContentType;
 
             if (payLoad.Length > 0)
             {

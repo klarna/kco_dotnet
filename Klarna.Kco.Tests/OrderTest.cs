@@ -93,6 +93,7 @@ namespace Klarna.Checkout.Tests
             Assert.That(order.BaseUri, Is.Null);
             Assert.That(order.Location, Is.Null);
             Assert.That(order.ContentType, Is.Null);
+            Assert.That(order.Accept, Is.Null);
             var data = order.Marshal();
             Assert.That(data, Is.Empty);
         }
@@ -103,11 +104,13 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ConstructionWithResourceUri()
         {
-            order = new Order(mockConnector.Object, new Uri(Url));
+            var uri = new Uri(Url);
+            order = new Order(mockConnector.Object, uri);
 
             Assert.That(order.BaseUri, Is.Null);
-            Assert.That(order.Location, Is.EqualTo(new Uri(Url)));
+            Assert.That(order.Location, Is.EqualTo(uri));
             Assert.That(order.ContentType, Is.Null);
+            Assert.That(order.Accept, Is.Null);
             var data = order.Marshal();
             Assert.That(data, Is.Empty);
         }
@@ -123,6 +126,19 @@ namespace Klarna.Checkout.Tests
             Assert.That(order.ContentType, Is.Null);
             order.ContentType = ContentType;
             Assert.That(order.ContentType, Is.EqualTo(ContentType));
+        }
+
+        /// <summary>
+        /// Tests that accept is correct.
+        /// </summary>
+        [Test]
+        public void Accept()
+        {
+            const string Accept = "application/something-else";
+
+            Assert.That(order.Accept, Is.Null);
+            order.Accept = Accept;
+            Assert.That(order.Accept, Is.EqualTo(Accept));
         }
 
         /// <summary>

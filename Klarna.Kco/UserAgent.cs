@@ -19,8 +19,8 @@
 namespace Klarna.Checkout
 {
     using System;
-    using System.Reflection;
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Text;
     using Microsoft.Win32;
 

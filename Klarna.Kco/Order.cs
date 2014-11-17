@@ -27,22 +27,8 @@ namespace Klarna.Checkout
     /// <summary>
     /// The order resource.
     /// </summary>
-    public class Order : IResource
+    public class Order : Resource
     {
-        #region Private Fields
-
-        /// <summary>
-        /// The connector.
-        /// </summary>
-        private readonly IConnector connector;
-
-        /// <summary>
-        /// The data.
-        /// </summary>
-        private Dictionary<string, object> resourceData;
-
-        #endregion
-
         #region Construction
 
         /// <summary>
@@ -52,10 +38,10 @@ namespace Klarna.Checkout
         /// The connector to use.
         /// </param>
         public Order(IConnector connector)
+            : base(connector)
         {
-            resourceData = new Dictionary<string, object>();
-            this.connector = connector;
-            BaseUri = null;
+            this.BaseUri = null;
+            this.ResourceData = new Dictionary<string, object>();
         }
 
         /// <summary>
@@ -70,76 +56,7 @@ namespace Klarna.Checkout
         public Order(IConnector connector, Uri uri)
             : this(connector)
         {
-            Location = uri;
-        }
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// Gets or sets the base uri that is used to create order resources.
-        /// </summary>
-        public Uri BaseUri { get; set; }
-
-        #endregion
-
-        #region Implementation of IResource
-
-        /// <summary>
-        /// Gets or sets the uri of the resource.
-        /// </summary>
-        public Uri Location { get; set; }
-
-        /// <summary>
-        /// Gets or sets the content type of the resource.
-        /// </summary>
-        public string ContentType { get; set; }
-
-        /// <summary>
-        /// Replace resource with the new data.
-        /// </summary>
-        /// <param name="data">
-        /// The data.
-        /// </param>
-        public void Parse(Dictionary<string, object> data)
-        {
-            resourceData = data;
-        }
-
-        /// <summary>
-        /// Basic representation of the resource.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="object" />.
-        /// </returns>
-        public Dictionary<string, object> Marshal()
-        {
-            return resourceData;
-        }
-
-        #endregion
-
-        #region Resource Data Accessors
-
-        /// <summary>
-        /// Gets the value of a key.
-        /// </summary>
-        /// <param name="key">
-        /// The key.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// key is null.
-        /// </exception>
-        /// <exception cref="KeyNotFoundException">
-        /// key does not exist.
-        /// </exception>
-        /// <returns>
-        /// The <see cref="object" />.
-        /// </returns>
-        public object GetValue(string key)
-        {
-            return resourceData[key];
+            this.Location = uri;
         }
 
         #endregion
@@ -160,7 +77,7 @@ namespace Klarna.Checkout
                         { "url", BaseUri },
                         { "data", data }
                     };
-            connector.Apply(HttpMethod.Post, this, options);
+            Connector.Apply(HttpMethod.Post, this, options);
         }
 
         /// <summary>
@@ -173,7 +90,7 @@ namespace Klarna.Checkout
                     {
                         { "url", Location }
                     };
-            connector.Apply(HttpMethod.Get, this, options);
+            Connector.Apply(HttpMethod.Get, this, options);
         }
 
         /// <summary>
@@ -190,7 +107,7 @@ namespace Klarna.Checkout
                         { "url", Location },
                         { "data", data }
                     };
-            connector.Apply(HttpMethod.Post, this, options);
+            Connector.Apply(HttpMethod.Post, this, options);
         }
 
         #endregion
