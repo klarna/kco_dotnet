@@ -44,7 +44,7 @@ namespace Klarna.Checkout.Tests
         /// <summary>
         /// The accept type.
         /// </summary>
-        protected const string Accept = "application/vnd.klarna.checkout.recurring­order­accepted­v1+json";
+        protected const string Accept = "application/vnd.klarna.checkout.recurring-order-accepted-v1+json";
 
         /// <summary>
         /// The url.

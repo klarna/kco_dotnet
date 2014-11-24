@@ -27,7 +27,7 @@ namespace Klarna.Checkout.Tests
     using NUnit.Framework;
 
     /// <summary>
-    /// Tests the RecurringOrder class.
+    /// Tests the RecurringStatus class.
     /// </summary>
     [TestFixture]
     public class RecurringStatusTest
@@ -57,7 +57,7 @@ namespace Klarna.Checkout.Tests
         /// <summary>
         /// The order.
         /// </summary>
-        private RecurringOrder recurringOrder;
+        private RecurringStatus recurringStatus;
 
         /// <summary>
         /// The mocked connector.
@@ -75,7 +75,7 @@ namespace Klarna.Checkout.Tests
         public void SetUp()
         {
             mockConnector = new Mock<IConnector>();
-            recurringOrder = new RecurringOrder(mockConnector.Object);
+            recurringStatus = new RecurringStatus(mockConnector.Object);
         }
 
         #endregion
@@ -88,11 +88,11 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ConstructionWithConnector()
         {
-            Assert.That(recurringOrder.BaseUri, Is.Null);
-            Assert.That(recurringOrder.Location, Is.Null);
-            Assert.That(recurringOrder.ContentType, Is.Null);
-            Assert.That(recurringOrder.Accept, Is.Null);
-            var data = recurringOrder.Marshal();
+            Assert.That(recurringStatus.BaseUri, Is.Null);
+            Assert.That(recurringStatus.Location, Is.Null);
+            Assert.That(recurringStatus.ContentType, Is.Null);
+            Assert.That(recurringStatus.Accept, Is.Null);
+            var data = recurringStatus.Marshal();
             Assert.That(data, Is.Empty);
         }
 
@@ -104,9 +104,9 @@ namespace Klarna.Checkout.Tests
         {
             const string ContentType = "application/vnd.klarna.checkout.recurring-status-v1+json";
 
-            Assert.That(recurringOrder.ContentType, Is.Null);
-            recurringOrder.ContentType = ContentType;
-            Assert.That(recurringOrder.ContentType, Is.EqualTo(ContentType));
+            Assert.That(recurringStatus.ContentType, Is.Null);
+            recurringStatus.ContentType = ContentType;
+            Assert.That(recurringStatus.ContentType, Is.EqualTo(ContentType));
         }
 
         /// <summary>
@@ -117,9 +117,9 @@ namespace Klarna.Checkout.Tests
         {
             const string Accept = "application/vnd.klarna.checkout.recurring-status-v1+json";
 
-            Assert.That(recurringOrder.Accept, Is.Null);
-            recurringOrder.Accept = Accept;
-            Assert.That(recurringOrder.Accept, Is.EqualTo(Accept));
+            Assert.That(recurringStatus.Accept, Is.Null);
+            recurringStatus.Accept = Accept;
+            Assert.That(recurringStatus.Accept, Is.EqualTo(Accept));
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void LocationNull()
         {
-            Assert.That(recurringOrder.Location, Is.Null);
+            Assert.That(recurringStatus.Location, Is.Null);
         }
 
         /// <summary>
@@ -137,9 +137,9 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void LocationSetGet()
         {
-            Assert.That(recurringOrder.Location, Is.Null);
-            recurringOrder.Location = new Uri(Url);
-            Assert.That(recurringOrder.Location, Is.EqualTo(new Uri(Url)));
+            Assert.That(recurringStatus.Location, Is.Null);
+            recurringStatus.Location = new Uri(Url);
+            Assert.That(recurringStatus.Location, Is.EqualTo(new Uri(Url)));
         }
 
         /// <summary>
@@ -148,9 +148,9 @@ namespace Klarna.Checkout.Tests
         public void Parse()
         {
             var newData = TestData();
-            recurringOrder.Parse(newData);
+            recurringStatus.Parse(newData);
 
-            var data = recurringOrder.Marshal();
+            var data = recurringStatus.Marshal();
 
             Assert.That(data, Is.EqualTo(newData));
         }
@@ -162,9 +162,9 @@ namespace Klarna.Checkout.Tests
         public void Marshal()
         {
             var newData = TestData();
-            recurringOrder.Parse(newData);
+            recurringStatus.Parse(newData);
 
-            var data = recurringOrder.Marshal();
+            var data = recurringStatus.Marshal();
             Assert.That(data, Is.TypeOf<Dictionary<string, object>>());
             Assert.That(data["Int"], Is.TypeOf<int>());
             Assert.That((int)data["Int"], Is.EqualTo(TheInt));
@@ -181,17 +181,17 @@ namespace Klarna.Checkout.Tests
         public void ValuesGet()
         {
             var data = TestData();
-            recurringOrder.Parse(data);
+            recurringStatus.Parse(data);
 
-            var intData = recurringOrder.GetValue("Int");
+            var intData = recurringStatus.GetValue("Int");
             Assert.That(intData, Is.TypeOf<int>());
             Assert.That((int)intData, Is.EqualTo(TheInt));
 
-            var stringData = recurringOrder.GetValue("String");
+            var stringData = recurringStatus.GetValue("String");
             Assert.That(stringData, Is.TypeOf<string>());
             Assert.That(stringData, Is.EqualTo(TheString));
 
-            var dateTimeData = recurringOrder.GetValue("DateTime");
+            var dateTimeData = recurringStatus.GetValue("DateTime");
             Assert.That(dateTimeData, Is.TypeOf<DateTime>());
             Assert.That((DateTime)dateTimeData, Is.EqualTo(theDateTime));
         }
@@ -202,8 +202,8 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ValuesGetExeption()
         {
-            Assert.Throws<ArgumentNullException>(() => recurringOrder.GetValue(null));
-            Assert.Throws<KeyNotFoundException>(() => recurringOrder.GetValue("NonExistingKey"));
+            Assert.Throws<ArgumentNullException>(() => recurringStatus.GetValue(null));
+            Assert.Throws<KeyNotFoundException>(() => recurringStatus.GetValue("NonExistingKey"));
         }
 
         #endregion

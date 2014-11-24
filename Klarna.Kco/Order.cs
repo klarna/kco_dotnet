@@ -71,13 +71,13 @@ namespace Klarna.Checkout
         /// </param>
         public void Create(Dictionary<string, object> data)
         {
-            var options =
-                new Dictionary<string, object>
-                    {
-                        { "url", BaseUri },
-                        { "data", data }
-                    };
-            Connector.Apply(HttpMethod.Post, this, options);
+            var options = new Dictionary<string, object>
+                {
+                    { "url", BaseUri },
+                    { "data", data }
+                };
+
+            this.Connector.Apply(HttpMethod.Post, this, options);
         }
 
         /// <summary>
@@ -85,12 +85,12 @@ namespace Klarna.Checkout
         /// </summary>
         public void Fetch()
         {
-            var options =
-                new Dictionary<string, object>
-                    {
-                        { "url", Location }
-                    };
-            Connector.Apply(HttpMethod.Get, this, options);
+            var options = new Dictionary<string, object>
+                {
+                    { "url", Location }
+                };
+
+            this.Connector.Apply(HttpMethod.Get, this, options);
         }
 
         /// <summary>
@@ -101,13 +101,13 @@ namespace Klarna.Checkout
         /// </param>
         public void Update(Dictionary<string, object> data)
         {
-            var options =
-                new Dictionary<string, object>
-                    {
-                        { "url", Location },
-                        { "data", data }
-                    };
-            Connector.Apply(HttpMethod.Post, this, options);
+            var options = new Dictionary<string, object>
+                {
+                    { "url", Location },
+                    { "data", data }
+                };
+
+            this.Connector.Apply(HttpMethod.Post, this, options);
         }
 
         #endregion

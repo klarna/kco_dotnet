@@ -61,17 +61,15 @@ namespace Klarna.Kco.Examples
                     // At this point make sure the order is created in your
                     // system and send a confirmation email to the customer.
                     var uniqueId = Guid.NewGuid().ToString("N");
-                    var reference =
-                        new Dictionary<string, object>
-                            {
-                                { "orderid1", uniqueId }
-                            };
-                    var data =
-                        new Dictionary<string, object>
-                            {
-                                { "status", "created" },
-                                { "merchant_reference", reference }
-                            };
+                    var reference = new Dictionary<string, object>
+                        {
+                            { "orderid1", uniqueId }
+                        };
+                    var data = new Dictionary<string, object>
+                        {
+                            { "status", "created" },
+                            { "merchant_reference", reference }
+                        };
 
                     order.Update(data);
                 }

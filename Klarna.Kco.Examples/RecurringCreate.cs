@@ -44,10 +44,10 @@ namespace Klarna.Kco.Examples
              resource and retrieve the "recurring_token" property which is needed to create recurring orders.
              */
 
-            const string Accept = "application/vnd.klarna.checkout.recurring­-order-­accepted-­v1+json";
-            const string ContentType = "application/vnd.klarna.checkout.recurring-­order­-v1+json";
-            const string Eid = "2";
-            const string SharedSecret = "dr.alban";
+            const string Accept = "application/vnd.klarna.checkout.recurring-order-accepted-v1+json";
+            const string ContentType = "application/vnd.klarna.checkout.recurring-order-v1+json";
+            const string Eid = "0";
+            const string SharedSecret = "sharedSecret";
 
             // Set optional merchant reference ids. Like internal order or customer id
             var merchant_reference = new Dictionary<string, object>
@@ -97,9 +97,10 @@ namespace Klarna.Kco.Examples
                     { "phone", "070 111 11 11" }
                 };
 
-            // If the order should be activated automatically and have an invoice.
-            // Set to false if you instead want a reservation created for the reccurring order.
-            var activated = true;
+            // If the order should be activated automatically.
+            // Set to true if you instead want a invoice created
+            // otherwise you will get a reservation.
+            var activate = false;
 
             var data = new Dictionary<string, object>
                 {
@@ -109,7 +110,7 @@ namespace Klarna.Kco.Examples
                     { "merchant", merchant },
                     { "merchant_reference", merchant_reference },
                     { "cart", cart },
-                    { "activated", activated },
+                    { "activate", activate },
                     { "billing_address", address },
                     { "shipping_address", address }
                 };
@@ -117,7 +118,7 @@ namespace Klarna.Kco.Examples
             RecurringOrder order = null;
             var connector = Connector.Create(SharedSecret);
             string uri = "https://checkout.testdrive.klarna.com/checkout/recurring/{0}/orders";
-            string recurring_token = "ABC123";
+            string recurring_token = "ABC-123";
 
             try
             {
@@ -130,12 +131,22 @@ namespace Klarna.Kco.Examples
 
                 order.Create(data);
 
-                // If the recurring order was set to be activated we can retrieve the invoice number
-                var invoice = order.GetValue("invoice");
+                var result = order.Marshal();
+                string number = null;
 
-                // Otherwise if activated was set to false we could've gotten the reservation number
-                // instead like this:
-                // var reservation = RecurringOrder.GetValue("reservation");
+                // If the recurring order wasn't activated we should have a reservation number
+                if (result.ContainsKey("reservation"))
+                {
+                    number = (string)result["reservation"];
+                }
+
+                // If the recurring order was activated we should have an invoice number
+                if (result.ContainsKey("invoice"))
+                {
+                    number = (string)result["invoice"];
+                }
+
+                Debug.Print(number);
             }
             catch (ConnectorException ex)
             {
@@ -163,7 +174,7 @@ namespace Klarna.Kco.Examples
 
                 if (ex.Data.Contains("reason"))
                 {
-                    // For instance, Content-Type application/vnd.klarna.checkout.recurring-­order-­rejected-­v1+json
+                    // For instance, Content-Type application/vnd.klarna.checkout.recurring-order-rejected-v1+json
                     // has "reason".
                     var reason = (string)ex.Data["reason"];
                     Debug.WriteLine(reason);

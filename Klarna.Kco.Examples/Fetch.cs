@@ -23,7 +23,6 @@ namespace Klarna.Kco.Examples
 {
     using System;
     using System.Collections.Generic;
-
     using Klarna.Checkout;
 
     /// <summary>
@@ -36,8 +35,7 @@ namespace Klarna.Kco.Examples
         /// </summary>
         public void Example()
         {
-            const string ContentType =
-                "application/vnd.klarna.checkout.aggregated-order-v2+json";
+            const string ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json";
 
             Uri resourceUri = new Uri("https://checkout.testdrive.klarna.com/checkout/orders/ABC123");
 

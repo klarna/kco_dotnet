@@ -45,12 +45,13 @@ namespace Klarna.Kco.Examples
              */
 
             const string ContentType = "application/vnd.klarna.checkout.recurring-status-v1+json";
-            const string SharedSecret = "dr.alban";
+            const string SharedSecret = "sharedSecret";
 
             RecurringStatus status = null;
             var connector = Connector.Create(SharedSecret);
+
             string uri = "https://checkout.testdrive.klarna.com/checkout/recurring/{0}";
-            string recurring_token = "ABC123";
+            string recurring_token = "ABC-123";
 
             try
             {
@@ -63,7 +64,14 @@ namespace Klarna.Kco.Examples
                 status.Fetch();
 
                 // Get the payment method details
-                var payment_method = status.GetValue("payment_method");
+                var payment_method = status.GetValue("payment_method") as Dictionary<string, object>;
+
+                // Find out what type of payment method, can be either "invoice" or "credit_card".
+                string type = payment_method["type"] as string;
+
+                Debug.Print(type);
+
+                // If the type was "credit_card" there will also be a "credit_card_data" property.
             }
             catch (ConnectorException ex)
             {
@@ -91,7 +99,7 @@ namespace Klarna.Kco.Examples
 
                 if (ex.Data.Contains("reason"))
                 {
-                    // For instance, Content-Type application/vnd.klarna.checkout.recurring-­order-­rejected­-v1+json
+                    // For instance, Content-Type application/vnd.klarna.checkout.recurring-order-rejected-v1+json
                     // has "reason".
                     var reason = (string)ex.Data["reason"];
                     Debug.WriteLine(reason);

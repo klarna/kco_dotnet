@@ -23,7 +23,6 @@ namespace Klarna.Kco.Examples
 {
     using System;
     using System.Collections.Generic;
-
     using Klarna.Checkout;
 
     /// <summary>
@@ -36,34 +35,32 @@ namespace Klarna.Kco.Examples
         /// </summary>
         public void Example()
         {
-            const string ContentType =
-                "application/vnd.klarna.checkout.aggregated-order-v2+json";
+            const string ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json";
 
             Uri resourceUri = new Uri("https://checkout.testdrive.klarna.com/checkout/orders/ABC123");
 
-            // Cart
-            var cartItems = new List<Dictionary<string, object>>
-                    {
-                        new Dictionary<string, object>
-                            {
-                                { "reference", "123456789" },
-                                { "name", "Klarna t-shirt" },
-                                { "quantity", 2 },
-                                { "unit_price", 12300 },
-                                { "discount_rate", 1000 },
-                                { "tax_rate", 2500 }
-                            },
-                        new Dictionary<string, object>
-                            {
-                                { "type", "shipping_fee" },
-                                { "reference", "SHIPPING" },
-                                { "name", "Shipping Fee" },
-                                { "quantity", 1 },
-                                { "unit_price", 4900 },
-                                { "tax_rate", 2500 }
-                            }
-                    };
-            var cart = new Dictionary<string, object> { { "items", cartItems } };
+            var items = new List<Dictionary<string, object>>
+                {
+                    new Dictionary<string, object>
+                        {
+                            { "reference", "123456789" },
+                            { "name", "Klarna t-shirt" },
+                            { "quantity", 2 },
+                            { "unit_price", 12300 },
+                            { "discount_rate", 1000 },
+                            { "tax_rate", 2500 }
+                        },
+                    new Dictionary<string, object>
+                        {
+                            { "type", "shipping_fee" },
+                            { "reference", "SHIPPING" },
+                            { "name", "Shipping Fee" },
+                            { "quantity", 1 },
+                            { "unit_price", 4900 },
+                            { "tax_rate", 2500 }
+                        }
+                };
+            var cart = new Dictionary<string, object> { { "items", items } };
 
             const string SharedSecret = "sharedSecret";
             var connector = Connector.Create(SharedSecret);
