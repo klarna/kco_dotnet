@@ -142,7 +142,7 @@ namespace Klarna.Checkout.Tests
         }
 
         /// <summary>
-        /// Tests that the location not is initialized.
+        /// Tests that the location is not initialized.
         /// </summary>
         [Test]
         public void LocationNull()
@@ -237,14 +237,12 @@ namespace Klarna.Checkout.Tests
         /// </returns>
         private Dictionary<string, object> TestData()
         {
-            var data = new Dictionary<string, object>
-                           {
-                               { "Int", TheInt },
-                               { "String", TheString },
-                               { "DateTime", this.theDateTime }
-                           };
-
-            return data;
+            return new Dictionary<string, object>
+                {
+                    { "Int", TheInt },
+                    { "String", TheString },
+                    { "DateTime", this.theDateTime }
+                };
         }
 
         #endregion

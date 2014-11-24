@@ -183,6 +183,7 @@ namespace Klarna.Checkout.Tests
             var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
 
             ResourceMock.SetupProperty(r => r.Location, Url);
+            ResourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
             ResourceMock.SetupGet(r => r.Accept).Returns(Accept);
 
             var request = (HttpWebRequest)WebRequest.Create(Url);
