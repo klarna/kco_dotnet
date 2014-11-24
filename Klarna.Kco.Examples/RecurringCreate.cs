@@ -49,6 +49,7 @@ namespace Klarna.Kco.Examples
             const string Eid = "2";
             const string SharedSecret = "dr.alban";
 
+            // Set optional merchant reference ids. Like internal order or customer id
             var merchant_reference = new Dictionary<string, object>
                 {
                     { "id1", "123456789" },
