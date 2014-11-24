@@ -102,7 +102,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ContentType()
         {
-            const string ContentType = "application/vnd.klarna.checkout.recurring­order­v1+json";
+            const string ContentType = "application/vnd.klarna.checkout.recurring-order-v1+json";
 
             Assert.That(recurringOrder.ContentType, Is.Null);
             recurringOrder.ContentType = ContentType;
@@ -115,7 +115,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void Accept()
         {
-            const string Accept = "application/vnd.klarna.checkout.recurring­order­accepted­v1+json";
+            const string Accept = "application/vnd.klarna.checkout.recurring-order-accepted-v1+json";
 
             Assert.That(recurringOrder.Accept, Is.Null);
             recurringOrder.Accept = Accept;

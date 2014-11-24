@@ -59,6 +59,7 @@
     <Compile Include="BasicConnectorTestBase.cs" />
     <Compile Include="BasicConnectorPostTest.cs" />
     <Compile Include="ConnectorTest.cs" />
+    <Compile Include="RecurringStatusTest.cs" />
     <Compile Include="DigestTest.cs" />
     <Compile Include="HTTP\BasicHttpTransportTest.cs" />
     <Compile Include="HTTP\HttpResponseTest.cs" />

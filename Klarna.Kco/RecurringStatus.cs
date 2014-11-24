@@ -1,6 +1,6 @@
 ﻿#region Copyright Header
 // ----------------------------------------------------------------------------
-// <copyright file="RecurringOrder.cs" company="Klarna AB">
+// <copyright file="RecurringStatus.cs" company="Klarna AB">
 //     Copyright 2012 Klarna AB
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
@@ -23,17 +23,17 @@ namespace Klarna.Checkout
     using System.Text;
 
     /// <summary>
-    /// The recurring order resource.
+    /// The recurring order status resource.
     /// </summary>
-    public class RecurringOrder : Resource
+    public class RecurringStatus : Resource
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RecurringOrder" /> class.
+        /// Initializes a new instance of the <see cref="RecurringStatus" /> class.
         /// </summary>
         /// <param name="connector">
         /// The connector to use.
         /// </param>
-        public RecurringOrder(IConnector connector)
+        public RecurringStatus(IConnector connector)
             : base(connector)
         {
             this.BaseUri = null;
@@ -41,20 +41,16 @@ namespace Klarna.Checkout
         }
 
         /// <summary>
-        /// Creates a new order, using the uri in BaseUri.
+        /// Get the payment details status of a recurring order, using the uri in BaseUri
         /// </summary>
-        /// <param name="data">
-        /// The order data.
-        /// </param>
-        public void Create(Dictionary<string, object> data)
+        public void Fetch()
         {
             var options = new Dictionary<string, object>
                 {
-                    { "url", BaseUri },
-                    { "data", data }
+                    { "url", BaseUri }
                 };
 
-            this.Connector.Apply(HttpMethod.Post, this, options);
+            this.Connector.Apply(HttpMethod.Get, this, options);
         }
     }
 }
