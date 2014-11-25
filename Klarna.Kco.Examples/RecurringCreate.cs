@@ -52,8 +52,8 @@ namespace Klarna.Kco.Examples
             // Set optional merchant reference ids. Like internal order or customer id
             var merchant_reference = new Dictionary<string, object>
                 {
-                    { "id1", "123456789" },
-                    { "id2", "987654321" }
+                    { "orderid1", "123456789" },
+                    { "orderid2", "987654321" }
                 };
 
             var merchant = new Dictionary<string, object>
