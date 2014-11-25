@@ -60,7 +60,7 @@ namespace Klarna.Checkout.Tests
         [SetUp]
         public void SetUp()
         {
-            this.status = new RecurringStatus(this.MockConnector.Object);
+            this.status = new RecurringStatus(this.MockConnector.Object, null);
         }
 
         #endregion
@@ -73,9 +73,8 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void Fetch()
         {
-            this.status.BaseUri = new Uri("http://klarna.com/foo/bar/15");
-
-            var options = new Dictionary<string, object> { { "url", this.status.BaseUri } };
+            this.status.Location = new Uri(TheUrl);
+            var options = new Dictionary<string, object> { { "url", this.status.Location } };
             MockConnector.Setup(c => c.Apply(HttpMethod.Get, this.status, options)).Verifiable();
             this.status.Fetch();
 

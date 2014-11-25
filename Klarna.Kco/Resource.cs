@@ -99,7 +99,7 @@ namespace Klarna.Checkout
         /// </returns>
         public object GetValue(string key)
         {
-            return ResourceData[key];
+            return this.ResourceData[key];
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Klarna.Checkout
         /// </param>
         public virtual void Parse(Dictionary<string, object> data)
         {
-            ResourceData = data;
+            this.ResourceData = data;
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace Klarna.Checkout
         /// </returns>
         public virtual Dictionary<string, object> Marshal()
         {
-            return ResourceData;
+            return this.ResourceData;
         }
 
         #endregion

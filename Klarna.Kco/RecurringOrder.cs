@@ -41,7 +41,7 @@ namespace Klarna.Checkout
         }
 
         /// <summary>
-        /// Creates a new order, using the uri in BaseUri.
+        /// Creates a new recurring order, using the uri in BaseUri.
         /// </summary>
         /// <param name="data">
         /// The order data.
@@ -50,7 +50,7 @@ namespace Klarna.Checkout
         {
             var options = new Dictionary<string, object>
                 {
-                    { "url", BaseUri },
+                    { "url", this.BaseUri },
                     { "data", data }
                 };
 

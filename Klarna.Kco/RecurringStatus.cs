@@ -33,10 +33,14 @@ namespace Klarna.Checkout
         /// <param name="connector">
         /// The connector to use.
         /// </param>
-        public RecurringStatus(IConnector connector)
+        /// <param name="uri">
+        /// The uri of the resource.
+        /// </param>
+        public RecurringStatus(IConnector connector, Uri uri)
             : base(connector)
         {
             this.BaseUri = null;
+            this.Location = uri;
             this.ResourceData = new Dictionary<string, object>();
         }
 
@@ -47,7 +51,7 @@ namespace Klarna.Checkout
         {
             var options = new Dictionary<string, object>
                 {
-                    { "url", BaseUri }
+                    { "url", this.Location }
                 };
 
             this.Connector.Apply(HttpMethod.Get, this, options);

@@ -73,7 +73,7 @@ namespace Klarna.Checkout
         {
             var options = new Dictionary<string, object>
                 {
-                    { "url", BaseUri },
+                    { "url", this.BaseUri },
                     { "data", data }
                 };
 
@@ -87,7 +87,7 @@ namespace Klarna.Checkout
         {
             var options = new Dictionary<string, object>
                 {
-                    { "url", Location }
+                    { "url", this.Location }
                 };
 
             this.Connector.Apply(HttpMethod.Get, this, options);
@@ -103,7 +103,7 @@ namespace Klarna.Checkout
         {
             var options = new Dictionary<string, object>
                 {
-                    { "url", Location },
+                    { "url", this.Location },
                     { "data", data }
                 };
 

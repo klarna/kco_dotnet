@@ -55,9 +55,8 @@ namespace Klarna.Kco.Examples
 
             try
             {
-                status = new RecurringStatus(connector)
+                status = new RecurringStatus(connector, new Uri(string.Format(uri, recurring_token)))
                     {
-                        BaseUri = new Uri(string.Format(uri, recurring_token)),
                         ContentType = ContentType
                     };
 
