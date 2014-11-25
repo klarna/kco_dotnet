@@ -23,52 +23,36 @@ namespace Klarna.Checkout.Tests
 {
     using System;
     using System.Collections.Generic;
-
     using Moq;
-
     using NUnit.Framework;
 
     /// <summary>
     /// Tests the Order class.
     /// </summary>
     [TestFixture]
-    public class OrderTest
+    public class OrderTest : ResourceBaseTest
     {
-        #region Private Fields
+        #region Properties
 
         /// <summary>
-        /// Data used in tests.
-        /// </summary>
-        private const string Url = "http://klarna.com";
-
-        /// <summary>
-        /// Data used in tests.
-        /// </summary>
-        private const int TheInt = 89;
-
-        /// <summary>
-        /// Data used in tests.
-        /// </summary>
-        private const string TheString = "A string";
-
-        /// <summary>
-        /// Data used in tests.
-        /// </summary>
-        private readonly DateTime theDateTime = new DateTime(2012, 10, 14, 22, 53, 12);
-
-        /// <summary>
-        /// The order.
+        /// The real resource under testing
         /// </summary>
         private Order order;
 
         /// <summary>
-        /// The mocked connector.
+        /// Gets the resource under testing
         /// </summary>
-        private Mock<IConnector> mockConnector;
+        public override Resource Resource
+        {
+            get
+            {
+                return this.order;
+            }
+        }
 
         #endregion
 
-        #region Set Up
+        #region SetUp
 
         /// <summary>
         /// The set up before each test.
@@ -76,8 +60,7 @@ namespace Klarna.Checkout.Tests
         [SetUp]
         public void SetUp()
         {
-            mockConnector = new Mock<IConnector>();
-            order = new Order(mockConnector.Object);
+            this.order = new Order(this.MockConnector.Object);
         }
 
         #endregion
@@ -85,164 +68,77 @@ namespace Klarna.Checkout.Tests
         #region Tests
 
         /// <summary>
-        /// The construction with connector.
+        /// Tests that Create works correctly.
         /// </summary>
         [Test]
-        public void ConstructionWithConnector()
+        public void Create()
         {
-            Assert.That(order.BaseUri, Is.Null);
-            Assert.That(order.Location, Is.Null);
-            Assert.That(order.ContentType, Is.Null);
-            Assert.That(order.Accept, Is.Null);
-            var data = order.Marshal();
-            Assert.That(data, Is.Empty);
-        }
-
-        /// <summary>
-        /// The construction with resource uri.
-        /// </summary>
-        [Test]
-        public void ConstructionWithResourceUri()
-        {
-            var uri = new Uri(Url);
-            order = new Order(mockConnector.Object, uri);
-
-            Assert.That(order.BaseUri, Is.Null);
-            Assert.That(order.Location, Is.EqualTo(uri));
-            Assert.That(order.ContentType, Is.Null);
-            Assert.That(order.Accept, Is.Null);
-            var data = order.Marshal();
-            Assert.That(data, Is.Empty);
-        }
-
-        /// <summary>
-        /// Tests that the content type is correct.
-        /// </summary>
-        [Test]
-        public void ContentType()
-        {
-            const string ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json";
-
-            Assert.That(order.ContentType, Is.Null);
-            order.ContentType = ContentType;
-            Assert.That(order.ContentType, Is.EqualTo(ContentType));
-        }
-
-        /// <summary>
-        /// Tests that accept is correct.
-        /// </summary>
-        [Test]
-        public void Accept()
-        {
-            const string Accept = "application/something-else";
-
-            Assert.That(order.Accept, Is.Null);
-            order.Accept = Accept;
-            Assert.That(order.Accept, Is.EqualTo(Accept));
-        }
-
-        /// <summary>
-        /// Tests that the location is not initialized.
-        /// </summary>
-        [Test]
-        public void LocationNull()
-        {
-            Assert.That(order.Location, Is.Null);
-        }
-
-        /// <summary>
-        /// Tests set/get location.
-        /// </summary>
-        [Test]
-        public void LocationSetGet()
-        {
-            Assert.That(order.Location, Is.Null);
-            order.Location = new Uri(Url);
-            Assert.That(order.Location, Is.EqualTo(new Uri(Url)));
-        }
-
-        /// <summary>
-        /// Tests that parse works correctly.
-        /// </summary>
-        public void Parse()
-        {
-            var newData = TestData();
-            order.Parse(newData);
-
-            var data = order.Marshal();
-
-            Assert.That(data, Is.EqualTo(newData));
-        }
-
-        /// <summary>
-        /// Tests that marshal works correctly.
-        /// </summary>
-        [Test]
-        public void Marshal()
-        {
-            var newData = TestData();
-            order.Parse(newData);
-
-            var data = order.Marshal();
-            Assert.That(data, Is.TypeOf<Dictionary<string, object>>());
-            Assert.That(data["Int"], Is.TypeOf<int>());
-            Assert.That((int)data["Int"], Is.EqualTo(TheInt));
-            Assert.That(data["String"], Is.TypeOf<string>());
-            Assert.That(data["String"], Is.EqualTo(TheString));
-            Assert.That(data["DateTime"], Is.TypeOf<DateTime>());
-            Assert.That((DateTime)data["DateTime"], Is.EqualTo(theDateTime));
-        }
-
-        /// <summary>
-        /// Tests set/get values.
-        /// </summary>
-        [Test]
-        public void ValuesGet()
-        {
-            var data = TestData();
-            order.Parse(data);
-
-            var intData = order.GetValue("Int");
-            Assert.That(intData, Is.TypeOf<int>());
-            Assert.That((int)intData, Is.EqualTo(TheInt));
-
-            var stringData = order.GetValue("String");
-            Assert.That(stringData, Is.TypeOf<string>());
-            Assert.That(stringData, Is.EqualTo(TheString));
-
-            var dateTimeData = order.GetValue("DateTime");
-            Assert.That(dateTimeData, Is.TypeOf<DateTime>());
-            Assert.That((DateTime)dateTimeData, Is.EqualTo(theDateTime));
-        }
-
-        /// <summary>
-        /// Tests that get value with null key or a non-existing key throws an exception.
-        /// </summary>
-        [Test]
-        public void ValuesGetExeption()
-        {
-            Assert.Throws<ArgumentNullException>(() => order.GetValue(null));
-            Assert.Throws<KeyNotFoundException>(() => order.GetValue("NonExistingKey"));
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        /// Creates test data.
-        /// </summary>
-        /// <returns>
-        /// The new test data.
-        /// </returns>
-        private Dictionary<string, object> TestData()
-        {
-            return new Dictionary<string, object>
+            var data = new Dictionary<string, object> { { "foo", "boo" } };
+            var options = new Dictionary<string, object>
                 {
-                    { "Int", TheInt },
-                    { "String", TheString },
-                    { "DateTime", this.theDateTime }
+                    { "url", this.order.BaseUri },
+                    { "data", data }
                 };
+            this.MockConnector.Setup(c => c.Apply(HttpMethod.Post, this.order, options)).Verifiable();
+
+            this.order.Create(data);
+
+            this.MockConnector.Verify();
+        }
+
+        /// <summary>
+        /// Tests the Create with alternative entry point works correctly.
+        /// </summary>
+        [Test]
+        public void CreateAlternativeEntryPoint()
+        {
+            this.order.BaseUri = new Uri("https://checkout.klarna.com/beta/checkout/orders");
+            var data = new Dictionary<string, object> { { "foo", "boo" } };
+            var options = new Dictionary<string, object>
+                {
+                    { "url", this.order.BaseUri },
+                    { "data", data }
+                };
+            this.MockConnector.Setup(c => c.Apply(HttpMethod.Post, this.order, options)).Verifiable();
+
+            this.order.Create(data);
+
+            this.MockConnector.Verify();
+        }
+
+        /// <summary>
+        /// Tests that Fetch works correctly.
+        /// </summary>
+        [Test]
+        public void Fetch()
+        {
+            this.order.Location = new Uri("http://klarna.com/foo/bar/15");
+            var options = new Dictionary<string, object> { { "url", this.order.Location } };
+            this.MockConnector.Setup(c => c.Apply(HttpMethod.Get, this.order, options)).Verifiable();
+
+            this.order.Fetch();
+
+            this.MockConnector.Verify();
+        }
+
+        /// <summary>
+        /// Tests that Update works correctly.
+        /// </summary>
+        [Test]
+        public void Update()
+        {
+            this.order.Location = new Uri("http://klarna.com/foo/bar/15");
+            var data = new Dictionary<string, object> { { "foo", "bar" } };
+            var options = new Dictionary<string, object>
+                {
+                    { "url", this.order.Location },
+                    { "data", data }
+                };
+            this.MockConnector.Setup(c => c.Apply(HttpMethod.Post, this.order, options)).Verifiable();
+
+            this.order.Update(data);
+
+            this.MockConnector.Verify();
         }
 
         #endregion

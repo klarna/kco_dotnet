@@ -30,43 +30,29 @@ namespace Klarna.Checkout.Tests
     /// Tests the RecurringOrder class.
     /// </summary>
     [TestFixture]
-    public class RecurringOrderTest
+    public class RecurringOrderTest : ResourceBaseTest
     {
-        #region Private Properties
+        #region Properties
 
         /// <summary>
-        /// Data used in tests.
+        /// The real resource under testing
         /// </summary>
-        private const string Url = "http://klarna.com";
+        private RecurringOrder recurring;
 
         /// <summary>
-        /// Data used in tests.
+        /// Gets the resource under testing
         /// </summary>
-        private const int TheInt = 89;
-
-        /// <summary>
-        /// Data used in tests.
-        /// </summary>
-        private const string TheString = "A string";
-
-        /// <summary>
-        /// Data used in tests.
-        /// </summary>
-        private readonly DateTime theDateTime = new DateTime(2012, 10, 14, 22, 53, 12);
-
-        /// <summary>
-        /// The order.
-        /// </summary>
-        private RecurringOrder recurringOrder;
-
-        /// <summary>
-        /// The mocked connector.
-        /// </summary>
-        private Mock<IConnector> mockConnector;
+        public override Resource Resource
+        {
+            get
+            {
+                return this.recurring;
+            }
+        }
 
         #endregion
 
-        #region Set Up
+        #region SetUp
 
         /// <summary>
         /// The set up before each test.
@@ -74,8 +60,7 @@ namespace Klarna.Checkout.Tests
         [SetUp]
         public void SetUp()
         {
-            mockConnector = new Mock<IConnector>();
-            recurringOrder = new RecurringOrder(mockConnector.Object);
+            this.recurring = new RecurringOrder(this.MockConnector.Object);
         }
 
         #endregion
@@ -83,147 +68,42 @@ namespace Klarna.Checkout.Tests
         #region Tests
 
         /// <summary>
-        /// The construction with connector.
+        /// Tests that Create works correctly.
         /// </summary>
         [Test]
-        public void ConstructionWithConnector()
+        public void Create()
         {
-            Assert.That(recurringOrder.BaseUri, Is.Null);
-            Assert.That(recurringOrder.Location, Is.Null);
-            Assert.That(recurringOrder.ContentType, Is.Null);
-            Assert.That(recurringOrder.Accept, Is.Null);
-            var data = recurringOrder.Marshal();
-            Assert.That(data, Is.Empty);
-        }
-
-        /// <summary>
-        /// Tests that the content type is correct.
-        /// </summary>
-        [Test]
-        public void ContentType()
-        {
-            const string ContentType = "application/vnd.klarna.checkout.recurring-order-v1+json";
-
-            Assert.That(recurringOrder.ContentType, Is.Null);
-            recurringOrder.ContentType = ContentType;
-            Assert.That(recurringOrder.ContentType, Is.EqualTo(ContentType));
-        }
-
-        /// <summary>
-        /// Tests that accept is correct.
-        /// </summary>
-        [Test]
-        public void Accept()
-        {
-            const string Accept = "application/vnd.klarna.checkout.recurring-order-accepted-v1+json";
-
-            Assert.That(recurringOrder.Accept, Is.Null);
-            recurringOrder.Accept = Accept;
-            Assert.That(recurringOrder.Accept, Is.EqualTo(Accept));
-        }
-
-        /// <summary>
-        /// Tests that the location is not initialized.
-        /// </summary>
-        [Test]
-        public void LocationNull()
-        {
-            Assert.That(recurringOrder.Location, Is.Null);
-        }
-
-        /// <summary>
-        /// Tests set/get location.
-        /// </summary>
-        [Test]
-        public void LocationSetGet()
-        {
-            Assert.That(recurringOrder.Location, Is.Null);
-            recurringOrder.Location = new Uri(Url);
-            Assert.That(recurringOrder.Location, Is.EqualTo(new Uri(Url)));
-        }
-
-        /// <summary>
-        /// Tests that parse works correctly.
-        /// </summary>
-        public void Parse()
-        {
-            var newData = TestData();
-            recurringOrder.Parse(newData);
-
-            var data = recurringOrder.Marshal();
-
-            Assert.That(data, Is.EqualTo(newData));
-        }
-
-        /// <summary>
-        /// Tests that marshal works correctly.
-        /// </summary>
-        [Test]
-        public void Marshal()
-        {
-            var newData = TestData();
-            recurringOrder.Parse(newData);
-
-            var data = recurringOrder.Marshal();
-            Assert.That(data, Is.TypeOf<Dictionary<string, object>>());
-            Assert.That(data["Int"], Is.TypeOf<int>());
-            Assert.That((int)data["Int"], Is.EqualTo(TheInt));
-            Assert.That(data["String"], Is.TypeOf<string>());
-            Assert.That(data["String"], Is.EqualTo(TheString));
-            Assert.That(data["DateTime"], Is.TypeOf<DateTime>());
-            Assert.That((DateTime)data["DateTime"], Is.EqualTo(theDateTime));
-        }
-
-        /// <summary>
-        /// Tests set/get values.
-        /// </summary>
-        [Test]
-        public void ValuesGet()
-        {
-            var data = TestData();
-            recurringOrder.Parse(data);
-
-            var intData = recurringOrder.GetValue("Int");
-            Assert.That(intData, Is.TypeOf<int>());
-            Assert.That((int)intData, Is.EqualTo(TheInt));
-
-            var stringData = recurringOrder.GetValue("String");
-            Assert.That(stringData, Is.TypeOf<string>());
-            Assert.That(stringData, Is.EqualTo(TheString));
-
-            var dateTimeData = recurringOrder.GetValue("DateTime");
-            Assert.That(dateTimeData, Is.TypeOf<DateTime>());
-            Assert.That((DateTime)dateTimeData, Is.EqualTo(theDateTime));
-        }
-
-        /// <summary>
-        /// Tests that get value with null key or a non-existing key throws an exception.
-        /// </summary>
-        [Test]
-        public void ValuesGetExeption()
-        {
-            Assert.Throws<ArgumentNullException>(() => recurringOrder.GetValue(null));
-            Assert.Throws<KeyNotFoundException>(() => recurringOrder.GetValue("NonExistingKey"));
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        /// Creates test data.
-        /// </summary>
-        /// <returns>
-        /// The new test data.
-        /// </returns>
-        private Dictionary<string, object> TestData()
-        {
-            return new Dictionary<string, object>
+            var data = new Dictionary<string, object> { { "foo", "boo" } };
+            var options = new Dictionary<string, object>
                 {
-                    { "Int", TheInt },
-                    { "String", TheString },
-                    { "DateTime", this.theDateTime }
+                    { "url", this.recurring.BaseUri },
+                    { "data", data }
                 };
+            this.MockConnector.Setup(c => c.Apply(HttpMethod.Post, this.recurring, options)).Verifiable();
+
+            this.recurring.Create(data);
+
+            this.MockConnector.Verify();
+        }
+
+        /// <summary>
+        /// Tests the Create with alternative entry point works correctly.
+        /// </summary>
+        [Test]
+        public void CreateAlternativeEntryPoint()
+        {
+            this.recurring.BaseUri = new Uri("https://checkout.klarna.com/beta/checkout/orders");
+            var data = new Dictionary<string, object> { { "foo", "boo" } };
+            var options = new Dictionary<string, object>
+                {
+                    { "url", this.recurring.BaseUri },
+                    { "data", data }
+                };
+            this.MockConnector.Setup(c => c.Apply(HttpMethod.Post, this.recurring, options)).Verifiable();
+
+            this.recurring.Create(data);
+
+            this.MockConnector.Verify();
         }
 
         #endregion

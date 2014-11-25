@@ -30,43 +30,29 @@ namespace Klarna.Checkout.Tests
     /// Tests the RecurringStatus class.
     /// </summary>
     [TestFixture]
-    public class RecurringStatusTest
+    public class RecurringStatusTest : ResourceBaseTest
     {
-        #region Private Properties
+        #region Properties
 
         /// <summary>
-        /// Data used in tests.
+        /// The real resource under testing
         /// </summary>
-        private const string Url = "http://klarna.com";
+        private RecurringStatus status;
 
         /// <summary>
-        /// Data used in tests.
+        /// Gets the resource under testing
         /// </summary>
-        private const int TheInt = 89;
-
-        /// <summary>
-        /// Data used in tests.
-        /// </summary>
-        private const string TheString = "A string";
-
-        /// <summary>
-        /// Data used in tests.
-        /// </summary>
-        private readonly DateTime theDateTime = new DateTime(2012, 10, 14, 22, 53, 12);
-
-        /// <summary>
-        /// The order.
-        /// </summary>
-        private RecurringStatus recurringStatus;
-
-        /// <summary>
-        /// The mocked connector.
-        /// </summary>
-        private Mock<IConnector> mockConnector;
+        public override Resource Resource
+        {
+            get
+            {
+                return this.status;
+            }
+        }
 
         #endregion
 
-        #region Set Up
+        #region SetUp
 
         /// <summary>
         /// The set up before each test.
@@ -74,8 +60,7 @@ namespace Klarna.Checkout.Tests
         [SetUp]
         public void SetUp()
         {
-            mockConnector = new Mock<IConnector>();
-            recurringStatus = new RecurringStatus(mockConnector.Object);
+            this.status = new RecurringStatus(this.MockConnector.Object);
         }
 
         #endregion
@@ -83,147 +68,18 @@ namespace Klarna.Checkout.Tests
         #region Tests
 
         /// <summary>
-        /// The construction with connector.
+        /// Tests that Fetch works correctly.
         /// </summary>
         [Test]
-        public void ConstructionWithConnector()
+        public void Fetch()
         {
-            Assert.That(recurringStatus.BaseUri, Is.Null);
-            Assert.That(recurringStatus.Location, Is.Null);
-            Assert.That(recurringStatus.ContentType, Is.Null);
-            Assert.That(recurringStatus.Accept, Is.Null);
-            var data = recurringStatus.Marshal();
-            Assert.That(data, Is.Empty);
-        }
+            this.status.BaseUri = new Uri("http://klarna.com/foo/bar/15");
 
-        /// <summary>
-        /// Tests that the content type is correct.
-        /// </summary>
-        [Test]
-        public void ContentType()
-        {
-            const string ContentType = "application/vnd.klarna.checkout.recurring-status-v1+json";
+            var options = new Dictionary<string, object> { { "url", this.status.BaseUri } };
+            MockConnector.Setup(c => c.Apply(HttpMethod.Get, this.status, options)).Verifiable();
+            this.status.Fetch();
 
-            Assert.That(recurringStatus.ContentType, Is.Null);
-            recurringStatus.ContentType = ContentType;
-            Assert.That(recurringStatus.ContentType, Is.EqualTo(ContentType));
-        }
-
-        /// <summary>
-        /// Tests that accept is correct.
-        /// </summary>
-        [Test]
-        public void Accept()
-        {
-            const string Accept = "application/vnd.klarna.checkout.recurring-status-v1+json";
-
-            Assert.That(recurringStatus.Accept, Is.Null);
-            recurringStatus.Accept = Accept;
-            Assert.That(recurringStatus.Accept, Is.EqualTo(Accept));
-        }
-
-        /// <summary>
-        /// Tests that the location is not initialized.
-        /// </summary>
-        [Test]
-        public void LocationNull()
-        {
-            Assert.That(recurringStatus.Location, Is.Null);
-        }
-
-        /// <summary>
-        /// Tests set/get location.
-        /// </summary>
-        [Test]
-        public void LocationSetGet()
-        {
-            Assert.That(recurringStatus.Location, Is.Null);
-            recurringStatus.Location = new Uri(Url);
-            Assert.That(recurringStatus.Location, Is.EqualTo(new Uri(Url)));
-        }
-
-        /// <summary>
-        /// Tests that parse works correctly.
-        /// </summary>
-        public void Parse()
-        {
-            var newData = TestData();
-            recurringStatus.Parse(newData);
-
-            var data = recurringStatus.Marshal();
-
-            Assert.That(data, Is.EqualTo(newData));
-        }
-
-        /// <summary>
-        /// Tests that marshal works correctly.
-        /// </summary>
-        [Test]
-        public void Marshal()
-        {
-            var newData = TestData();
-            recurringStatus.Parse(newData);
-
-            var data = recurringStatus.Marshal();
-            Assert.That(data, Is.TypeOf<Dictionary<string, object>>());
-            Assert.That(data["Int"], Is.TypeOf<int>());
-            Assert.That((int)data["Int"], Is.EqualTo(TheInt));
-            Assert.That(data["String"], Is.TypeOf<string>());
-            Assert.That(data["String"], Is.EqualTo(TheString));
-            Assert.That(data["DateTime"], Is.TypeOf<DateTime>());
-            Assert.That((DateTime)data["DateTime"], Is.EqualTo(theDateTime));
-        }
-
-        /// <summary>
-        /// Tests set/get values.
-        /// </summary>
-        [Test]
-        public void ValuesGet()
-        {
-            var data = TestData();
-            recurringStatus.Parse(data);
-
-            var intData = recurringStatus.GetValue("Int");
-            Assert.That(intData, Is.TypeOf<int>());
-            Assert.That((int)intData, Is.EqualTo(TheInt));
-
-            var stringData = recurringStatus.GetValue("String");
-            Assert.That(stringData, Is.TypeOf<string>());
-            Assert.That(stringData, Is.EqualTo(TheString));
-
-            var dateTimeData = recurringStatus.GetValue("DateTime");
-            Assert.That(dateTimeData, Is.TypeOf<DateTime>());
-            Assert.That((DateTime)dateTimeData, Is.EqualTo(theDateTime));
-        }
-
-        /// <summary>
-        /// Tests that get value with null key or a non-existing key throws an exception.
-        /// </summary>
-        [Test]
-        public void ValuesGetExeption()
-        {
-            Assert.Throws<ArgumentNullException>(() => recurringStatus.GetValue(null));
-            Assert.Throws<KeyNotFoundException>(() => recurringStatus.GetValue("NonExistingKey"));
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        /// Creates test data.
-        /// </summary>
-        /// <returns>
-        /// The new test data.
-        /// </returns>
-        private Dictionary<string, object> TestData()
-        {
-            return new Dictionary<string, object>
-                {
-                    { "Int", TheInt },
-                    { "String", TheString },
-                    { "DateTime", this.theDateTime }
-                };
+            MockConnector.Verify();
         }
 
         #endregion
