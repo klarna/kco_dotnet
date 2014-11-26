@@ -39,9 +39,7 @@ namespace Klarna.Checkout
         public RecurringStatus(IConnector connector, Uri uri)
             : base(connector)
         {
-            this.BaseUri = null;
             this.Location = uri;
-            this.ResourceData = new Dictionary<string, object>();
         }
 
         /// <summary>

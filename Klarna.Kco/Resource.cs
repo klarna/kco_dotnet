@@ -47,6 +47,7 @@ namespace Klarna.Checkout
         public Resource(IConnector connector)
         {
             this.Connector = connector;
+            this.ResourceData = new Dictionary<string, object>();
         }
 
         #endregion

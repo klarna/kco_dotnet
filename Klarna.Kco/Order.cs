@@ -40,8 +40,6 @@ namespace Klarna.Checkout
         public Order(IConnector connector)
             : base(connector)
         {
-            this.BaseUri = null;
-            this.ResourceData = new Dictionary<string, object>();
         }
 
         /// <summary>

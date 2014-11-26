@@ -36,8 +36,6 @@ namespace Klarna.Checkout
         public RecurringOrder(IConnector connector)
             : base(connector)
         {
-            this.BaseUri = null;
-            this.ResourceData = new Dictionary<string, object>();
         }
 
         /// <summary>
