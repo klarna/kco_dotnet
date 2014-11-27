@@ -27,6 +27,7 @@ namespace Klarna.Kco.Examples
     using System.Net;
     using System.Text;
     using Klarna.Checkout;
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// The fetch recurring order status example.
@@ -63,12 +64,10 @@ namespace Klarna.Kco.Examples
                 status.Fetch();
 
                 // Get the payment method details
-                var payment_method = status.GetValue("payment_method") as Dictionary<string, object>;
+                var payment_method = status.GetValue("payment_method") as JObject;
 
                 // Find out what type of payment method, can be either "invoice" or "credit_card".
-                string type = payment_method["type"] as string;
-
-                Debug.Print(type);
+                var type = payment_method["type"] as JValue;
 
                 // If the type was "credit_card" there will also be a "credit_card_data" property.
             }
