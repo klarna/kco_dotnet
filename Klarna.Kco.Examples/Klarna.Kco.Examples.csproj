@@ -42,10 +42,12 @@
   <ItemGroup>
     <Compile Include="Checkout.cs" />
     <Compile Include="Create.cs" />
+    <Compile Include="RecurringCreate.cs" />
     <Compile Include="Fetch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Push.cs" />
     <Compile Include="Confirmation.cs" />
+    <Compile Include="RecurringFetch.cs" />
     <Compile Include="Update.cs" />
   </ItemGroup>
   <ItemGroup>

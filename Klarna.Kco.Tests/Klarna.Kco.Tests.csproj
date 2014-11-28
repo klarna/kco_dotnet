@@ -59,13 +59,15 @@
     <Compile Include="BasicConnectorTestBase.cs" />
     <Compile Include="BasicConnectorPostTest.cs" />
     <Compile Include="ConnectorTest.cs" />
+    <Compile Include="RecurringStatusTest.cs" />
     <Compile Include="DigestTest.cs" />
     <Compile Include="HTTP\BasicHttpTransportTest.cs" />
     <Compile Include="HTTP\HttpResponseTest.cs" />
     <Compile Include="HTTP\HttpTransportTest.cs" />
     <Compile Include="OrderTest.cs" />
-    <Compile Include="OrderWithConnectorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RecurringOrderTest.cs" />
+    <Compile Include="ResourceBaseTest.cs" />
     <Compile Include="UserAgentTest.cs" />
   </ItemGroup>
   <ItemGroup>

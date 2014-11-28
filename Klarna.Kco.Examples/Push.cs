@@ -1,7 +1,7 @@
 ﻿#region Copyright Header
 // ----------------------------------------------------------------------------
 // <copyright file="Push.cs" company="Klarna AB">
-//     Copyright 2012 Klarna AB
+//     Copyright 2014 Klarna AB
 //
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@
 // <link>http://developers.klarna.com/</link>
 // ----------------------------------------------------------------------------
 #endregion
-// [[examples-push]]
 namespace Klarna.Kco.Examples
 {
     using System;
@@ -62,17 +61,15 @@ namespace Klarna.Kco.Examples
                     // At this point make sure the order is created in your
                     // system and send a confirmation email to the customer.
                     var uniqueId = Guid.NewGuid().ToString("N");
-                    var reference =
-                        new Dictionary<string, object>
-                            {
-                                { "orderid1", uniqueId }
-                            };
-                    var data =
-                        new Dictionary<string, object>
-                            {
-                                { "status", "created" },
-                                { "merchant_reference", reference }
-                            };
+                    var reference = new Dictionary<string, object>
+                        {
+                            { "orderid1", uniqueId }
+                        };
+                    var data = new Dictionary<string, object>
+                        {
+                            { "status", "created" },
+                            { "merchant_reference", reference }
+                        };
 
                     order.Update(data);
                 }
@@ -111,5 +108,3 @@ namespace Klarna.Kco.Examples
         }
     }
 }
-
-// [[examples-push]]

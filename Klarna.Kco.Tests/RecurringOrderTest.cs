@@ -1,6 +1,6 @@
 ﻿#region Copyright Header
 // ----------------------------------------------------------------------------
-// <copyright file="OrderTest.cs" company="Klarna AB">
+// <copyright file="RecurringOrderTest.cs" company="Klarna AB">
 //     Copyright 2014 Klarna AB
 //  
 //     Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,17 +27,17 @@ namespace Klarna.Checkout.Tests
     using NUnit.Framework;
 
     /// <summary>
-    /// Tests the Order class.
+    /// Tests the RecurringOrder class.
     /// </summary>
     [TestFixture]
-    public class OrderTest : ResourceBaseTest
+    public class RecurringOrderTest : ResourceBaseTest
     {
         #region Properties
 
         /// <summary>
         /// The real resource under testing
         /// </summary>
-        private Order order;
+        private RecurringOrder recurring;
 
         /// <summary>
         /// Gets the resource under testing
@@ -46,7 +46,7 @@ namespace Klarna.Checkout.Tests
         {
             get
             {
-                return this.order;
+                return this.recurring;
             }
         }
 
@@ -60,7 +60,7 @@ namespace Klarna.Checkout.Tests
         [SetUp]
         public void SetUp()
         {
-            this.order = new Order(this.MockConnector.Object);
+            this.recurring = new RecurringOrder(this.MockConnector.Object);
         }
 
         #endregion
@@ -76,12 +76,12 @@ namespace Klarna.Checkout.Tests
             var data = new Dictionary<string, object> { { "foo", "boo" } };
             var options = new Dictionary<string, object>
                 {
-                    { "url", this.order.BaseUri },
+                    { "url", this.recurring.BaseUri },
                     { "data", data }
                 };
-            this.MockConnector.Setup(c => c.Apply(HttpMethod.Post, this.order, options)).Verifiable();
+            this.MockConnector.Setup(c => c.Apply(HttpMethod.Post, this.recurring, options)).Verifiable();
 
-            this.order.Create(data);
+            this.recurring.Create(data);
 
             this.MockConnector.Verify();
         }
@@ -92,51 +92,16 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void CreateAlternativeEntryPoint()
         {
-            this.order.BaseUri = new Uri("https://checkout.klarna.com/beta/checkout/orders");
+            this.recurring.BaseUri = new Uri("https://checkout.klarna.com/beta/checkout/orders");
             var data = new Dictionary<string, object> { { "foo", "boo" } };
             var options = new Dictionary<string, object>
                 {
-                    { "url", this.order.BaseUri },
+                    { "url", this.recurring.BaseUri },
                     { "data", data }
                 };
-            this.MockConnector.Setup(c => c.Apply(HttpMethod.Post, this.order, options)).Verifiable();
+            this.MockConnector.Setup(c => c.Apply(HttpMethod.Post, this.recurring, options)).Verifiable();
 
-            this.order.Create(data);
-
-            this.MockConnector.Verify();
-        }
-
-        /// <summary>
-        /// Tests that Fetch works correctly.
-        /// </summary>
-        [Test]
-        public void Fetch()
-        {
-            this.order.Location = new Uri("http://klarna.com/foo/bar/15");
-            var options = new Dictionary<string, object> { { "url", this.order.Location } };
-            this.MockConnector.Setup(c => c.Apply(HttpMethod.Get, this.order, options)).Verifiable();
-
-            this.order.Fetch();
-
-            this.MockConnector.Verify();
-        }
-
-        /// <summary>
-        /// Tests that Update works correctly.
-        /// </summary>
-        [Test]
-        public void Update()
-        {
-            this.order.Location = new Uri("http://klarna.com/foo/bar/15");
-            var data = new Dictionary<string, object> { { "foo", "bar" } };
-            var options = new Dictionary<string, object>
-                {
-                    { "url", this.order.Location },
-                    { "data", data }
-                };
-            this.MockConnector.Setup(c => c.Apply(HttpMethod.Post, this.order, options)).Verifiable();
-
-            this.order.Update(data);
+            this.recurring.Create(data);
 
             this.MockConnector.Verify();
         }

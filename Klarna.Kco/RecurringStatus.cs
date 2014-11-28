@@ -1,6 +1,6 @@
 ﻿#region Copyright Header
 // ----------------------------------------------------------------------------
-// <copyright file="IConnector.cs" company="Klarna AB">
+// <copyright file="RecurringStatus.cs" company="Klarna AB">
 //     Copyright 2014 Klarna AB
 //
 //     Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,36 +21,41 @@
 #endregion
 namespace Klarna.Checkout
 {
+    using System;
     using System.Collections.Generic;
-    using Klarna.Checkout.HTTP;
+    using System.Text;
 
     /// <summary>
-    /// The Connector interface.
+    /// The recurring order status resource.
     /// </summary>
-    public interface IConnector
+    public class RecurringStatus : Resource
     {
         /// <summary>
-        /// Gets or sets the user agent used for User-Agent header.
+        /// Initializes a new instance of the <see cref="RecurringStatus" /> class.
         /// </summary>
-        UserAgent UserAgent { get; set; }
+        /// <param name="connector">
+        /// The connector to use.
+        /// </param>
+        /// <param name="uri">
+        /// The uri of the resource.
+        /// </param>
+        public RecurringStatus(IConnector connector, Uri uri)
+            : base(connector)
+        {
+            this.Location = uri;
+        }
 
         /// <summary>
-        /// Gets the transport used for the HTTP communications.
+        /// Get the payment details status of a recurring order, using the uri in BaseUri
         /// </summary>
-        IHttpTransport Transport { get; }
+        public void Fetch()
+        {
+            var options = new Dictionary<string, object>
+                {
+                    { "url", this.Location }
+                };
 
-        /// <summary>
-        /// Applies a HTTP method on a specific resource.
-        /// </summary>
-        /// <param name="method">
-        /// The HTTP method.
-        /// </param>
-        /// <param name="resource">
-        /// The resource.
-        /// </param>
-        /// <param name="options">
-        /// The options.
-        /// </param>
-        void Apply(HttpMethod method, IResource resource, Dictionary<string, object> options);
+            this.Connector.Apply(HttpMethod.Get, this, options);
+        }
     }
 }

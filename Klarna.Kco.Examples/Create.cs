@@ -1,7 +1,7 @@
 #region Copyright Header
 // ----------------------------------------------------------------------------
 // <copyright file="Create.cs" company="Klarna AB">
-//     Copyright 2013 Klarna AB
+//     Copyright 2014 Klarna AB
 //
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
@@ -19,12 +19,10 @@
 // <link>http://integration.klarna.com/</link>
 // ----------------------------------------------------------------------------
 #endregion
-// [[examples-create]]
 namespace Klarna.Kco.Examples
 {
     using System;
     using System.Collections.Generic;
-
     using Klarna.Checkout;
 
     /// <summary>
@@ -37,11 +35,9 @@ namespace Klarna.Kco.Examples
         /// </summary>
         public void Example()
         {
-            const string ContentType =
-                "application/vnd.klarna.checkout.aggregated-order-v2+json";
+            const string ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json";
 
-            // Cart
-            var cartItems = new List<Dictionary<string, object>>
+            var items = new List<Dictionary<string, object>>
                     {
                         new Dictionary<string, object>
                             {
@@ -62,7 +58,7 @@ namespace Klarna.Kco.Examples
                                 { "tax_rate", 2500 }
                             }
                     };
-            var cart = new Dictionary<string, object> { { "items", cartItems } };
+            var cart = new Dictionary<string, object> { { "items", items } };
 
             // Merchant ID
             const string Eid = "0";
@@ -85,25 +81,28 @@ namespace Klarna.Kco.Examples
                     { "push_uri", "https://example.com/push.aspx?sid=123&klarna_order={checkout.order.uri}" }
                 };
 
-            var data =
-                new Dictionary<string, object>
-                    {
-                        { "purchase_country", "SE" },
-                        { "purchase_currency", "SEK" },
-                        { "locale", "sv-se" },
-                        { "merchant", merchant},
-                        { "cart", cart }
-                    };
+            var layout = new Dictionary<string, object>
+                {
+                    { "layout", "desktop" } // or mobile
+                };
 
-            order =
-                new Order(connector)
-                    {
-                        BaseUri = new Uri("https://checkout.testdrive.klarna.com/checkout/orders"),
-                        ContentType = ContentType
-                    };
+            var data = new Dictionary<string, object>
+                {
+                    { "purchase_country", "SE" },
+                    { "purchase_currency", "SEK" },
+                    { "locale", "sv-se" },
+                    { "merchant", merchant },
+                    { "cart", cart },
+                    { "gui", layout }
+                };
+
+            order = new Order(connector)
+                {
+                    BaseUri = new Uri("https://checkout.testdrive.klarna.com/checkout/orders"),
+                    ContentType = ContentType
+                };
 
             order.Create(data);
         }
     }
 }
-// [[examples-create]]

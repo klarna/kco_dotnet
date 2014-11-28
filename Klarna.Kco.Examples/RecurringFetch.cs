@@ -1,6 +1,6 @@
 ﻿#region Copyright Header
 // ----------------------------------------------------------------------------
-// <copyright file="Confirmation.cs" company="Klarna AB">
+// <copyright file="RecurringFetch.cs" company="Klarna AB">
 //     Copyright 2014 Klarna AB
 //
 //     Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,59 +25,51 @@ namespace Klarna.Kco.Examples
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Net;
+    using System.Text;
     using Klarna.Checkout;
     using Newtonsoft.Json.Linq;
 
     /// <summary>
-    /// The confirmation example.
+    /// The fetch recurring order status example.
     /// </summary>
-    public class Confirmation
+    public class RecurringFetch
     {
         /// <summary>
-        /// This example demonstrates the use of the Klarna library to complete
-        /// the purchase and display the confirmation page snippet.
+        /// The example.
         /// </summary>
         public void Example()
         {
+            /*
+             Note! First you must've created a regular aggregated order with the option "recurring" set to true.
+             After that order has recieved the status "checkout_complete" you can fetch that resource and retrieve
+             the "recurring_token" property which is needed to fetch a recurring order status.
+             */
+
+            const string ContentType = "application/vnd.klarna.checkout.recurring-status-v1+json";
+            const string SharedSecret = "sharedSecret";
+
+            RecurringStatus status = null;
+            var connector = Connector.Create(SharedSecret);
+
+            string uri = "https://checkout.testdrive.klarna.com/checkout/recurring/{0}";
+            string recurring_token = "ABC-123";
+
             try
             {
-                const string SharedSecret = "sharedSecret";
-                var connector = Connector.Create(SharedSecret);
+                status = new RecurringStatus(connector, new Uri(string.Format(uri, recurring_token)))
+                    {
+                        ContentType = ContentType
+                    };
 
-                // Retrieve location from session object.
-                // Use following in ASP.NET.
-                // var checkoutId = Session["klarna_checkout"] as Uri;
-                // Just a placeholder in this example.
-                Uri checkoutId = new Uri(
-                    "https://checkout.testdrive.klarna.com/checkout/orders/12");
+                status.Fetch();
 
-                var order = new Order(connector, checkoutId)
-                {
-                    ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json"
-                };
+                // Get the payment method details
+                var payment_method = status.GetValue("payment_method") as JObject;
 
-                order.Fetch();
+                // Find out what type of payment method, can be either "invoice" or "credit_card".
+                var type = payment_method["type"] as JValue;
 
-                if ((string)order.GetValue("status") == "checkout_incomplete")
-                {
-                    // Report error
-
-                    // Use following in ASP.NET.
-                    // Response.Write("Checkout not completed, redirect to checkout.aspx");
-                }
-
-                // Display thank you snippet
-                var gui = order.GetValue("gui") as JObject;
-                var snippet = gui["snippet"];
-
-                // DESKTOP: Width of containing block shall be at least 750px
-                // MOBILE: Width of containing block shall be 100% of browser
-                // window (No padding or margin)
-                // Use following in ASP.NET.
-                // Response.Write(string.Format("<div>{0}</div>", snippet));
-
-                // Clear session object.
-                // Session["klarna_checkout"] = null;
+                // If the type was "credit_card" there will also be a "credit_card_data" property.
             }
             catch (ConnectorException ex)
             {
@@ -101,6 +93,14 @@ namespace Klarna.Kco.Examples
                     // For instance, Content-Type application/vnd.klarna.error-v1+json has "internal_message".
                     var internalMessage = (string)ex.Data["internal_message"];
                     Debug.WriteLine(internalMessage);
+                }
+
+                if (ex.Data.Contains("reason"))
+                {
+                    // For instance, Content-Type application/vnd.klarna.checkout.recurring-order-rejected-v1+json
+                    // has "reason".
+                    var reason = (string)ex.Data["reason"];
+                    Debug.WriteLine(reason);
                 }
 
                 throw;

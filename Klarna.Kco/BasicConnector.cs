@@ -1,7 +1,7 @@
 #region Copyright Header
 // ----------------------------------------------------------------------------
 // <copyright file="BasicConnector.cs" company="Klarna AB">
-//     Copyright 2012 Klarna AB
+//     Copyright 2014 Klarna AB
 //  
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
@@ -260,7 +260,7 @@ namespace Klarna.Checkout
             var authorization = string.Format("Klarna {0}", digestString);
             request.Headers.Add("Authorization", authorization);
 
-            request.Accept = resource.ContentType;
+            request.Accept = (resource.Accept != null) ? resource.Accept : resource.ContentType;
 
             if (payLoad.Length > 0)
             {

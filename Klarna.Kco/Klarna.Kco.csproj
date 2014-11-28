@@ -60,6 +60,9 @@
     <Compile Include="IResource.cs" />
     <Compile Include="Order.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RecurringOrder.cs" />
+    <Compile Include="RecurringStatus.cs" />
+    <Compile Include="Resource.cs" />
     <Compile Include="UserAgent.cs" />
   </ItemGroup>
   <ItemGroup>

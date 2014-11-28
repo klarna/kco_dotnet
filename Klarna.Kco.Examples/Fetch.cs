@@ -1,7 +1,7 @@
 #region Copyright Header
 // ----------------------------------------------------------------------------
 // <copyright file="Fetch.cs" company="Klarna AB">
-//     Copyright 2013 Klarna AB
+//     Copyright 2014 Klarna AB
 //
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
@@ -19,12 +19,10 @@
 // <link>http://integration.klarna.com/</link>
 // ----------------------------------------------------------------------------
 #endregion
-// [[examples-fetch]]
 namespace Klarna.Kco.Examples
 {
     using System;
     using System.Collections.Generic;
-
     using Klarna.Checkout;
 
     /// <summary>
@@ -37,8 +35,7 @@ namespace Klarna.Kco.Examples
         /// </summary>
         public void Example()
         {
-            const string ContentType =
-                "application/vnd.klarna.checkout.aggregated-order-v2+json";
+            const string ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json";
 
             Uri resourceUri = new Uri("https://checkout.testdrive.klarna.com/checkout/orders/ABC123");
 
@@ -54,4 +51,3 @@ namespace Klarna.Kco.Examples
         }
     }
 }
-// [[examples-fetch]]
