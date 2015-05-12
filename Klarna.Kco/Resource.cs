@@ -58,11 +58,6 @@ namespace Klarna.Checkout
         #region Properties
 
         /// <summary>
-        /// Gets or sets the base uri that is used to create resources.
-        /// </summary>
-        public Uri BaseUri { get; set; }
-
-        /// <summary>
         /// Gets or sets the uri of the resource.
         /// </summary>
         public Uri Location { get; set; }

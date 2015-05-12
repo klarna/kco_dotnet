@@ -69,7 +69,7 @@ namespace Klarna.Checkout.Tests
         public void UserAgent()
         {
             var connector =
-                new BasicConnector(HttpTransportMock.Object, Digest, "aboogie");
+                new BasicConnector(HttpTransportMock.Object, Digest, "aboogie", "http://test.com");
             Assert.That(connector.UserAgent, Is.Not.Null);
 
             connector.UserAgent.AddField("Module", "Magento", "5.0",
@@ -89,7 +89,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyUrlInResource()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, "http://test.com");
 
             ResourceMock.SetupProperty(r => r.Location, Url);
 
@@ -109,7 +109,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyUrlInOptions()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, "http://test.com");
 
             var request = (HttpWebRequest)WebRequest.Create(Url);
             HttpTransportMock.Setup(t => t.CreateRequest(Url)).Returns(request);
@@ -128,7 +128,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyDataInResource()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, "http://test.com");
 
             ResourceMock.SetupProperty(r => r.Location, Url);
 
@@ -154,7 +154,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyDataInOptions()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, "http://test.com");
 
             ResourceMock.SetupProperty(r => r.Location, Url);
 
@@ -180,7 +180,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyAcceptInResource()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, "http://test.com");
 
             ResourceMock.SetupProperty(r => r.Location, Url);
             ResourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
@@ -214,7 +214,7 @@ namespace Klarna.Checkout.Tests
         [Test, TestCaseSource("ErrorCodes")]
         public void ApplyGetError(HttpStatusCode statusCode, int expectedCode)
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, "http://test.com");
 
             ResourceMock.SetupProperty(r => r.Location, Url);
             ResourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
@@ -249,7 +249,7 @@ namespace Klarna.Checkout.Tests
         [Test, TestCaseSource("ErrorCodes")]
         public void ApplyPostError(HttpStatusCode statusCode, int expectedCode)
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, "http://test.com");
 
             ResourceMock.SetupProperty(r => r.Location, Url);
             ResourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
@@ -284,7 +284,7 @@ namespace Klarna.Checkout.Tests
             const string ErrorType = "application/vnd.klarna.error-v1+json";
             const string InternalMessage = "Bad digest";
 
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, "http://test.com");
 
             ResourceMock.SetupProperty(r => r.Location, Url);
             ResourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
@@ -335,7 +335,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyWrappedWebException()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, "http://test.com");
 
             ResourceMock.SetupProperty(r => r.Location, Url);
             ResourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
@@ -371,7 +371,7 @@ namespace Klarna.Checkout.Tests
         public void SetTimeoutOnConnector()
         {
             IHttpTransport transport = new BasicHttpTransport();
-            IConnector conn = new BasicConnector(transport, Digest, Secret);
+            IConnector conn = new BasicConnector(transport, Digest, Secret, "http://test.com");
             conn.Transport.Timeout = 120;
 
             Assert.That(transport.Timeout, Is.EqualTo(120));

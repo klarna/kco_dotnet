@@ -35,8 +35,6 @@ namespace Klarna.Kco.Examples
         /// </summary>
         public void Example()
         {
-            const string ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json";
-
             Uri resourceUri = new Uri("https://checkout.testdrive.klarna.com/checkout/orders/ABC123");
 
             var items = new List<Dictionary<string, object>>
@@ -63,12 +61,9 @@ namespace Klarna.Kco.Examples
             var cart = new Dictionary<string, object> { { "items", items } };
 
             const string SharedSecret = "sharedSecret";
-            var connector = Connector.Create(SharedSecret);
+            var connector = Connector.Create(SharedSecret, Connector.TestBaseUrl);
 
-            Order order = new Order(connector, resourceUri)
-                {
-                    ContentType = ContentType
-                };
+            Order order = new Order(connector, resourceUri);
 
             // Reset cart
             var data = new Dictionary<string, object> { { "cart", cart } };

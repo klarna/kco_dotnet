@@ -44,8 +44,6 @@ namespace Klarna.Kco.Examples
              resource and retrieve the "recurring_token" property which is needed to create recurring orders.
              */
 
-            const string Accept = "application/vnd.klarna.checkout.recurring-order-accepted-v1+json";
-            const string ContentType = "application/vnd.klarna.checkout.recurring-order-v1+json";
             const string Eid = "0";
             const string SharedSecret = "sharedSecret";
 
@@ -116,18 +114,12 @@ namespace Klarna.Kco.Examples
                 };
 
             RecurringOrder order = null;
-            var connector = Connector.Create(SharedSecret);
-            string uri = "https://checkout.testdrive.klarna.com/checkout/recurring/{0}/orders";
+            var connector = Connector.Create(SharedSecret, Connector.TestBaseUrl);
             string recurring_token = "ABC-123";
 
             try
             {
-                order = new RecurringOrder(connector)
-                {
-                    BaseUri = new Uri(string.Format(uri, recurring_token)),
-                    Accept = Accept,
-                    ContentType = ContentType
-                };
+                order = new RecurringOrder(connector, recurring_token);
 
                 order.Create(data);
 

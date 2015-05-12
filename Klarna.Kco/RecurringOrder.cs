@@ -31,14 +31,25 @@ namespace Klarna.Checkout
     public class RecurringOrder : Resource
     {
         /// <summary>
+        /// Relative resource path
+        /// </summary>
+        private string relativePath = "/checkout/recurring/TOKEN/orders";
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RecurringOrder" /> class.
         /// </summary>
         /// <param name="connector">
-        /// The connector to use.
+        /// The connector
         /// </param>
-        public RecurringOrder(IConnector connector)
+        /// <param name="recurringToken">
+        /// The recurring token
+        /// </param>
+        public RecurringOrder(IConnector connector, string recurringToken)
             : base(connector)
         {
+            this.Location = new Uri(this.Connector.BaseUrl, this.relativePath.Replace("TOKEN", recurringToken));
+            this.ContentType = "application/vnd.klarna.checkout.recurring-order-v1+json";
+            this.Accept = "application/vnd.klarna.checkout.recurring-order-accepted-v1+json";
         }
 
         /// <summary>
@@ -51,7 +62,7 @@ namespace Klarna.Checkout
         {
             var options = new Dictionary<string, object>
                 {
-                    { "url", this.BaseUri },
+                    { "url", this.Location },
                     { "data", data }
                 };
 

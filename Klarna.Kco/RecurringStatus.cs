@@ -31,18 +31,25 @@ namespace Klarna.Checkout
     public class RecurringStatus : Resource
     {
         /// <summary>
+        /// Relative resource path
+        /// </summary>
+        private string relativePath = "/checkout/recurring/TOKEN";
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RecurringStatus" /> class.
         /// </summary>
         /// <param name="connector">
         /// The connector to use.
         /// </param>
-        /// <param name="uri">
-        /// The uri of the resource.
+        /// <param name="recurringToken">
+        /// The recurring token
         /// </param>
-        public RecurringStatus(IConnector connector, Uri uri)
+        public RecurringStatus(IConnector connector, string recurringToken)
             : base(connector)
         {
-            this.Location = uri;
+            this.Location = new Uri(this.Connector.BaseUrl, this.relativePath.Replace("TOKEN", recurringToken));
+            this.ContentType = "application/vnd.klarna.checkout.recurring-status-v1+json";
+            this.Accept = this.ContentType;
         }
 
         /// <summary>

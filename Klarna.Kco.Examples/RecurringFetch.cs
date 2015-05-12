@@ -45,21 +45,16 @@ namespace Klarna.Kco.Examples
              the "recurring_token" property which is needed to fetch a recurring order status.
              */
 
-            const string ContentType = "application/vnd.klarna.checkout.recurring-status-v1+json";
             const string SharedSecret = "sharedSecret";
 
             RecurringStatus status = null;
-            var connector = Connector.Create(SharedSecret);
+            var connector = Connector.Create(SharedSecret, Connector.TestBaseUrl);
 
-            string uri = "https://checkout.testdrive.klarna.com/checkout/recurring/{0}";
             string recurring_token = "ABC-123";
 
             try
             {
-                status = new RecurringStatus(connector, new Uri(string.Format(uri, recurring_token)))
-                    {
-                        ContentType = ContentType
-                    };
+                status = new RecurringStatus(connector, recurring_token);
 
                 status.Fetch();
 

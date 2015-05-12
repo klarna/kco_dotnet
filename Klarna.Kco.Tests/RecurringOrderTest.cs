@@ -60,7 +60,8 @@ namespace Klarna.Checkout.Tests
         [SetUp]
         public void SetUp()
         {
-            this.recurring = new RecurringOrder(this.MockConnector.Object);
+            this.MockConnector.Setup(c => c.BaseUrl).Returns(new Uri("http://test.com"));
+            this.recurring = new RecurringOrder(this.MockConnector.Object, "ABC-123");
         }
 
         #endregion
@@ -76,27 +77,7 @@ namespace Klarna.Checkout.Tests
             var data = new Dictionary<string, object> { { "foo", "boo" } };
             var options = new Dictionary<string, object>
                 {
-                    { "url", this.recurring.BaseUri },
-                    { "data", data }
-                };
-            this.MockConnector.Setup(c => c.Apply(HttpMethod.Post, this.recurring, options)).Verifiable();
-
-            this.recurring.Create(data);
-
-            this.MockConnector.Verify();
-        }
-
-        /// <summary>
-        /// Tests the Create with alternative entry point works correctly.
-        /// </summary>
-        [Test]
-        public void CreateAlternativeEntryPoint()
-        {
-            this.recurring.BaseUri = new Uri("https://checkout.klarna.com/beta/checkout/orders");
-            var data = new Dictionary<string, object> { { "foo", "boo" } };
-            var options = new Dictionary<string, object>
-                {
-                    { "url", this.recurring.BaseUri },
+                    { "url", new Uri("http://test.com/checkout/recurring/ABC-123/orders") },
                     { "data", data }
                 };
             this.MockConnector.Setup(c => c.Apply(HttpMethod.Post, this.recurring, options)).Verifiable();

@@ -23,6 +23,7 @@ namespace Klarna.Checkout
 {
     using System.Collections.Generic;
     using Klarna.Checkout.HTTP;
+    using System;
 
     /// <summary>
     /// The Connector interface.
@@ -38,6 +39,11 @@ namespace Klarna.Checkout
         /// Gets the transport used for the HTTP communications.
         /// </summary>
         IHttpTransport Transport { get; }
+
+        /// <summary>
+        /// Gets or sets the host
+        /// </summary>
+        Uri BaseUrl { get; set; }
 
         /// <summary>
         /// Applies a HTTP method on a specific resource.

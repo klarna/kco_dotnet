@@ -44,8 +44,6 @@ namespace Klarna.Kco.Examples
 
             try
             {
-                const string ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json";
-
                 var items = new List<Dictionary<string, object>>
                     {
                         new Dictionary<string, object>
@@ -74,7 +72,7 @@ namespace Klarna.Kco.Examples
                 const string Eid = "0";
 
                 const string SharedSecret = "sharedSecret";
-                var connector = Connector.Create(SharedSecret);
+                var connector = Connector.Create(SharedSecret, Connector.TestBaseUrl);
 
                 Order order = null;
 
@@ -90,10 +88,7 @@ namespace Klarna.Kco.Examples
                 {
                     try
                     {
-                        order = new Order(connector, resourceUri)
-                            {
-                                ContentType = ContentType
-                            };
+                        order = new Order(connector, resourceUri);
 
                         order.Fetch();
 
@@ -150,12 +145,7 @@ namespace Klarna.Kco.Examples
                             { "gui", layout }
                         };
 
-                    order = new Order(connector)
-                        {
-                            BaseUri = new Uri(
-                                "https://checkout.testdrive.klarna.com/checkout/orders"),
-                            ContentType = ContentType
-                        };
+                    order = new Order(connector);
 
                     order.Create(data);
                     order.Fetch();

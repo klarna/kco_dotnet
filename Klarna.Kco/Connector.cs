@@ -29,6 +29,16 @@ namespace Klarna.Checkout
     public class Connector
     {
         /// <summary>
+        /// Live host
+        /// </summary>
+        public const string BaseUrl = "https://checkout.klarna.com";
+
+        /// <summary>
+        /// Test host
+        /// </summary>
+        public const string TestBaseUrl = "https://checkout.testdrive.klarna.com";
+
+        /// <summary>
         /// Creates a connector.
         /// </summary>
         /// <param name="secret">
@@ -37,11 +47,35 @@ namespace Klarna.Checkout
         /// <returns>
         /// The <see cref="IConnector"/>.
         /// </returns>
+        /// <param name="host">
+        /// The host to connect to
+        /// </param>
+        public static IConnector Create(string secret, string host)
+        {
+            var httpTransport = HttpTransport.Create();
+            var digest = new Digest();
+            IConnector connector = new BasicConnector(httpTransport, digest, secret, host);
+
+            return connector;
+        }
+
+        /// <summary>
+        /// Creates a connector.
+        /// </summary>
+        /// <param name="secret">
+        /// The string used to sign requests.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IConnector"/>.
+        /// </returns>
+        /// <param name="host">
+        /// The host to connect to
+        /// </param>
         public static IConnector Create(string secret)
         {
             var httpTransport = HttpTransport.Create();
             var digest = new Digest();
-            IConnector connector = new BasicConnector(httpTransport, digest, secret);
+            IConnector connector = new BasicConnector(httpTransport, digest, secret, Connector.BaseUrl);
 
             return connector;
         }
