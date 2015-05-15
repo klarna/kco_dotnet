@@ -42,7 +42,7 @@ namespace Klarna.Kco.Examples
             try
             {
                 const string SharedSecret = "sharedSecret";
-                var connector = Connector.Create(SharedSecret, Connector.TestBaseUrl);
+                var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
 
                 // Retrieve location from session object.
                 // Use following in ASP.NET.

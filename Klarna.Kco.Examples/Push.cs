@@ -40,7 +40,7 @@ namespace Klarna.Kco.Examples
             try
             {
                 const string SharedSecret = "sharedSecret";
-                var connector = Connector.Create(SharedSecret, Connector.TestBaseUrl);
+                var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
 
                 // Retrieve location from query string.
                 // Use following in ASP.NET.

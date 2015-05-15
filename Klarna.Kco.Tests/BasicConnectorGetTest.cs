@@ -43,7 +43,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyGet200()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, "http://test.com");
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, new Uri("http://test.com"));
 
             ResourceMock.SetupProperty(r => r.Location, Url);
             ResourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
@@ -73,7 +73,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyGet200InvalidJson()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, "http://test.com");
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, new Uri("http://test.com"));
 
             ResourceMock.SetupProperty(r => r.Location, Url);
             ResourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
@@ -94,7 +94,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyGet301And200()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, "http://test.com");
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, new Uri("http://test.com"));
             var newLocation = new Uri("http://NewLocation.com");
 
             ResourceMock.SetupProperty(r => r.Location, Url);
@@ -147,7 +147,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyGet301InfiniteLoop()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, "http://test.com");
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, new Uri("http://test.com"));
 
             ResourceMock.SetupProperty(r => r.Location, Url);
             ResourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
@@ -175,7 +175,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyGet302And503()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, "http://test.com");
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, new Uri("http://test.com"));
             var newLocation = new Uri("http://NewLocation.com");
 
             ResourceMock.SetupProperty(r => r.Location, Url);
@@ -233,7 +233,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyGet303And503()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, "http://test.com");
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, new Uri("http://test.com"));
             var newLocation = new Uri("http://NewLocation.com");
 
             ResourceMock.SetupProperty(r => r.Location, Url);

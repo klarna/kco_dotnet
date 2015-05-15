@@ -72,7 +72,7 @@ namespace Klarna.Kco.Examples
                 const string Eid = "0";
 
                 const string SharedSecret = "sharedSecret";
-                var connector = Connector.Create(SharedSecret, Connector.TestBaseUrl);
+                var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
 
                 Order order = null;
 

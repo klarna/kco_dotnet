@@ -67,40 +67,15 @@ namespace Klarna.Checkout
         /// <param name="secret">
         /// The secret.
         /// </param>
-        /// <param name="host">
-        /// The base host.
+        /// <param name="uri">
+        /// The base URI.
         /// </param>
-        public BasicConnector(IHttpTransport httpTransport, Digest digest, string secret, string host)
+        public BasicConnector(IHttpTransport httpTransport, Digest digest, string secret, Uri uri)
         {
             this.httpTransport = httpTransport;
             this.digest = digest;
             this.secret = secret;
-            this.BaseUrl = new Uri(host);
-
-            this.UserAgent = new UserAgent();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BasicConnector"/> class.
-        /// </summary>
-        /// <param name="httpTransport">
-        /// The http transport.
-        /// </param>
-        /// <param name="digest">
-        /// The digest.
-        /// </param>
-        /// <param name="secret">
-        /// The secret.
-        /// </param>
-        /// <param name="host">
-        /// The base host.
-        /// </param>
-        public BasicConnector(IHttpTransport httpTransport, Digest digest, string secret, Uri host)
-        {
-            this.httpTransport = httpTransport;
-            this.digest = digest;
-            this.secret = secret;
-            this.BaseUrl = host;
+            this.BaseUri = uri;
 
             this.UserAgent = new UserAgent();
         }
@@ -115,9 +90,9 @@ namespace Klarna.Checkout
         public UserAgent UserAgent { get; set; }
 
         /// <summary>
-        /// Gets or sets the host
+        /// Gets or sets the base URI.
         /// </summary>
-        public Uri BaseUrl { get; set; }
+        public Uri BaseUri { get; set; }
 
         /// <summary>
         /// Gets the transport used for the HTTP communications.

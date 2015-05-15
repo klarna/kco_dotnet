@@ -47,7 +47,7 @@ namespace Klarna.Checkout
         public RecurringStatus(IConnector connector, string recurringToken)
             : base(connector)
         {
-            this.Location = new Uri(this.Connector.BaseUrl, this.relativePath.Replace("TOKEN", recurringToken));
+            this.Location = new Uri(this.Connector.BaseUri, this.relativePath.Replace("TOKEN", recurringToken));
             this.ContentType = "application/vnd.klarna.checkout.recurring-status-v1+json";
             this.Accept = this.ContentType;
         }

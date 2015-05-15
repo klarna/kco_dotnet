@@ -78,7 +78,7 @@ namespace Klarna.Checkout
         {
             var options = new Dictionary<string, object>
                 {
-                    { "url", new Uri(this.Connector.BaseUrl, this.relativePath) },
+                    { "url", new Uri(this.Connector.BaseUri, this.relativePath) },
                     { "data", data }
                 };
 

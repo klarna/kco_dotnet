@@ -48,7 +48,7 @@ namespace Klarna.Kco.Examples
             const string SharedSecret = "sharedSecret";
 
             RecurringStatus status = null;
-            var connector = Connector.Create(SharedSecret, Connector.TestBaseUrl);
+            var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
 
             string recurring_token = "ABC-123";
 

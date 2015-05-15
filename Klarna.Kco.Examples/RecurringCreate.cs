@@ -114,7 +114,7 @@ namespace Klarna.Kco.Examples
                 };
 
             RecurringOrder order = null;
-            var connector = Connector.Create(SharedSecret, Connector.TestBaseUrl);
+            var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
             string recurring_token = "ABC-123";
 
             try

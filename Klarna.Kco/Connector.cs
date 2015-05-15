@@ -21,6 +21,7 @@
 #endregion
 namespace Klarna.Checkout
 {
+    using System;
     using Klarna.Checkout.HTTP;
 
     /// <summary>
@@ -29,17 +30,29 @@ namespace Klarna.Checkout
     public class Connector
     {
         /// <summary>
-        /// Live host
+        /// Gets the base URI for the API.
         /// </summary>
-        public const string BaseUrl = "https://checkout.klarna.com";
+        public static Uri BaseUri
+        {
+            get
+            {
+                return new Uri("https://checkout.klarna.com");
+            }
+        }
 
         /// <summary>
-        /// Test host
+        /// Gets the test base URI for the API.
         /// </summary>
-        public const string TestBaseUrl = "https://checkout.testdrive.klarna.com";
+        public static Uri TestBaseUri
+        {
+            get
+            {
+                return new Uri("https://checkout.testdrive.klarna.com");
+            }
+        }
 
         /// <summary>
-        /// Creates a connector.
+        /// Creates a connector with custom base URI.
         /// </summary>
         /// <param name="secret">
         /// The string used to sign requests.
@@ -47,20 +60,20 @@ namespace Klarna.Checkout
         /// <returns>
         /// The <see cref="IConnector"/>.
         /// </returns>
-        /// <param name="host">
-        /// The host to connect to
+        /// <param name="uri">
+        /// The uri for the connector to use.
         /// </param>
-        public static IConnector Create(string secret, string host)
+        public static IConnector Create(string secret, Uri uri)
         {
             var httpTransport = HttpTransport.Create();
             var digest = new Digest();
-            IConnector connector = new BasicConnector(httpTransport, digest, secret, host);
+            IConnector connector = new BasicConnector(httpTransport, digest, secret, uri);
 
             return connector;
         }
 
         /// <summary>
-        /// Creates a connector.
+        /// Creates a connector for the base URI.
         /// </summary>
         /// <param name="secret">
         /// The string used to sign requests.
@@ -68,16 +81,9 @@ namespace Klarna.Checkout
         /// <returns>
         /// The <see cref="IConnector"/>.
         /// </returns>
-        /// <param name="host">
-        /// The host to connect to
-        /// </param>
         public static IConnector Create(string secret)
         {
-            var httpTransport = HttpTransport.Create();
-            var digest = new Digest();
-            IConnector connector = new BasicConnector(httpTransport, digest, secret, Connector.BaseUrl);
-
-            return connector;
+            return Create(secret, Connector.BaseUri);
         }
     }
 }

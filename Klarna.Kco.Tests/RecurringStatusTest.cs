@@ -60,7 +60,7 @@ namespace Klarna.Checkout.Tests
         [SetUp]
         public void SetUp()
         {
-            this.MockConnector.Setup(c => c.BaseUrl).Returns(new Uri("http://test.com"));
+            this.MockConnector.Setup(c => c.BaseUri).Returns(new Uri("http://test.com"));
             this.status = new RecurringStatus(this.MockConnector.Object, "ABC-123");
         }
 

@@ -61,7 +61,7 @@ namespace Klarna.Kco.Examples
             var cart = new Dictionary<string, object> { { "items", items } };
 
             const string SharedSecret = "sharedSecret";
-            var connector = Connector.Create(SharedSecret, Connector.TestBaseUrl);
+            var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
 
             Order order = new Order(connector, resourceUri);
 
