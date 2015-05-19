@@ -34,9 +34,9 @@ namespace Klarna.Kco.Examples
     public class Checkout
     {
         /// <summary>
-        /// The example.
+        /// Execute the example.
         /// </summary>
-        public void Example()
+        public static void Main()
         {
             // Note! Please remove the code below when used in ASP.NET.
             // Just a placeholder in this example for, the HttpSessionState object, Session.

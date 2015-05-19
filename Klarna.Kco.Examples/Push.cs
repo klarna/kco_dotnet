@@ -35,7 +35,7 @@ namespace Klarna.Kco.Examples
         /// <summary>
         /// The example.
         /// </summary>
-        public void Example()
+        public static void Main()
         {
             try
             {

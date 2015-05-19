@@ -33,7 +33,7 @@ namespace Klarna.Kco.Examples
         /// <summary>
         /// The example.
         /// </summary>
-        public void Example()
+        public static void Main()
         {
             var items = new List<Dictionary<string, object>>
                     {

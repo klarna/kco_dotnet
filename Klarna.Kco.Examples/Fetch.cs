@@ -33,7 +33,7 @@ namespace Klarna.Kco.Examples
         /// <summary>
         /// The example.
         /// </summary>
-        public void Example()
+        public static void Main()
         {
             Uri resourceUri = new Uri("https://checkout.testdrive.klarna.com/checkout/orders/ABC123");
 

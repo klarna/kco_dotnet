@@ -37,7 +37,7 @@ namespace Klarna.Kco.Examples
         /// This example demonstrates the use of the Klarna library to complete
         /// the purchase and display the confirmation page snippet.
         /// </summary>
-        public void Example()
+        public static void Main()
         {
             try
             {

@@ -36,7 +36,7 @@ namespace Klarna.Kco.Examples
         /// <summary>
         /// The example.
         /// </summary>
-        public void Example()
+        public static void Main()
         {
             /*
              Note! First you must've created a regular aggregated order with the option "recurring" set to true.
