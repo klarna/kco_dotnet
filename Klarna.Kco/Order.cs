@@ -45,6 +45,8 @@ namespace Klarna.Checkout
         public Order(IConnector connector)
             : base(connector)
         {
+            this.ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json";
+            this.Accept = this.ContentType;
         }
 
         /// <summary>
@@ -60,8 +62,6 @@ namespace Klarna.Checkout
             : this(connector)
         {
             this.Location = uri;
-            this.ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json";
-            this.Accept = this.ContentType;
         }
 
         #endregion
