@@ -44,7 +44,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyPost200()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, new Uri("http://test.com"));
 
             ResourceMock.SetupProperty(r => r.Location, Url);
             ResourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
@@ -77,7 +77,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyPost200InvalidJson()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, new Uri("http://test.com"));
 
             ResourceMock.SetupProperty(r => r.Location, Url);
             ResourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
@@ -103,7 +103,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyPost201UpdatedLocation()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, new Uri("http://test.com"));
 
             ResourceMock.SetupProperty(r => r.Location, Url);
             ResourceMock.SetupGet(r => r.ContentType).Returns(ContentType);
@@ -143,7 +143,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyPost301EnsureNotRedirected()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, new Uri("http://test.com"));
             var newLocation = new Uri("http://NewLocation.com");
 
             ResourceMock.SetupProperty(r => r.Location, Url);
@@ -193,7 +193,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyPost302EnsureNotRedirected()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, new Uri("http://test.com"));
             var newLocation = new Uri("http://NewLocation.com");
 
             ResourceMock.SetupProperty(r => r.Location, Url);
@@ -243,7 +243,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyPost303And200()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, new Uri("http://test.com"));
             var newLocation = new Uri("http://NewLocation.com");
 
             ResourceMock.SetupProperty(r => r.Location, Url);
@@ -303,7 +303,7 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ApplyPost303And503()
         {
-            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret);
+            var connector = new BasicConnector(HttpTransportMock.Object, Digest, Secret, new Uri("http://test.com"));
             var newLocation = new Uri("http://NewLocation.com");
 
             ResourceMock.SetupProperty(r => r.Location, Url);

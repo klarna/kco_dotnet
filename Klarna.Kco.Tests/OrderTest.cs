@@ -60,6 +60,7 @@ namespace Klarna.Checkout.Tests
         [SetUp]
         public void SetUp()
         {
+            this.MockConnector.Setup(c => c.BaseUri).Returns(new Uri("http://test.com"));
             this.order = new Order(this.MockConnector.Object);
         }
 
@@ -76,27 +77,7 @@ namespace Klarna.Checkout.Tests
             var data = new Dictionary<string, object> { { "foo", "boo" } };
             var options = new Dictionary<string, object>
                 {
-                    { "url", this.order.BaseUri },
-                    { "data", data }
-                };
-            this.MockConnector.Setup(c => c.Apply(HttpMethod.Post, this.order, options)).Verifiable();
-
-            this.order.Create(data);
-
-            this.MockConnector.Verify();
-        }
-
-        /// <summary>
-        /// Tests the Create with alternative entry point works correctly.
-        /// </summary>
-        [Test]
-        public void CreateAlternativeEntryPoint()
-        {
-            this.order.BaseUri = new Uri("https://checkout.klarna.com/beta/checkout/orders");
-            var data = new Dictionary<string, object> { { "foo", "boo" } };
-            var options = new Dictionary<string, object>
-                {
-                    { "url", this.order.BaseUri },
+                    { "url", new Uri("http://test.com/checkout/orders") },
                     { "data", data }
                 };
             this.MockConnector.Setup(c => c.Apply(HttpMethod.Post, this.order, options)).Verifiable();

@@ -113,10 +113,6 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void ConstructionWithConnector()
         {
-            Assert.That(this.Resource.BaseUri, Is.Null);
-            Assert.That(this.Resource.Location, Is.Null);
-            Assert.That(this.Resource.ContentType, Is.Null);
-            Assert.That(this.Resource.Accept, Is.Null);
             Assert.That(this.Resource.Marshal(), Is.Empty);
         }
 
@@ -128,7 +124,6 @@ namespace Klarna.Checkout.Tests
         {
             const string ContentType = "application/vnd.klarna-content-v1+json";
 
-            Assert.That(this.Resource.ContentType, Is.Null);
             this.Resource.ContentType = ContentType;
             Assert.That(this.Resource.ContentType, Is.EqualTo(ContentType));
         }
@@ -141,18 +136,8 @@ namespace Klarna.Checkout.Tests
         {
             const string Accept = "application/vnd.klarna-accept-v1+json";
 
-            Assert.That(this.Resource.Accept, Is.Null);
             this.Resource.Accept = Accept;
             Assert.That(this.Resource.Accept, Is.EqualTo(Accept));
-        }
-
-        /// <summary>
-        /// Tests that the location is not initialized.
-        /// </summary>
-        [Test]
-        public void LocationNull()
-        {
-            Assert.That(this.Resource.Location, Is.Null);
         }
 
         /// <summary>
@@ -161,7 +146,6 @@ namespace Klarna.Checkout.Tests
         [Test]
         public void LocationSetGet()
         {
-            Assert.That(this.Resource.Location, Is.Null);
             this.Resource.Location = new Uri(TheUrl);
             Assert.That(this.Resource.Location, Is.EqualTo(new Uri(TheUrl)));
         }

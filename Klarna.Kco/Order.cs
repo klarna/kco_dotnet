@@ -29,6 +29,11 @@ namespace Klarna.Checkout
     /// </summary>
     public class Order : Resource
     {
+        /// <summary>
+        /// Relative resource path
+        /// </summary>
+        private string relativePath = "/checkout/orders";
+
         #region Construction
 
         /// <summary>
@@ -40,6 +45,8 @@ namespace Klarna.Checkout
         public Order(IConnector connector)
             : base(connector)
         {
+            this.ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json";
+            this.Accept = this.ContentType;
         }
 
         /// <summary>
@@ -71,7 +78,7 @@ namespace Klarna.Checkout
         {
             var options = new Dictionary<string, object>
                 {
-                    { "url", this.BaseUri },
+                    { "url", new Uri(this.Connector.BaseUri, this.relativePath) },
                     { "data", data }
                 };
 

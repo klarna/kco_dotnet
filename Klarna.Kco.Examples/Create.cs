@@ -24,6 +24,8 @@ namespace Klarna.Kco.Examples
     using System;
     using System.Collections.Generic;
     using Klarna.Checkout;
+    using System.Net;
+    using System.Diagnostics;
 
     /// <summary>
     /// The create checkout example.
@@ -33,10 +35,8 @@ namespace Klarna.Kco.Examples
         /// <summary>
         /// The example.
         /// </summary>
-        public void Example()
+        public static void Main()
         {
-            const string ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json";
-
             var items = new List<Dictionary<string, object>>
                     {
                         new Dictionary<string, object>
@@ -64,7 +64,7 @@ namespace Klarna.Kco.Examples
             const string Eid = "0";
 
             const string SharedSecret = "sharedSecret";
-            var connector = Connector.Create(SharedSecret);
+            var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
 
             Order order = null;
 
@@ -96,13 +96,43 @@ namespace Klarna.Kco.Examples
                     { "gui", layout }
                 };
 
-            order = new Order(connector)
-                {
-                    BaseUri = new Uri("https://checkout.testdrive.klarna.com/checkout/orders"),
-                    ContentType = ContentType
-                };
+            order = new Order(connector);
 
-            order.Create(data);
+            try
+            {
+                order.Create(data);
+            }
+            catch (ConnectorException ex)
+            {
+                var webException = ex.InnerException as WebException;
+                if (webException != null)
+                {
+                    // Here you can check for timeouts, and other connection related errors.
+                    // webException.Response could contain the response object.
+                }
+                else
+                {
+                    // In case there wasn't a WebException where you could get the response
+                    // (e.g. a protocol error, bad digest, etc) you might still be able to
+                    // get a hold of the response object.
+                    // ex.Data["Response"] as IHttpResponse
+                }
+
+                // Additional data might be available in ex.Data.
+                if (ex.Data.Contains("internal_message"))
+                {
+                    // For instance, Content-Type application/vnd.klarna.error-v1+json has "internal_message".
+                    var internalMessage = (string)ex.Data["internal_message"];
+                    Debug.WriteLine(internalMessage);
+                }
+
+                throw;
+            }
+            catch (Exception)
+            {
+                // Something else went wrong, e.g. invalid arguments passed to the order object.
+                throw;
+            }
         }
     }
 }

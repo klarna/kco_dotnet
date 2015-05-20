@@ -37,12 +37,12 @@ namespace Klarna.Kco.Examples
         /// This example demonstrates the use of the Klarna library to complete
         /// the purchase and display the confirmation page snippet.
         /// </summary>
-        public void Example()
+        public static void Main()
         {
             try
             {
                 const string SharedSecret = "sharedSecret";
-                var connector = Connector.Create(SharedSecret);
+                var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
 
                 // Retrieve location from session object.
                 // Use following in ASP.NET.
@@ -51,10 +51,7 @@ namespace Klarna.Kco.Examples
                 Uri checkoutId = new Uri(
                     "https://checkout.testdrive.klarna.com/checkout/orders/12");
 
-                var order = new Order(connector, checkoutId)
-                {
-                    ContentType = "application/vnd.klarna.checkout.aggregated-order-v2+json"
-                };
+                var order = new Order(connector, checkoutId);
 
                 order.Fetch();
 

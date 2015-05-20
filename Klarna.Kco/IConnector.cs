@@ -21,6 +21,7 @@
 #endregion
 namespace Klarna.Checkout
 {
+    using System;
     using System.Collections.Generic;
     using Klarna.Checkout.HTTP;
 
@@ -38,6 +39,11 @@ namespace Klarna.Checkout
         /// Gets the transport used for the HTTP communications.
         /// </summary>
         IHttpTransport Transport { get; }
+
+        /// <summary>
+        /// Gets or sets the base URI.
+        /// </summary>
+        Uri BaseUri { get; set; }
 
         /// <summary>
         /// Applies a HTTP method on a specific resource.

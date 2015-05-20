@@ -67,13 +67,17 @@ namespace Klarna.Checkout
         /// <param name="secret">
         /// The secret.
         /// </param>
-        public BasicConnector(IHttpTransport httpTransport, Digest digest, string secret)
+        /// <param name="uri">
+        /// The base URI.
+        /// </param>
+        public BasicConnector(IHttpTransport httpTransport, Digest digest, string secret, Uri uri)
         {
             this.httpTransport = httpTransport;
             this.digest = digest;
             this.secret = secret;
+            this.BaseUri = uri;
 
-            UserAgent = new UserAgent();
+            this.UserAgent = new UserAgent();
         }
 
         #endregion
@@ -84,6 +88,11 @@ namespace Klarna.Checkout
         /// Gets or sets the user agent used for User-Agent header.
         /// </summary>
         public UserAgent UserAgent { get; set; }
+
+        /// <summary>
+        /// Gets or sets the base URI.
+        /// </summary>
+        public Uri BaseUri { get; set; }
 
         /// <summary>
         /// Gets the transport used for the HTTP communications.
