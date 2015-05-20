@@ -24,6 +24,8 @@ namespace Klarna.Kco.Examples
     using System;
     using System.Collections.Generic;
     using Klarna.Checkout;
+    using System.Net;
+    using System.Diagnostics;
 
     /// <summary>
     /// The update checkout example.
@@ -68,7 +70,41 @@ namespace Klarna.Kco.Examples
             // Reset cart
             var data = new Dictionary<string, object> { { "cart", cart } };
 
-            order.Update(data);
+            try
+            {
+                order.Update(data);
+            }
+            catch (ConnectorException ex)
+            {
+                var webException = ex.InnerException as WebException;
+                if (webException != null)
+                {
+                    // Here you can check for timeouts, and other connection related errors.
+                    // webException.Response could contain the response object.
+                }
+                else
+                {
+                    // In case there wasn't a WebException where you could get the response
+                    // (e.g. a protocol error, bad digest, etc) you might still be able to
+                    // get a hold of the response object.
+                    // ex.Data["Response"] as IHttpResponse
+                }
+
+                // Additional data might be available in ex.Data.
+                if (ex.Data.Contains("internal_message"))
+                {
+                    // For instance, Content-Type application/vnd.klarna.error-v1+json has "internal_message".
+                    var internalMessage = (string)ex.Data["internal_message"];
+                    Debug.WriteLine(internalMessage);
+                }
+
+                throw;
+            }
+            catch (Exception)
+            {
+                // Something else went wrong, e.g. invalid arguments passed to the order object.
+                throw;
+            }
         }
     }
 }
