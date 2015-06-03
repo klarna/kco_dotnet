@@ -37,12 +37,11 @@ namespace Klarna.Kco.Examples
         /// </summary>
         public static void Main()
         {
-            Uri resourceUri = new Uri("https://checkout.testdrive.klarna.com/checkout/orders/ABC123");
-
             const string SharedSecret = "sharedSecret";
+            const string OrderID = "ABC123";
             var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
 
-            Order order = new Order(connector, resourceUri);
+            Order order = new Order(connector, OrderID);
 
             try
             {

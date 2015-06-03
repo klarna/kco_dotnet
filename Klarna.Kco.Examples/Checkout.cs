@@ -38,6 +38,14 @@ namespace Klarna.Kco.Examples
         /// </summary>
         public static void Main()
         {
+            const string Eid = "0";
+            const string SharedSecret = "sharedSecret";
+
+            var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
+
+            string orderID = null;
+            Order order = null;
+
             // Note! Please remove the code below when used in ASP.NET.
             // Just a placeholder in this example for, the HttpSessionState object, Session.
             var session = new Dictionary<string, object>();
@@ -68,27 +76,17 @@ namespace Klarna.Kco.Examples
 
                 var cart = new Dictionary<string, object> { { "items", items } };
 
-                // Merchant ID
-                const string Eid = "0";
-
-                const string SharedSecret = "sharedSecret";
-                var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
-
-                Order order = null;
-
-                Uri resourceUri = null;
-
                 // Retrieve location from session object.
-                if (session.ContainsKey("klarna_checkout"))
+                if (session.ContainsKey("klarna_order_id"))
                 {
-                    resourceUri = session["klarna_checkout"] as Uri;
+                    orderID = session["klarna_order_id"] as string;
                 }
 
-                if (resourceUri != null)
+                if (orderID != null)
                 {
                     try
                     {
-                        order = new Order(connector, resourceUri);
+                        order = new Order(connector, orderID);
 
                         order.Fetch();
 
@@ -101,7 +99,7 @@ namespace Klarna.Kco.Examples
                     {
                         // Reset session
                         order = null;
-                        session["klarna_checkout"] = null;
+                        session["klarna_order_id"] = null;
                     }
                 }
 
@@ -119,14 +117,14 @@ namespace Klarna.Kco.Examples
                             {
                                 "confirmation_uri",
                                 "https://example.com/thankyou.aspx" +
-                                "?sid=123&klarna_order={checkout.order.uri}"
+                                    "?klarna_order_id={checkout.order.id}"
                             },
                             //// You cannot receive push notification on a
                             //// non publicly available uri.
                             {
                                 "push_uri",
                                 "https://example.com/push.aspx" +
-                                "?sid=123&klarna_order={checkout.order.uri}"
+                                    "?klarna_order_id={checkout.order.id}"
                             }
                         };
 
@@ -145,6 +143,8 @@ namespace Klarna.Kco.Examples
                             { "gui", layout }
                         };
 
+                    //data.Add("recurring", true);
+
                     order = new Order(connector);
 
                     order.Create(data);
@@ -152,7 +152,7 @@ namespace Klarna.Kco.Examples
                 }
 
                 // Store location of checkout session is session object.
-                session["klarna_checkout"] = order.Location;
+                session["klarna_order_id"] = order.GetValue("id") as string;
 
                 // Display checkout
                 var gui = order.GetValue("gui") as JObject;

@@ -42,16 +42,15 @@ namespace Klarna.Kco.Examples
             try
             {
                 const string SharedSecret = "sharedSecret";
-                var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
-
                 // Retrieve location from session object.
                 // Use following in ASP.NET.
-                // var checkoutId = Session["klarna_checkout"] as Uri;
+                // var checkoutId = Session["klarna_order_id"] as string;
                 // Just a placeholder in this example.
-                Uri checkoutId = new Uri(
-                    "https://checkout.testdrive.klarna.com/checkout/orders/12");
+                const string OrderID = "ABC123";
 
-                var order = new Order(connector, checkoutId);
+                var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
+
+                var order = new Order(connector, OrderID);
 
                 order.Fetch();
 
@@ -74,7 +73,7 @@ namespace Klarna.Kco.Examples
                 // Response.Write(string.Format("<div>{0}</div>", snippet));
 
                 // Clear session object.
-                // Session["klarna_checkout"] = null;
+                // Session["klarna_order_id"] = null;
             }
             catch (ConnectorException ex)
             {

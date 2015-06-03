@@ -55,13 +55,13 @@ namespace Klarna.Checkout
         /// <param name="connector">
         /// The connector to use.
         /// </param>
-        /// <param name="uri">
-        /// The uri of the resource.
+        /// <param name="id">
+        /// The id of the resource.
         /// </param>
-        public Order(IConnector connector, Uri uri)
+        public Order(IConnector connector, string id)
             : this(connector)
         {
-            this.Location = uri;
+            this.Location = new Uri(this.Connector.BaseUri, this.relativePath + "/" + id);
         }
 
         #endregion

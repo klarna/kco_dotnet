@@ -69,6 +69,16 @@ namespace Klarna.Checkout.Tests
         #region Tests
 
         /// <summary>
+        /// Test that the location is created correctly if a id was used.
+        /// </summary>
+        [Test]
+        public void TestLocation()
+        {
+            Order o = new Order(this.MockConnector.Object, "1234");
+            Assert.That(o.Location.ToString(), Is.EqualTo("http://test.com/checkout/orders/1234"));
+        }
+
+        /// <summary>
         /// Tests that Create works correctly.
         /// </summary>
         [Test]

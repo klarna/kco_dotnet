@@ -46,16 +46,14 @@ namespace Klarna.Kco.Examples
              */
 
             const string SharedSecret = "sharedSecret";
+            const string RecurringToken = "ABC-123";
 
-            RecurringStatus status = null;
             var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
 
-            string recurring_token = "ABC-123";
+            RecurringStatus status = new RecurringStatus(connector, RecurringToken);
 
             try
             {
-                status = new RecurringStatus(connector, recurring_token);
-
                 status.Fetch();
 
                 // Get the payment method details

@@ -37,6 +37,13 @@ namespace Klarna.Kco.Examples
         /// </summary>
         public static void Main()
         {
+            const string Eid = "0";
+            const string SharedSecret = "sharedSecret";
+
+            var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
+
+            Order order = new Order(connector);
+
             var items = new List<Dictionary<string, object>>
                     {
                         new Dictionary<string, object>
@@ -58,15 +65,8 @@ namespace Klarna.Kco.Examples
                                 { "tax_rate", 2500 }
                             }
                     };
+
             var cart = new Dictionary<string, object> { { "items", items } };
-
-            // Merchant ID
-            const string Eid = "0";
-
-            const string SharedSecret = "sharedSecret";
-            var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
-
-            Order order = null;
 
             var merchant = new Dictionary<string, object>
                 {
@@ -75,10 +75,15 @@ namespace Klarna.Kco.Examples
                     { "checkout_uri", "https://example.com/checkout.aspx" },
                     {
                         "confirmation_uri",
-                        "https://example.com/thankyou.aspx?sid=123&klarna_order={checkout.order.uri}"
+                        "https://example.com/thankyou.aspx" +
+                            "?klarna_order_id={checkout.order.id}"
                     },
-                    //// You cannot receive push notification on a non publicly available uri.
-                    { "push_uri", "https://example.com/push.aspx?sid=123&klarna_order={checkout.order.uri}" }
+                    //// You cannot receive push notification on a non publicly
+                    //// available uri.
+                    {
+                        "push_uri",
+                        "https://example.com/push.aspx" +
+                            "?klarna_order_id={checkout.order.id}" }
                 };
 
             var layout = new Dictionary<string, object>
@@ -96,7 +101,7 @@ namespace Klarna.Kco.Examples
                     { "gui", layout }
                 };
 
-            order = new Order(connector);
+            //data.Add("recurring", true);
 
             try
             {
