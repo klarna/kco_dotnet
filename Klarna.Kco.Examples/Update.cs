@@ -37,7 +37,12 @@ namespace Klarna.Kco.Examples
         /// </summary>
         public static void Main()
         {
-            Uri resourceUri = new Uri("https://checkout.testdrive.klarna.com/checkout/orders/ABC123");
+            const string SharedSecret = "sharedSecret";
+            const string OrderID = "ABC123";
+
+            var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
+
+            Order order = new Order(connector, OrderID);
 
             var items = new List<Dictionary<string, object>>
                 {
@@ -61,11 +66,6 @@ namespace Klarna.Kco.Examples
                         }
                 };
             var cart = new Dictionary<string, object> { { "items", items } };
-
-            const string SharedSecret = "sharedSecret";
-            var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
-
-            Order order = new Order(connector, resourceUri);
 
             // Reset cart
             var data = new Dictionary<string, object> { { "cart", cart } };

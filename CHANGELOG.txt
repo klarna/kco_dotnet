@@ -1,0 +1,47 @@
+===========================
+Klarna Checkout C# library
+===========================
+
+v3.0.0
+----------------
+Date: 2015-06-03
+
+Story (#2199) (Christer G.) - Only allow order creation with IDs instead of full URIs
+
+v2.0.0
+----------------
+Date: 2015-05-21
+
+Story (#1898) (Christer G.) - Adding support for recurring orders.
+
+v1.0.4
+----------------
+Date: 2014-11-11
+
+Story (#1849) (Christer G.) - Only allow trusted certificates
+
+v1.0.3
+----------------
+Date: 2014-05-07
+
+Story (#1557) (Christer G.) - Release Klarna.Checkout to NuGet
+
+v1.0.2
+----------------
+Date: 2014-05-06
+
+Story (#1557) (Christer G.) - Include patch version in User-Agent
+
+v1.0.1
+----------------
+Date: 2013-04-16
+
+Story (#519) (Joakim L. ) - Do not remove API error messages in KCO .net library
+Story (#518) (Fredrik R.) - Change request timeout for KCO .net library
+
+v1.0.0
+----------------
+Date: 2012-11-21
+
+ Klarna
+          Initial release.

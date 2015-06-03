@@ -46,6 +46,11 @@ namespace Klarna.Kco.Examples
 
             const string Eid = "0";
             const string SharedSecret = "sharedSecret";
+            const string RecurringToken = "ABC-123";
+
+            var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
+
+            RecurringOrder recurringOrder = new RecurringOrder(connector, RecurringToken);
 
             // Set optional merchant reference ids. Like internal order or customer id
             var merchant_reference = new Dictionary<string, object>
@@ -113,17 +118,11 @@ namespace Klarna.Kco.Examples
                     { "shipping_address", address }
                 };
 
-            RecurringOrder order = null;
-            var connector = Connector.Create(SharedSecret, Connector.TestBaseUri);
-            string recurring_token = "ABC-123";
-
             try
             {
-                order = new RecurringOrder(connector, recurring_token);
+                recurringOrder.Create(data);
 
-                order.Create(data);
-
-                var result = order.Marshal();
+                var result = recurringOrder.Marshal();
                 string number = null;
 
                 // If the recurring order wasn't activated we should have a reservation number

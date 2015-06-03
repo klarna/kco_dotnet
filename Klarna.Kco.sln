@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Klarna.Kco", "Klarna.Kco\Klarna.Kco.csproj", "{803F5E1D-3C2C-4E99-B485-F84397BC25AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Klarna.Kco.Tests", "Klarna.Kco.Tests\Klarna.Kco.Tests.csproj", "{8BE5E3D0-C6C4-435F-A06D-85041B8D1509}"
@@ -13,6 +15,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Klarna.Kco.Examples", "Klarna.Kco.Examples\Klarna.Kco.Examples.csproj", "{07BF83E7-366D-4CB6-8EE3-0EC989261A96}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F9BEC1C3-9CFA-42E9-A033-DAAA2AF5A23F}"
+	ProjectSection(SolutionItems) = preProject
+		build.xml = build.xml
+		CHANGELOG.txt = CHANGELOG.txt
+		README.md = README.md
+		version.properties = version.properties
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
