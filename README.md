@@ -1,4 +1,7 @@
 ## Klarna Checkout .NET library
+
+[![NuGet Version][nuget-shield]](https://www.nuget.org/packages/Klarna.Checkout/)
+
 Klarna Checkout is a revolutionary new payment solution that is changing the way
 people shop online. First, consumers verify their purchase with a minimal
 amount of information through intelligent identification, securing your order
@@ -53,3 +56,5 @@ please contact [integration@klarna.com](mailto:integration@klarna.com).
 ## License
 The Klarna Checkout .NET library is released under
 [Apache License, Version 2.0](http://www.apache.org/LICENSE-2.0)
+
+[nuget-shield]: https://img.shields.io/nuget/v/Klarna.Checkout.svg
