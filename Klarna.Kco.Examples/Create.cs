@@ -106,6 +106,11 @@ namespace Klarna.Kco.Examples
             try
             {
                 order.Create(data);
+                order.Fetch();
+
+                string orderID = order.GetValue("id") as string;
+
+                Debug.WriteLine("Order ID: " + orderID);
             }
             catch (ConnectorException ex)
             {
