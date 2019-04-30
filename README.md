@@ -1,6 +1,13 @@
-## Klarna Checkout .NET library
+## Klarna Checkout .NET library (DEPRECATED)
 
 [![NuGet Version][nuget-shield]](https://www.nuget.org/packages/Klarna.Checkout/)
+
+# Deprecation notice
+
+This repo has been marked as deprecated. The SDK is not longer supported.  
+Please use https://github.com/klarna/kco_rest_dotnet SDK instead.
+
+## Klarna Checkout
 
 Klarna Checkout is a revolutionary new payment solution that is changing the way
 people shop online. First, consumers verify their purchase with a minimal
