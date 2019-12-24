@@ -51,12 +51,13 @@ namespace Klarna.Checkout
         public UserAgent()
         {
             fields = new List<KeyValuePair<string, Dictionary<string, object>>>();
+            var iisVersionProvider = new IISVersionProvider();
 
             AddField("Library", "Klarna.ApiWrapper", Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
             var os = Environment.OSVersion;
             AddField("OS", os.Platform.ToString(), os.Version.ToString());
             AddField("Language", ".Net", Environment.Version.ToString());
-            AddField("Webserver", "IIS", IisVersion());
+            AddField("Webserver", "IIS", iisVersionProvider.FindIISVersion(os.Platform));
         }
 
         #endregion
@@ -152,38 +153,6 @@ namespace Klarna.Checkout
             }
 
             return builder.ToString().TrimEnd(' ');
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        /// Gets IIS version.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="string"/>.
-        /// </returns>
-        private string IisVersion()
-        {
-            var iisVersion = "Unknown_0.0";
-            using (var iisKey = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\InetStp\"))
-            {
-                if (iisKey != null)
-                {
-                    var versionString = iisKey.GetValue("VersionString") as string;
-                    if (versionString != null)
-                    {
-                        var splitVersionString = versionString.Split(' ');
-                        if (splitVersionString.Length > 1)
-                        {
-                            iisVersion = splitVersionString[1];
-                        }
-                    }
-                }
-            }
-
-            return iisVersion;
         }
 
         #endregion
